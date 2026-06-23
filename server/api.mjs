@@ -41,13 +41,15 @@ export async function handleApiRequest(req, res, env) {
   }
 
   if (url === '/api/status' && req.method === 'GET') {
+    const ollamaOn = env.AI_PROVIDER === 'ollama' || env.USE_OLLAMA === 'true';
     sendJson(res, 200, {
       ok: true,
-      configured: Boolean(env.OPENAI_API_KEY || env.ANTHROPIC_API_KEY),
+      configured: Boolean(env.OPENAI_API_KEY || env.ANTHROPIC_API_KEY || ollamaOn),
       whisper: Boolean(env.OPENAI_API_KEY),
       providers: {
         openai: Boolean(env.OPENAI_API_KEY),
         anthropic: Boolean(env.ANTHROPIC_API_KEY),
+        ollama: ollamaOn,
       },
     });
     return true;

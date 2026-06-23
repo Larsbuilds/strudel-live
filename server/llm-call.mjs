@@ -1,16 +1,27 @@
 import OpenAI from 'openai';
 import Anthropic from '@anthropic-ai/sdk';
 import { stripCodeFences, stripFences } from './llm-utils.mjs';
+import { ollamaChat, STRUDEL_CODER_SYSTEM, buildOllamaMessages } from './ollama.mjs';
 
 export function getLlmProvider(env) {
+  const preferred = env.AI_PROVIDER?.toLowerCase();
+  if (preferred === 'ollama') return 'ollama';
+  if (preferred === 'openai' && env.OPENAI_API_KEY) return 'openai';
+  if (preferred === 'anthropic' && env.ANTHROPIC_API_KEY) return 'anthropic';
   if (env.OPENAI_API_KEY) return 'openai';
   if (env.ANTHROPIC_API_KEY) return 'anthropic';
+  if (preferred === 'ollama' || env.OLLAMA_BASE_URL || env.USE_OLLAMA === 'true') return 'ollama';
   return null;
 }
 
 export async function callLLM(system, user, env, { json = false, maxTokens = 1024 } = {}) {
   const provider = getLlmProvider(env);
-  if (!provider) throw Object.assign(new Error('No AI API key configured'), { status: 503 });
+  if (!provider) throw Object.assign(new Error('No AI provider configured'), { status: 503 });
+
+  if (provider === 'ollama') {
+    const systemPrompt = json ? `${system}\n\nOutput raw JSON only.` : system;
+    return ollamaChat(buildOllamaMessages(systemPrompt, user), env, { json, maxTokens });
+  }
 
   if (provider === 'openai') {
     const client = new OpenAI({ apiKey: env.OPENAI_API_KEY });

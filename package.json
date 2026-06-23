@@ -32,7 +32,8 @@
     "stress:link": "node scripts/link-reconnect-stress.mjs",
     "stress:rave": "node scripts/rave-stress-test.mjs",
     "stress:smoke": "STRESS_DURATION=15 node scripts/rave-stress-test.mjs && node scripts/link-reconnect-stress.mjs",
-    "stress:club": "node scripts/link-reconnect-stress.mjs && STRESS_DURATION=7200 node scripts/rave-stress-test.mjs"
+    "stress:club": "node scripts/link-reconnect-stress.mjs && STRESS_DURATION=7200 node scripts/rave-stress-test.mjs",
+    "ollama:setup": "node scripts/ollama-setup.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",

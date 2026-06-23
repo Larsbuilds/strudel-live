@@ -1,16 +1,9 @@
-import OpenAI from 'openai';
-import Anthropic from '@anthropic-ai/sdk';
 import { IGNITE_PROMPT, buildIgniteUserMessage } from './ignite-prompt.mjs';
 import { applyMusicConstraints } from './music-constraints.mjs';
 import { guardStrudelCode } from './code-validate.mjs';
 import { parseScaleFromCode } from './parse-scale.mjs';
 import { stripCodeFences } from './llm-utils.mjs';
-
-function getProvider(env) {
-  if (env.OPENAI_API_KEY) return 'openai';
-  if (env.ANTHROPIC_API_KEY) return 'anthropic';
-  return null;
-}
+import { getLlmProvider, callLLM } from './llm-call.mjs';
 
 function parseJson(text) {
   const cleaned = text.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/i, '').trim();
@@ -24,37 +17,15 @@ function parseJson(text) {
 }
 
 export async function generateIgnite({ prompt, trackContext }, env) {
-  const provider = getProvider(env);
-  if (!provider) throw Object.assign(new Error('No AI API key configured'), { status: 503 });
+  const provider = getLlmProvider(env);
+  if (!provider) throw Object.assign(new Error('No AI provider configured'), { status: 503 });
   if (!prompt?.trim()) throw Object.assign(new Error('Prompt is empty'), { status: 400 });
 
   const userMessage = buildIgniteUserMessage({ prompt, trackContext });
-  let raw, model;
-
-  if (provider === 'openai') {
-    const client = new OpenAI({ apiKey: env.OPENAI_API_KEY });
-    model = env.OPENAI_MODEL || 'gpt-4o-mini';
-    const response = await client.chat.completions.create({
-      model,
-      temperature: 0.7,
-      response_format: { type: 'json_object' },
-      messages: [
-        { role: 'system', content: IGNITE_PROMPT },
-        { role: 'user', content: userMessage },
-      ],
-    });
-    raw = response.choices[0].message.content;
-  } else {
-    const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
-    model = env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
-    const response = await client.messages.create({
-      model,
-      max_tokens: 2500,
-      system: `${IGNITE_PROMPT}\n\nOutput raw JSON only.`,
-      messages: [{ role: 'user', content: userMessage }],
-    });
-    raw = response.content.find((b) => b.type === 'text')?.text ?? '';
-  }
+  const { text: raw, model } = await callLLM(IGNITE_PROMPT, userMessage, env, {
+    json: true,
+    maxTokens: 2500,
+  });
 
   const parsed = parseJson(raw);
   const setup = parsed.setup || {};

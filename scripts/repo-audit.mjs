@@ -54,6 +54,7 @@ const REQUIRED_DOCS = [
   'docs/ABLETON-LINK.md',
   'docs/RAVE.md',
   'docs/CLUB-HARDENING.md',
+  'docs/LOCAL-AI.md',
 ];
 
 for (const doc of REQUIRED_DOCS) {

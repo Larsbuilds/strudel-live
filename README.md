@@ -70,9 +70,13 @@ npm run check            # Setup
 npm run workflow:check   # API-Integration
 npm run audit            # Doku + Module + APIs
 npm run stress:smoke     # Link + RAVE Kurz-Härtetest (~2 min)
+npm run stress:link      # Link WS-Reconnect PI-Test
+npm run stress:rave      # RAVE RAM-Dauerlauf (STRESS_DURATION=7200 für 2h)
 npm run stress:club      # Gig-Vorbereitung (2h+ RAVE)
 npm run panic            # Remote NOT-AUS
 npm run voice            # CLI Voice-Jam
+npm run osc:check        # SuperDirt OSC prüfen
+npm run superdirt:help   # SuperCollider Install-Hilfe
 npm run sc:fetch         # SoundCloud/URL
 npm run dj:analyze       # BPM
 npm run dj:stems         # Demucs
@@ -100,7 +104,8 @@ Siehe [docs/FEATURES.md](docs/FEATURES.md#alle-api-endpunkte)
 | [ROADMAP.md](docs/ROADMAP.md) | Phasen-Status |
 | [PROMPT-BOOK.md](docs/PROMPT-BOOK.md) | Club-Prompts |
 | [WORKFLOW.md](docs/WORKFLOW.md) | End-to-End |
-| [CLUB-HARDENING.md](docs/CLUB-HARDENING.md) | Gig-Stresstests |
+| [CLUB-HARDENING.md](CLUB-HARDENING.md) | Gig-Stresstests |
+| [LOCAL-AI.md](docs/LOCAL-AI.md) | Ollama / strudel-coder ohne API-Key |
 | [MUSIC-LOGIC.md](docs/MUSIC-LOGIC.md) | Constraints, kein Isabelle |
 | [ARCHITECTURE.md](docs/ARCHITECTURE.md) | System |
 | [MIDI-MAC.md](docs/MIDI-MAC.md) | Ableton-Routing |

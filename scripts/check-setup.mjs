@@ -22,6 +22,14 @@ const health = getHealth(env);
 
 env.OPENAI_API_KEY ? ok('OPENAI_API_KEY (KI + Whisper)') : warn('OPENAI_API_KEY fehlt');
 env.ANTHROPIC_API_KEY ? ok('ANTHROPIC_API_KEY') : warn('ANTHROPIC_API_KEY optional');
+const ollamaOn = env.AI_PROVIDER === 'ollama' || env.USE_OLLAMA === 'true';
+if (ollamaOn) {
+  const { checkOllama } = await import('../server/ollama.mjs');
+  const o = await checkOllama(env);
+  o.ok && o.hasModel
+    ? ok(`Ollama (${env.OLLAMA_MODEL || 'strudel-live'})`)
+    : warn(`Ollama — ${o.error || 'Modell fehlt, npm run ollama:setup'}`);
+}
 
 existsSync('node_modules') ? ok('node_modules') : warn('npm install');
 listPatternNames().length > 0 ? ok(`${listPatternNames().length} Patterns`) : warn('Keine Patterns');
@@ -33,6 +41,6 @@ health.tools.sclang ? ok('SuperCollider sclang') : warn('sclang optional — fü
 console.log('\nstrudel-live Setup-Check\n');
 for (const c of checks) console.log(`${c.ok ? '✓' : '○'} ${c.msg}`);
 
-const ready = Boolean(env.OPENAI_API_KEY || env.ANTHROPIC_API_KEY);
-console.log(ready ? '\n→ npm run dev:full  dann  npm run workflow:check\n' : '\n→ npm run setup\n');
+const ready = Boolean(env.OPENAI_API_KEY || env.ANTHROPIC_API_KEY || ollamaOn);
+console.log(ready ? '\n→ npm run dev:full  dann  npm run workflow:check\n' : '\n→ npm run setup  oder  npm run ollama:setup\n');
 process.exit(ready ? 0 : 1);
