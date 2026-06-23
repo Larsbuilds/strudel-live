@@ -1,45 +1,52 @@
 # Roadmap — strudel-live
 
-## Phase 1 — Lernen (jetzt)
+## Phase 1 — Lernen
 
-- [ ] `npm run dev` — KI-Prompt oder Starter-Pattern spielen
-- [ ] [Workshop](https://strudel.cc/workshop/getting-started/) (30–60 Min.)
-- [ ] `docs/MINI-NOTATION.md` durchgehen
-- [ ] Jeder legt ein Pattern in `patterns/` an
+- [ ] `npm run dev` — KI oder Starter-Pattern
+- [ ] [Workshop](https://strudel.cc/workshop/getting-started/)
+- [ ] `docs/MINI-NOTATION.md`
 
-## Phase 2 — Lokales Setup ✅ größtenteils
+## Phase 2 — Lokales Setup ✅
 
-- [x] KI Text → Strudel → Auto-Play (`src/ai-panel.js`)
-- [x] Browser-Spracheingabe ohne API-Key (`src/voice-input.js`)
-- [x] Auto-load `patterns/*.strudel`
-- [x] Lokaler Sample-Server (`npm run samples`, `samples/`)
-- [ ] API-Key in `.env` für KI
+- [x] KI Text → Strudel → Auto-Play
+- [x] Verfeinern-Modus („mehr Reverb“, „nur Drums“)
+- [x] Pattern speichern → `patterns/generated/`
+- [x] Browser-Spracheingabe (Chrome)
+- [x] OpenAI Whisper (🎙 Button + `npm run voice`)
+- [x] Auto-load `patterns/**/*.strudel` + Hot-Reload
+- [x] `npm run check` Setup-Validator
+- [ ] API-Key in `.env`
 
-## Phase 3 — Pro-Sound: MIDI → DAW
+## Phase 3 — MIDI → DAW ✅ vorbereitet
 
-- [x] Beispiel-Pattern `04-midi-ableton.strudel`
-- [x] Mac IAC-Anleitung `docs/MIDI-MAC.md`
-- [ ] IAC Driver aktivieren + Ableton MIDI-Track testen
-- [ ] Serum/Vital mit Strudel-Akkorden steuern
+- [x] Pattern `04-midi-ableton`
+- [x] `docs/MIDI-MAC.md`
+- [x] MIDI-Geräteliste im Browser (Web MIDI)
+- [ ] IAC Driver + Ableton testen (manuell)
 
-## Phase 4 — SuperCollider / SuperDirt (OSC)
+## Phase 4 — SuperDirt / OSC ✅ vorbereitet
 
-- [x] Doku `docs/SUPERCOLLIDER.md`
-- [x] Pattern `05-superdirt-osc.strudel`
-- [ ] SuperCollider + SuperDirt installieren
-- [ ] `pnpm run osc` im upstream strudel-Repo
+- [x] `docs/SUPERCOLLIDER.md`
+- [x] Pattern `05-superdirt-osc`
+- [x] `npm run osc:check` + `npm run superdirt:help`
+- [ ] SuperCollider installieren (manuell)
 
-## Phase 5 — Sprache (Whisper, optional)
+## Phase 5 — Sprache ✅
 
-- [x] Browser Web Speech API (Chrome, deutsch)
-- [ ] OpenAI Whisper API für bessere Erkennung
-- [ ] `scripts/voice-jam.mjs` CLI
+- [x] Web Speech API
+- [x] Whisper API (`/api/transcribe`, 🎙 UI)
+- [x] `npm run voice -- --prompt "..."` CLI
+- [x] `npm run voice -- --audio file.webm`
 
-## Phase 6 — Gesang & Autotune (Vision)
+## Phase 6 — Gesang & Autotune ✅ Basis
 
-- [x] Mikrofon-Monitor (`src/mic-panel.js`)
-- [ ] Pitch-Correction via Web Audio / Tone.js / AudioWorklet
-- [ ] **Key-Sync:** Wenn Pattern `Am` spielt, Autotune live auf Am umschalten
-- [ ] Mic + Strudel-Output mischen
+- [x] Mikrofon-Monitor
+- [x] Pitch-Correction (Tone.js + pitchy)
+- [x] Key-Sync aus KI-Pattern `.scale()` / `chord()`
+- [ ] Studio-Qualität Autotune (feinere DSP)
 
-Siehe auch `docs/GEMINI-EXTRACT.md` und `docs/ARCHITECTURE.md`.
+## Production
+
+- [x] `npm run build && npm start` — Express + API + Static
+
+Siehe `docs/ARCHITECTURE.md` · `docs/GEMINI-EXTRACT.md`

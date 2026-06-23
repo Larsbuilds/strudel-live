@@ -10,3 +10,7 @@ dist/
 # sample audio files — keep README
 samples/**
 !samples/README.md
+
+# AI-generated patterns (keep folder README)
+patterns/generated/**
+!patterns/generated/README.md

@@ -1,4 +1,4 @@
-const modules = import.meta.glob('../patterns/*.strudel', {
+const modules = import.meta.glob('../patterns/**/*.strudel', {
   query: '?raw',
   import: 'default',
   eager: true,

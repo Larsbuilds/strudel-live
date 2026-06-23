@@ -14,7 +14,8 @@ if (existsSync(envPath)) {
 }
 
 console.log('Next steps:');
-console.log('  1. Open .env and set OPENAI_API_KEY (or ANTHROPIC_API_KEY)');
-console.log('  2. npm run dev');
-console.log('  3. Describe your sound in the browser → Generieren & Abspielen\n');
+console.log('  1. Open .env and set OPENAI_API_KEY (enables KI + Whisper)');
+console.log('  2. npm run check');
+console.log('  3. npm run dev');
+console.log('  4. Text / 🎤 / 🎙 → Generieren & Abspielen\n');
 console.log('Get an OpenAI key: https://platform.openai.com/api-keys');

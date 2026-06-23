@@ -1,6 +1,6 @@
 # Strudel Live
 
-KI-gesteuertes Live-Coding mit [Strudel](https://strudel.cc) — Text oder Sprache rein, Musik raus. Erweiterbar mit MIDI (Ableton), eigenen Samples und SuperDirt.
+Vollständiges KI-Live-Coding-System: **Text, Sprache, Whisper → Strudel → Sound** — plus MIDI zu Ableton, Autotune mit Key-Sync, eigene Samples.
 
 **Repo:** https://github.com/Larsbuilds/strudel-live
 
@@ -10,76 +10,79 @@ KI-gesteuertes Live-Coding mit [Strudel](https://strudel.cc) — Text oder Sprac
 git clone https://github.com/Larsbuilds/strudel-live.git
 cd strudel-live
 npm install
-npm run setup          # erstellt .env
-# OPENAI_API_KEY in .env eintragen
-npm run dev            # → http://localhost:5173
+npm run setup          # .env anlegen
+# OPENAI_API_KEY in .env
+npm run check          # Setup prüfen
+npm run dev            # http://localhost:5173
 ```
 
-1. Einmal in die Seite klicken (Audio-Freigabe)
-2. Text eingeben oder **🎤 Sprechen** (Chrome, kein Extra-Key)
-3. **Generieren & Abspielen**
+## Features
 
-## Was dieses Setup kann
-
-| Feature | Befehl / Ort |
-|---------|----------------|
-| **KI: Text → Musik** | Prompt oben im Browser |
-| **Sprache → Text** | 🎤 Button (Web Speech API) |
-| **Starter-Patterns** | Dropdown (Trance, DNB, …) |
-| **Eigene Samples** | `npm run dev:full` + Dateien in `samples/` |
-| **MIDI → Ableton** | Pattern `04-midi-ableton` + `docs/MIDI-MAC.md` |
-| **SuperDirt / OSC** | `docs/SUPERCOLLIDER.md` |
-| **Mikrofon-Monitor** | „Erweitert“ im UI (Basis für Autotune) |
+| Feature | Wie |
+|---------|-----|
+| **KI Text → Musik** | Prompt → Generieren & Abspielen |
+| **Verfeinern** | Checkbox + „mehr Reverb“, „nur Drums“ |
+| **Pattern speichern** | Button → `patterns/generated/` |
+| **🎤 Browser-Sprache** | Chrome, kein Extra-Key |
+| **🎙 Whisper** | Bessere STT (braucht OpenAI-Key) |
+| **Autotune** | Mikrofon → chromatisch oder Key-Sync mit KI-Pattern |
+| **MIDI-Liste** | Zeigt IAC Driver / Geräte für `.midi("...")` |
+| **Eigene Samples** | `npm run dev:full` |
+| **CLI** | `npm run voice -- --prompt "techno beat"` |
 
 ## NPM-Skripte
 
 ```bash
-npm run dev        # REPL + KI (Port 5173)
-npm run samples    # Sample-Server (Port 5432)
-npm run dev:full   # Beides parallel
-npm run patterns   # Pattern-Liste
-npm run setup      # .env anlegen
+npm run dev          # Entwicklung (Port 5173)
+npm run dev:full     # + Sample-Server (5432)
+npm run build        # Production-Build
+npm start            # Production (API + Static)
+npm run check        # Setup validieren
+npm run voice        # CLI: Text/Audio → Pattern
+npm run osc:check    # SuperDirt OSC prüfen
+npm run superdirt:help
 ```
 
-## Dokumentation
+## Workflow-Beispiel
 
-| Datei | Inhalt |
-|-------|--------|
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Gesamtsystem, Schichten, Diagramm |
-| [docs/GEMINI-EXTRACT.md](docs/GEMINI-EXTRACT.md) | Was aus KI-Chats stimmt / falsch ist |
-| [docs/MINI-NOTATION.md](docs/MINI-NOTATION.md) | Spickzettel `[ ] * < >` |
-| [docs/MIDI-MAC.md](docs/MIDI-MAC.md) | IAC Driver → Ableton |
-| [docs/SUPERCOLLIDER.md](docs/SUPERCOLLIDER.md) | OSC / SuperDirt |
-| [docs/ROADMAP.md](docs/ROADMAP.md) | Phasen 1–6 |
+1. *„Trance 140 BPM, A-Moll, Saw-Lead“* → Generieren
+2. Checkbox **Verfeinern** → *„mehr Delay und Reverb“*
+3. **Pattern speichern**
+4. Mikrofon → **Key-Sync** → dazu singen
+5. Optional: Pattern `04-midi-ableton` → Akkorde in Ableton
 
-## Strudel ≠ Ableton (kurz)
+## Architektur
 
-Strudel ersetzt keine DAW — es ist das **algorithmische Gehirn** (Patterns live ändern). Ableton/Serum liefern den **Sound** via MIDI. Switch Angel nutzt beides.
+```
+Text / 🎤 / 🎙 Whisper
+        ↓
+   OpenAI / Claude
+        ↓
+   Strudel REPL ──┬── Browser-Audio
+                  ├── MIDI → Ableton (IAC)
+                  ├── OSC → SuperDirt
+                  └── Mic → Autotune (Key-Sync)
+```
 
-## KI-Provider
+Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 
-| Provider | Variable | Modell |
-|----------|----------|--------|
-| OpenAI | `OPENAI_API_KEY` | `gpt-4o-mini` |
-| Anthropic | `ANTHROPIC_API_KEY` | `claude-sonnet-4-20250514` |
+## Docs
 
-Key: [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+- [ROADMAP](docs/ROADMAP.md) — Phasen 1–6
+- [MINI-NOTATION](docs/MINI-NOTATION.md)
+- [MIDI-MAC](docs/MIDI-MAC.md)
+- [SUPERCOLLIDER](docs/SUPERCOLLIDER.md)
+- [GEMINI-EXTRACT](docs/GEMINI-EXTRACT.md)
 
-## Gemini-Warnung
+## Mit Freunden
 
-Diese Pakete sind **nicht** Musik-Strudel:
-
-- `strudel-cli` (npm) — altes JS-Framework 2018
-- `strudel-science/strudel-kit` — wissenschaftliches UI-Toolkit
-
-Wir nutzen `@strudel/*` von [strudel.cc](https://strudel.cc).
-
-## Mit Freunden jammen
-
-1. Repo klonen, `npm install`, `.env` mit eigenem Key
-2. Patterns in `patterns/` pushen (erscheinen automatisch im Dropdown)
-3. Optional: MIDI-Setup teilen (`docs/MIDI-MAC.md`)
+```bash
+git clone https://github.com/Larsbuilds/strudel-live.git
+npm install && npm run setup
+# jeder eigener OPENAI_API_KEY in .env
+npm run dev
+```
 
 ## Lizenz
 
-Patterns: eure Werke. Strudel-Pakete: AGPL-3.0-or-later.
+Patterns: eure Werke. Strudel: AGPL-3.0-or-later.

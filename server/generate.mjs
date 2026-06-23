@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 import Anthropic from '@anthropic-ai/sdk';
 import { SYSTEM_PROMPT } from './system-prompt.mjs';
+import { parseScaleFromCode } from './parse-scale.mjs';
 
 function stripCodeFences(text) {
   return text
@@ -18,7 +19,12 @@ function getProvider(env) {
   return null;
 }
 
-async function generateWithOpenAI(prompt, env) {
+function buildUserMessage(prompt, previousCode) {
+  if (!previousCode?.trim()) return prompt;
+  return `Current Strudel pattern (modify it, keep what works):\n\n${previousCode.trim()}\n\nModification request: ${prompt}`;
+}
+
+async function generateWithOpenAI(prompt, env, previousCode) {
   const client = new OpenAI({ apiKey: env.OPENAI_API_KEY });
   const model = env.OPENAI_MODEL || 'gpt-4o-mini';
   const response = await client.chat.completions.create({
@@ -26,26 +32,28 @@ async function generateWithOpenAI(prompt, env) {
     temperature: 0.7,
     messages: [
       { role: 'system', content: SYSTEM_PROMPT },
-      { role: 'user', content: prompt },
+      { role: 'user', content: buildUserMessage(prompt, previousCode) },
     ],
   });
-  return { code: stripCodeFences(response.choices[0].message.content), model, provider: 'openai' };
+  const code = stripCodeFences(response.choices[0].message.content);
+  return { code, model, provider: 'openai' };
 }
 
-async function generateWithAnthropic(prompt, env) {
+async function generateWithAnthropic(prompt, env, previousCode) {
   const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
   const model = env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
   const response = await client.messages.create({
     model,
     max_tokens: 1024,
     system: SYSTEM_PROMPT,
-    messages: [{ role: 'user', content: prompt }],
+    messages: [{ role: 'user', content: buildUserMessage(prompt, previousCode) }],
   });
   const text = response.content.find((b) => b.type === 'text')?.text ?? '';
-  return { code: stripCodeFences(text), model, provider: 'anthropic' };
+  const code = stripCodeFences(text);
+  return { code, model, provider: 'anthropic' };
 }
 
-export async function generateStrudel(prompt, env) {
+export async function generateStrudel(prompt, env, { previousCode } = {}) {
   const trimmed = prompt?.trim();
   if (!trimmed) {
     throw Object.assign(new Error('Prompt is empty'), { status: 400 });
@@ -61,6 +69,11 @@ export async function generateStrudel(prompt, env) {
     );
   }
 
-  if (provider === 'openai') return generateWithOpenAI(trimmed, env);
-  return generateWithAnthropic(trimmed, env);
+  const result =
+    provider === 'openai'
+      ? await generateWithOpenAI(trimmed, env, previousCode)
+      : await generateWithAnthropic(trimmed, env, previousCode);
+
+  const scale = parseScaleFromCode(result.code);
+  return { ...result, scale };
 }

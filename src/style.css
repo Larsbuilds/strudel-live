@@ -103,6 +103,79 @@ header p {
   background: #6d60ff;
 }
 
+#ai-submit:hover:not(:disabled) {
+  background: #6d60ff;
+}
+
+.secondary-btn {
+  background: #1f1f28;
+  color: #e8e8ec;
+  border: 1px solid #3a3a48;
+  border-radius: 8px;
+  padding: 0.55rem 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.secondary-btn.small {
+  padding: 0.25rem 0.55rem;
+  font-size: 0.82rem;
+  margin-left: 0.5rem;
+}
+
+.secondary-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.refine-toggle {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+  margin-top: 0.55rem;
+  font-size: 0.88rem;
+  color: #b0b0c0;
+}
+
+.advanced-block {
+  margin: 0.65rem 0;
+  padding: 0.55rem 0;
+  border-top: 1px solid #2a2a32;
+}
+
+.mic-controls {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 0.35rem;
+}
+
+#mic-mode {
+  min-width: 14rem;
+}
+
+.mic-key-label {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  color: #7dcea0;
+}
+
+.midi-devices {
+  margin-top: 0.45rem;
+  font-size: 0.88rem;
+  color: #a8a8b8;
+}
+
+.midi-list {
+  margin: 0.35rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.midi-list li {
+  margin-bottom: 0.3rem;
+}
+
 .voice-status {
   margin: 0.35rem 0 0;
   font-size: 0.85rem;

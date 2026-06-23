@@ -10,14 +10,11 @@
     <header>
       <h1>Strudel Live</h1>
       <p>
-        Beschreibe den Sound in normaler Sprache — die KI schreibt Strudel-Code und spielt ihn ab.
-        Oder wähle ein Starter-Pattern und feile per Hand nach (<kbd>Ctrl</kbd>+<kbd>Enter</kbd>).
+        Text, Sprache oder Whisper → KI → Strudel → Sound. Pattern verfeinern, speichern, MIDI zu Ableton, Autotune mit Key-Sync.
       </p>
 
       <div id="ai-setup" class="setup-banner" hidden>
-        <strong>Einmaliges Setup:</strong>
-        <code>cp .env.example .env</code> — dann <code>OPENAI_API_KEY</code> oder
-        <code>ANTHROPIC_API_KEY</code> eintragen und <code>npm run dev</code> neu starten.
+        <strong>Setup:</strong> <code>npm run setup</code> → <code>OPENAI_API_KEY</code> in <code>.env</code> → <code>npm run dev</code> neu starten.
       </div>
 
       <section class="ai-panel">
@@ -27,13 +24,19 @@
             <textarea
               id="ai-prompt"
               rows="2"
-              placeholder="z.B. schneller Trance-Beat mit hartem Kick und Saw-Lead in A-Moll, 140 BPM"
+              placeholder="z.B. schneller Trance-Beat, 140 BPM, A-Moll — oder „mehr Reverb“ mit Verfeinern-Modus"
             ></textarea>
             <div class="ai-actions">
-              <button type="button" id="voice-btn" class="voice-btn" title="Spracheingabe (Chrome)">🎤 Sprechen</button>
+              <button type="button" id="voice-btn" class="voice-btn" title="Browser-Sprache (Chrome)">🎤 Sprechen</button>
+              <button type="button" id="whisper-btn" class="voice-btn" title="OpenAI Whisper (bessere Qualität)">🎙 Whisper</button>
               <button type="submit" id="ai-submit">Generieren &amp; Abspielen</button>
+              <button type="button" id="save-pattern-btn" class="secondary-btn" disabled>Pattern speichern</button>
             </div>
           </div>
+          <label class="refine-toggle">
+            <input type="checkbox" id="refine-mode" />
+            Aktuelles Pattern verfeinern (z. B. „mehr Reverb“, „nur Drums“)
+          </label>
         </form>
         <p id="voice-status" class="voice-status" aria-live="polite"></p>
         <div id="ai-chips" class="chips"></div>
@@ -41,22 +44,41 @@
       </section>
 
       <label class="pattern-picker">
-        Starter-Pattern:
+        Pattern:
         <select id="pattern-picker"></select>
       </label>
 
-      <details class="advanced-panel">
-        <summary>Erweitert: Mikrofon, MIDI &amp; Samples</summary>
+      <details class="advanced-panel" open>
+        <summary>MIDI, Mikrofon &amp; Samples</summary>
+
+        <div class="advanced-block">
+          <strong>MIDI-Outputs</strong>
+          <button type="button" id="midi-refresh" class="secondary-btn small">Aktualisieren</button>
+          <div id="midi-devices" class="midi-devices">Lade MIDI-Geräte…</div>
+        </div>
+
+        <div class="advanced-block">
+          <strong>Mikrofon</strong>
+          <div class="mic-controls">
+            <label class="mic-toggle">
+              <input type="checkbox" id="mic-toggle" />
+              Aktiv
+            </label>
+            <select id="mic-mode">
+              <option value="monitor">Monitor (Pass-through)</option>
+              <option value="autotune">Autotune (chromatisch)</option>
+              <option value="keysync">Autotune + Key-Sync (aus KI-Pattern)</option>
+            </select>
+          </div>
+          <p id="mic-key-label" class="mic-key-label"></p>
+          <p id="mic-status" class="mic-status" aria-live="polite"></p>
+        </div>
+
         <ul class="advanced-list">
-          <li><strong>MIDI → Ableton:</strong> Pattern <code>04-midi-ableton</code> — siehe <code>docs/MIDI-MAC.md</code></li>
-          <li><strong>Eigene Samples:</strong> <code>npm run dev:full</code> — Dateien in <code>samples/</code></li>
-          <li><strong>SuperDirt/OSC:</strong> <code>docs/SUPERCOLLIDER.md</code></li>
+          <li><strong>Samples:</strong> <code>npm run dev:full</code> — WAVs in <code>samples/</code></li>
+          <li><strong>SuperDirt:</strong> <code>docs/SUPERCOLLIDER.md</code> · <code>npm run osc:check</code></li>
+          <li><strong>Setup prüfen:</strong> <code>npm run check</code></li>
         </ul>
-        <label class="mic-toggle">
-          <input type="checkbox" id="mic-toggle" />
-          Mikrofon-Monitor (Vorbereitung für Autotune)
-        </label>
-        <p id="mic-status" class="mic-status" aria-live="polite"></p>
       </details>
     </header>
     <main>
