@@ -1,4 +1,5 @@
 import { initHydra, clearHydra } from '@strudel/hydra';
+import { session } from './session.js';
 
 let hydraReady = false;
 
@@ -42,8 +43,7 @@ export function initHydraPanel() {
   });
 
   genBtn?.addEventListener('click', async () => {
-    const prompt = promptEl?.value?.trim();
-    if (!prompt) return;
+    const prompt = promptEl?.value?.trim() || buildVisualPromptFromSession();
     if (status) status.textContent = 'KI generiert Visuals…';
     try {
       const res = await fetch('/api/hydra', {
@@ -54,7 +54,7 @@ export function initHydraPanel() {
       const data = await res.json();
       if (!data.ok) throw new Error(data.error);
       if (codeEl) codeEl.value = data.code;
-      if (!hydraReady) await startBtn?.click();
+      if (!hydraReady) startBtn?.click();
       else runHydraCode(data.code, status);
       if (status) {
         status.textContent = `Visuals — ${data.provider}/${data.model}`;
@@ -67,12 +67,24 @@ export function initHydraPanel() {
       }
     }
   });
+
+  window.addEventListener('strudel-live:pattern', (e) => {
+    const auto = document.getElementById('hydra-auto');
+    if (!auto?.checked || !hydraReady) return;
+    const hint = buildVisualPromptFromSession(e.detail);
+    if (promptEl && !promptEl.value.trim()) promptEl.value = hint;
+  });
+}
+
+function buildVisualPromptFromSession(detail = {}) {
+  const key = detail?.scale?.label || session.lastScale?.label || '';
+  const src = detail?.source || 'live';
+  return `audio-reactive visuals for ${src} set${key ? ` in ${key}` : ''}, techno energy, dark colors`;
 }
 
 function runHydraCode(code, status) {
   if (!code?.trim()) return;
   try {
-    // Hydra chains are evaluated in global scope after initHydra
     // eslint-disable-next-line no-eval
     eval(code.trim());
     if (status) status.dataset.state = 'ok';

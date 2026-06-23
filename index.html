@@ -37,6 +37,10 @@
             <input type="checkbox" id="refine-mode" />
             Aktuelles Pattern verfeinern
           </label>
+          <label class="refine-toggle">
+            <input type="checkbox" id="dj-context-mode" />
+            DJ-Track-Kontext (BPM/Stems aus Manifest)
+          </label>
         </form>
         <p id="voice-status" class="voice-status" aria-live="polite"></p>
         <div id="ai-chips" class="chips"></div>
@@ -108,6 +112,10 @@
           <button type="button" id="hydra-generate" class="secondary-btn small">KI-Visuals</button>
           <textarea id="hydra-code" class="code-preview" rows="3">osc(10,0.1).color(1,0.2,0.5).out()</textarea>
           <button type="button" id="hydra-run" class="secondary-btn small">Visuals ausführen</button>
+          <label class="refine-toggle">
+            <input type="checkbox" id="hydra-auto" />
+            Visual-Prompt bei neuem Pattern vorschlagen
+          </label>
           <p id="hydra-status" class="mic-status"></p>
           <div id="hydra-canvas-wrap" class="hydra-wrap" hidden>Hydra läuft — Canvas oben im Draw-Layer</div>
         </div>

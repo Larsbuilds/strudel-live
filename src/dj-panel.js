@@ -1,8 +1,6 @@
-import { applyCodeToRepl } from './ai-panel.js';
-import { setLastPattern } from './session.js';
-import { parseScaleFromCode } from './scale-utils.js';
+import { setSelectedTrack } from './session.js';
 
-export async function initDjPanel({ editor }) {
+export async function initDjPanel({ hub }) {
   const trackSelect = document.getElementById('dj-track-select');
   const trackMeta = document.getElementById('dj-track-meta');
   const refreshBtn = document.getElementById('dj-manifest-refresh');
@@ -11,7 +9,6 @@ export async function initDjPanel({ editor }) {
   const status = document.getElementById('dj-status');
 
   let manifest = { tracks: {} };
-  let selectedTrack = null;
 
   async function loadManifest() {
     try {
@@ -36,19 +33,15 @@ export async function initDjPanel({ editor }) {
       trackSelect.append(opt);
     }
     if (ids.length === 0 && trackMeta) {
-      trackMeta.textContent =
-        'Keine Tracks — npm run sc:fetch -- --url "https://soundcloud.com/..."';
+      trackMeta.textContent = 'Keine Tracks — npm run sc:fetch -- --url "…"';
     }
   }
 
   trackSelect?.addEventListener('change', () => {
-    selectedTrack = manifest.tracks[trackSelect.value] || null;
+    const track = manifest.tracks[trackSelect.value] || null;
+    setSelectedTrack(track);
     if (!trackMeta) return;
-    if (!selectedTrack) {
-      trackMeta.textContent = '';
-      return;
-    }
-    trackMeta.textContent = JSON.stringify(selectedTrack, null, 2);
+    trackMeta.textContent = track ? JSON.stringify(track, null, 2) : '';
   });
 
   refreshBtn?.addEventListener('click', loadManifest);
@@ -56,6 +49,7 @@ export async function initDjPanel({ editor }) {
   transitionForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const prompt = toPrompt?.value?.trim();
+    const selectedTrack = manifest.tracks[trackSelect?.value];
     if (!prompt) return;
     if (!selectedTrack) {
       if (status) status.textContent = 'Erst einen Track aus dem Manifest wählen.';
@@ -71,22 +65,21 @@ export async function initDjPanel({ editor }) {
       const res = await fetch('/api/transition', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fromTrack: selectedTrack,
-          toPrompt: prompt,
-          bars: 16,
-        }),
+        body: JSON.stringify({ fromTrack: selectedTrack, toPrompt: prompt, bars: 16 }),
       });
       const data = await res.json();
       if (!data.ok) throw new Error(data.error);
 
-      const scale = data.scale ?? parseScaleFromCode(data.code);
-      setLastPattern({ code: data.code, prompt, scale });
-      await applyCodeToRepl(editor, data.code);
+      await hub.applyPattern(data.code, {
+        prompt,
+        scale: data.scale,
+        source: 'transition',
+      });
       if (status) {
         status.dataset.state = 'ok';
         status.textContent = `Übergang läuft — ${data.provider}/${data.model}`;
       }
+      document.getElementById('save-pattern-btn').disabled = false;
     } catch (err) {
       if (status) {
         status.dataset.state = 'error';

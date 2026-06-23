@@ -66,7 +66,7 @@ npm run dev          # Entwicklung (Port 5173)
 npm run dev:full     # + Sample-Server (5432)
 npm run build        # Production-Build
 npm start            # Production (API + Static)
-npm run check        # Setup validieren
+npm run workflow:check  # Integrationstest (APIs + Tools)
 npm run voice        # CLI: Text/Audio → Pattern
 npm run sc:fetch     # SoundCloud/URL → samples/
 npm run dj:analyze   # BPM-Analyse

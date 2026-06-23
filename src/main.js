@@ -1,6 +1,5 @@
 import '@strudel/repl';
-import { patterns } from './patterns.js';
-import { initAiPanel, applyCodeToRepl } from './ai-panel.js';
+import { initAiPanel } from './ai-panel.js';
 import { initMicPanel } from './mic-panel.js';
 import { initMidiPanel } from './midi-panel.js';
 import { initVoiceInput } from './voice-input.js';
@@ -10,45 +9,21 @@ import { initDjController } from './dj-controller.js';
 import { initWamHost } from './wam-host.js';
 import { initHydraPanel } from './hydra-panel.js';
 import { initSynthDefPanel } from './synthdef-panel.js';
-import { setLastPattern } from './session.js';
-import { parseScaleFromCode } from './scale-utils.js';
+import { createWorkflowHub } from './workflow-hub.js';
+import { initPatternPicker } from './pattern-picker.js';
 
 const editor = document.getElementById('repl');
 const picker = document.getElementById('pattern-picker');
 const promptInput = document.getElementById('ai-prompt');
 
-function refreshPatternPicker() {
-  const current = picker.value;
-  picker.innerHTML = '';
-  for (const [name] of Object.entries(patterns)) {
-    const option = document.createElement('option');
-    option.value = name;
-    option.textContent = name;
-    picker.append(option);
-  }
-  if (patterns[current]) picker.value = current;
-}
+const hub = createWorkflowHub(editor);
 
-refreshPatternPicker();
-
-async function loadPattern(name) {
-  const code = patterns[name];
-  if (!code) return;
-  const scale = parseScaleFromCode(code);
-  setLastPattern({ code, scale });
-  await applyCodeToRepl(editor, code);
-}
-
-picker.addEventListener('change', () => loadPattern(picker.value));
-
-initAiPanel({
-  editor,
-  onCode: async (code, meta = {}) => {
-    const scale = meta.scale ?? parseScaleFromCode(code);
-    setLastPattern({ code, prompt: meta.prompt, scale });
-    await applyCodeToRepl(editor, code);
-  },
+const { refresh: refreshPatterns } = initPatternPicker({
+  picker,
+  onSelect: (code, meta) => hub.applyPattern(code, meta),
 });
+
+initAiPanel({ editor, hub });
 
 initVoiceInput({ promptInput });
 
@@ -63,10 +38,19 @@ initWhisperRecorder({
 
 initMicPanel();
 initMidiPanel();
-initDjPanel({ editor });
+initDjPanel({ hub });
 initDjController();
 initWamHost();
 initHydraPanel();
 initSynthDefPanel();
 
-loadPattern(Object.keys(patterns)[0] || '');
+window.addEventListener('strudel-live:patterns-saved', () => refreshPatterns());
+
+(async () => {
+  const patterns = await refreshPatterns();
+  const first = Object.keys(patterns)[0];
+  if (first) {
+    picker.value = first;
+    await hub.applyPattern(patterns[first], { source: 'init', name: first });
+  }
+})();

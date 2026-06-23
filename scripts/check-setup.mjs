@@ -1,36 +1,38 @@
 #!/usr/bin/env node
-import { existsSync } from 'node:fs';
 import { config } from 'dotenv';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { getHealth } from '../server/health.mjs';
+import { listPatternNames } from '../server/patterns-list.mjs';
 
 config();
 
 const checks = [];
-
-function ok(msg) {
-  checks.push({ ok: true, msg });
-}
-function warn(msg) {
-  checks.push({ ok: false, msg });
-}
+const ok = (m) => checks.push({ ok: true, msg: m });
+const warn = (m) => checks.push({ ok: false, msg: m });
 
 const nodeMajor = Number(process.version.slice(1).split('.')[0]);
 nodeMajor >= 18 ? ok(`Node.js ${process.version}`) : warn(`Node.js ${process.version} — 18+ empfohlen`);
 
 existsSync('.env') ? ok('.env vorhanden') : warn('.env fehlt — npm run setup');
 
-const openai = Boolean(process.env.OPENAI_API_KEY);
-const anthropic = Boolean(process.env.ANTHROPIC_API_KEY);
-openai ? ok('OPENAI_API_KEY gesetzt (KI + Whisper)') : warn('OPENAI_API_KEY fehlt');
-anthropic ? ok('ANTHROPIC_API_KEY gesetzt') : warn('ANTHROPIC_API_KEY fehlt (optional)');
+const env = process.env;
+const health = getHealth(env);
 
-existsSync('node_modules') ? ok('node_modules installiert') : warn('npm install ausführen');
-existsSync('samples') ? ok('samples/ Ordner') : warn('samples/ fehlt');
+env.OPENAI_API_KEY ? ok('OPENAI_API_KEY (KI + Whisper)') : warn('OPENAI_API_KEY fehlt');
+env.ANTHROPIC_API_KEY ? ok('ANTHROPIC_API_KEY') : warn('ANTHROPIC_API_KEY optional');
+
+existsSync('node_modules') ? ok('node_modules') : warn('npm install');
+listPatternNames().length > 0 ? ok(`${listPatternNames().length} Patterns`) : warn('Keine Patterns');
+
+health.tools.ffmpeg ? ok('ffmpeg') : warn('ffmpeg fehlt — brew install ffmpeg');
+health.tools.demucs ? ok('demucs (Stems)') : warn('demucs optional — pip install demucs');
+health.tools.sclang ? ok('SuperCollider sclang') : warn('sclang optional — für SynthDefs');
 
 console.log('\nstrudel-live Setup-Check\n');
-for (const c of checks) {
-  console.log(`${c.ok ? '✓' : '○'} ${c.msg}`);
-}
+for (const c of checks) console.log(`${c.ok ? '✓' : '○'} ${c.msg}`);
 
-const ready = openai || anthropic;
-console.log(ready ? '\n→ Bereit: npm run dev' : '\n→ npm run setup && API-Key eintragen\n');
+const ready = Boolean(env.OPENAI_API_KEY || env.ANTHROPIC_API_KEY);
+console.log(ready ? '\n→ npm run dev:full  dann  npm run workflow:check\n' : '\n→ npm run setup\n');
 process.exit(ready ? 0 : 1);

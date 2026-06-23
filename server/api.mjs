@@ -8,6 +8,8 @@ import { generateTransition } from './transition.mjs';
 import { generateSynthDef } from './synthdef.mjs';
 import { generateHydra } from './hydra.mjs';
 import { sendSynthDefToSuperCollider, checkSuperCollider } from './sc-send.mjs';
+import { loadAllPatterns } from './patterns-list.mjs';
+import { getHealth } from './health.mjs';
 
 function getEnv(mode = 'development') {
   return loadEnv(mode, process.cwd(), '');
@@ -15,6 +17,16 @@ function getEnv(mode = 'development') {
 
 export async function handleApiRequest(req, res, env) {
   const url = req.url?.split('?')[0];
+
+  if (url === '/api/health' && req.method === 'GET') {
+    sendJson(res, 200, getHealth(env));
+    return true;
+  }
+
+  if (url === '/api/patterns' && req.method === 'GET') {
+    sendJson(res, 200, { ok: true, patterns: loadAllPatterns() });
+    return true;
+  }
 
   if (url === '/api/status' && req.method === 'GET') {
     sendJson(res, 200, {
@@ -31,8 +43,8 @@ export async function handleApiRequest(req, res, env) {
 
   if (url === '/api/generate' && req.method === 'POST') {
     try {
-      const { prompt, previousCode } = await readJsonBody(req);
-      const result = await generateStrudel(prompt, env, { previousCode });
+      const { prompt, previousCode, trackContext } = await readJsonBody(req);
+      const result = await generateStrudel(prompt, env, { previousCode, trackContext });
       sendJson(res, 200, { ok: true, ...result });
     } catch (err) {
       sendJson(res, err.status || 500, { ok: false, error: err.message });

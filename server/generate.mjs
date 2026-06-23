@@ -19,12 +19,20 @@ function getProvider(env) {
   return null;
 }
 
-function buildUserMessage(prompt, previousCode) {
-  if (!previousCode?.trim()) return prompt;
-  return `Current Strudel pattern (modify it, keep what works):\n\n${previousCode.trim()}\n\nModification request: ${prompt}`;
+function buildUserMessage(prompt, previousCode, trackContext) {
+  let msg = '';
+  if (trackContext?.bpm || trackContext?.id) {
+    msg += `DJ context — loaded track "${trackContext.name || trackContext.id}"`;
+    if (trackContext.bpm) msg += ` at ${trackContext.bpm} BPM`;
+    if (trackContext.key) msg += `, key: ${trackContext.key}`;
+    if (trackContext.stems?.length) msg += `, stems available via samples("http://localhost:5432")`;
+    msg += '.\n\n';
+  }
+  if (!previousCode?.trim()) return msg + prompt;
+  return `${msg}Current Strudel pattern (modify it, keep what works):\n\n${previousCode.trim()}\n\nModification request: ${prompt}`;
 }
 
-async function generateWithOpenAI(prompt, env, previousCode) {
+async function generateWithOpenAI(prompt, env, previousCode, trackContext) {
   const client = new OpenAI({ apiKey: env.OPENAI_API_KEY });
   const model = env.OPENAI_MODEL || 'gpt-4o-mini';
   const response = await client.chat.completions.create({
@@ -32,28 +40,28 @@ async function generateWithOpenAI(prompt, env, previousCode) {
     temperature: 0.7,
     messages: [
       { role: 'system', content: SYSTEM_PROMPT },
-      { role: 'user', content: buildUserMessage(prompt, previousCode) },
+      { role: 'user', content: buildUserMessage(prompt, previousCode, trackContext) },
     ],
   });
   const code = stripCodeFences(response.choices[0].message.content);
   return { code, model, provider: 'openai' };
 }
 
-async function generateWithAnthropic(prompt, env, previousCode) {
+async function generateWithAnthropic(prompt, env, previousCode, trackContext) {
   const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
   const model = env.ANTHROPIC_MODEL || 'claude-sonnet-4-20250514';
   const response = await client.messages.create({
     model,
     max_tokens: 1024,
     system: SYSTEM_PROMPT,
-    messages: [{ role: 'user', content: buildUserMessage(prompt, previousCode) }],
+    messages: [{ role: 'user', content: buildUserMessage(prompt, previousCode, trackContext) }],
   });
   const text = response.content.find((b) => b.type === 'text')?.text ?? '';
   const code = stripCodeFences(text);
   return { code, model, provider: 'anthropic' };
 }
 
-export async function generateStrudel(prompt, env, { previousCode } = {}) {
+export async function generateStrudel(prompt, env, { previousCode, trackContext } = {}) {
   const trimmed = prompt?.trim();
   if (!trimmed) {
     throw Object.assign(new Error('Prompt is empty'), { status: 400 });
@@ -71,8 +79,8 @@ export async function generateStrudel(prompt, env, { previousCode } = {}) {
 
   const result =
     provider === 'openai'
-      ? await generateWithOpenAI(trimmed, env, previousCode)
-      : await generateWithAnthropic(trimmed, env, previousCode);
+      ? await generateWithOpenAI(trimmed, env, previousCode, trackContext)
+      : await generateWithAnthropic(trimmed, env, previousCode, trackContext);
 
   const scale = parseScaleFromCode(result.code);
   return { ...result, scale };

@@ -1,6 +1,6 @@
 {
   "name": "strudel-live",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "private": true,
   "description": "Collaborative AI-driven Strudel live-coding — text, voice, MIDI, autotune",
   "type": "module",
@@ -23,7 +23,8 @@
     "dj:deps": "bash scripts/install-dj-deps.sh",
     "synthdef": "node scripts/synthdef-cli.mjs",
     "osc:synthdef": "node scripts/synthdef-cli.mjs",
-    "rave:help": "bash scripts/rave-help.sh"
+    "rave:help": "bash scripts/rave-help.sh",
+    "workflow:check": "node scripts/workflow-check.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
