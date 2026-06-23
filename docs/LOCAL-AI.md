@@ -6,9 +6,57 @@ strudel-live kann **ohne Cloud-API** Strudel-Code generieren — über [Ollama](
 
 | Modell | Was | Empfehlung |
 |--------|-----|------------|
-| **strudel-live** (Default) | Qwen2.5-Coder 0.5B + Strudel-Modelfile (temp 0.3) | Schnell, Tool-Orchestrierung |
-| **[Strudel Coder 0.5B](https://huggingface.co/amhinson/strudel-coder-0.5B)** | Fine-tune auf ~2000 Strudel-Beispielen (Hugging Face) | Bessere Roh-Strudel-Ausgabe; optional via `npm run ollama:setup -- --strudel-coder` |
+| **strudel-live** (Default) | Qwen2.5-Coder 0.5B + Strudel-Modelfile (temp 0.3) | **Orchestrator** — JSON tools, refine |
+| **[Strudel Coder 0.5B](https://huggingface.co/amhinson/strudel-coder-0.5B)** | Fine-tune auf ~2000 Strudel-Beispielen | **Syntax agent** — dynamischer Strudel-Code |
 | GPT-4o-mini (Cloud) | OpenAI API | Ignite JSON, komplexere Patterns |
+
+## Dual-LLM (empfohlen lokal)
+
+Zwei spezialisierte Modelle statt einem Kompromiss:
+
+```
+Natural language
+  → Semantic stack (intents + catalog RAG)     ← kein LLM, sync
+  → LLM 1: strudel-live (Orchestrator)         ← Tools, refine, BPM
+  → LLM 2: Strudel Coder (Syntax agent)        ← Strudel JS, neue Patterns
+  → validate() + evaluate()
+```
+
+| Aufgabe | Modell | Warum |
+|---------|--------|-------|
+| „mehr bass“, „weniger hats“ | Orchestrator + Tools | JSON/tools — kein Syntax-Raten |
+| Neues Pattern („liquid dnb 174“) | **Strudel Coder** | Fine-tune auf Strudel — variabler Code |
+| Kreative Verfeinerung | Orchestrator → Strudel Coder | Planner scheitert → Syntax-Nachzug |
+
+```bash
+npm run ollama:setup -- --strudel-coder
+```
+
+`.env`:
+```bash
+AI_PROVIDER=ollama
+OLLAMA_MODEL=strudel-live
+OLLAMA_SYNTAX_MODEL=strudel-coder
+OLLAMA_DUAL_LLM=true   # default an bei strudel-live alias
+```
+
+`strudel-coder` ist ein Ollama-Alias (Qwen-Base + Strudel-Syntax-Prompt). Das HF-Fine-tune [amhinson/strudel-coder-0.5B](https://huggingface.co/amhinson/strudel-coder-0.5B) kann per GGUF-Import nachgerüstet werden — siehe unten.
+
+`OLLAMA_DUAL_LLM=false` — nur ein Modell (wie bisher).
+
+### Fine-tune importieren (optional)
+
+Das HF-Repo ist Safetensors, kein direktes `ollama pull`. Wenn du eine GGUF-Datei hast:
+
+```dockerfile
+# Modelfile
+FROM ./strudel-coder-0.5B.Q4_K_M.gguf
+PARAMETER temperature 0.55
+```
+
+```bash
+ollama create strudel-coder -f Modelfile
+```
 
 ## Architektur: Semantic → Catalog → Tools
 

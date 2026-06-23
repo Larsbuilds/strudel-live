@@ -4,7 +4,7 @@ import { SYSTEM_PROMPT } from './system-prompt.mjs';
 import { parseScaleFromCode } from './parse-scale.mjs';
 import { applyMusicConstraints } from './music-constraints.mjs';
 import { guardStrudelCode } from './code-validate.mjs';
-import { ollamaChat, STRUDEL_CODER_SYSTEM, buildOllamaMessages } from './ollama.mjs';
+import { ollamaChat, ORCHESTRATOR_SYSTEM, buildOllamaMessages, isDualLlmEnabled, getSyntaxModel } from './ollama.mjs';
 import { isWeakStrudel, resolvePresetForPrompt } from './pattern-presets.mjs';
 import { repairStrudelCode } from './llm-repair.mjs';
 import { mergeLayersIntoPattern, codesTooSimilar } from './refine-merge.mjs';
@@ -12,6 +12,10 @@ import { removeLayersFromPattern } from './layer-removal.mjs';
 import { formatIntentHint, intentSummary } from './intent-db.mjs';
 import { searchCatalogLexical as retrieveCatalogContext } from './semantic-retrieval.mjs';
 import { planAgentActions, extractToolsFromLlm, runToolCalls, TOOL_SCHEMA, looksLikeStrudelMusic } from './strudel-agent.mjs';
+import {
+  generateWithSyntaxAgent,
+  shouldUseSyntaxAgent,
+} from './strudel-syntax-agent.mjs';
 
 const SAFE_FALLBACK_PATTERN = 'setcpm(30)\nstack(s("bd*4"), s("~ sd"))';
 
@@ -120,7 +124,7 @@ async function generateWithAnthropic(prompt, env, previousCode, trackContext, ag
 async function generateWithOllama(prompt, env, previousCode, trackContext, agentPlan) {
   const user = buildUserMessage(prompt, previousCode, trackContext, agentPlan);
   const { text, model } = await ollamaChat(
-    buildOllamaMessages(STRUDEL_CODER_SYSTEM, user),
+    buildOllamaMessages(ORCHESTRATOR_SYSTEM, user),
     env,
     { maxTokens: 1024 },
   );
@@ -132,6 +136,59 @@ async function generateWithOllama(prompt, env, previousCode, trackContext, agent
     return { code: resolved.code || SAFE_FALLBACK_PATTERN, model, provider: 'ollama', raw: text, usedAgentFallback: resolved.source === 'agent-fallback' };
   }
   return { code: resolved.code, model, provider: 'ollama', raw: text };
+}
+
+async function generateOllamaPipeline(prompt, env, previousCode, trackContext, agentPlan, isRefine) {
+  const dual = isDualLlmEnabled(env) && getSyntaxModel(env);
+
+  const trySyntax = async (pipeline) => {
+    try {
+      const syntax = await generateWithSyntaxAgent(prompt, env, {
+        agentPlan,
+        previousCode,
+        trackContext,
+      });
+      const resolved = resolveLlmOutput(syntax.raw, { previousCode, prompt, agentPlan });
+      if (resolved.code && looksLikeStrudelMusic(resolved.code)) {
+        return {
+          ...syntax,
+          code: resolved.code,
+          provider: 'ollama-dual',
+          pipeline,
+          syntaxModel: syntax.model,
+        };
+      }
+    } catch {
+      /* syntax model missing or timeout — fall through */
+    }
+    return null;
+  };
+
+  // New patterns: semantic stack → Strudel Coder (skip orchestrator)
+  if (dual && !isRefine) {
+    const syntaxResult = await trySyntax('syntax-only');
+    if (syntaxResult) return { ...syntaxResult, orchestratorModel: null };
+  }
+
+  let result = await generateWithOllama(prompt, env, previousCode, trackContext, agentPlan);
+
+  if (dual && shouldUseSyntaxAgent(env, { isRefine, agentPlan, orchestratorResult: result })) {
+    const syntaxResult = await trySyntax(isRefine ? 'orchestrator+syntax' : 'syntax-fallback');
+    if (syntaxResult) {
+      result = {
+        ...result,
+        code: syntaxResult.code,
+        raw: syntaxResult.raw,
+        provider: 'ollama-dual',
+        pipeline: syntaxResult.pipeline,
+        orchestratorModel: result.model,
+        syntaxModel: syntaxResult.syntaxModel,
+        syntaxAgent: true,
+      };
+    }
+  }
+
+  return result;
 }
 
 export async function generateStrudel(prompt, env, { previousCode, trackContext } = {}) {
@@ -155,7 +212,7 @@ export async function generateStrudel(prompt, env, { previousCode, trackContext 
 
   const result =
     provider === 'ollama'
-      ? await generateWithOllama(trimmed, env, previousCode, trackContext, agentPlan)
+      ? await generateOllamaPipeline(trimmed, env, previousCode, trackContext, agentPlan, isRefine)
       : provider === 'openai'
         ? await generateWithOpenAI(trimmed, env, previousCode, trackContext, agentPlan)
         : await generateWithAnthropic(trimmed, env, previousCode, trackContext, agentPlan);
@@ -242,6 +299,9 @@ export async function generateStrudel(prompt, env, { previousCode, trackContext 
       layersRemoved: agentPlan.layersRemoved,
       source: agentPlan.source,
       rag: agentPlan.rag?.concepts,
+      pipeline: result.pipeline,
+      orchestratorModel: result.orchestratorModel,
+      syntaxModel: result.syntaxModel,
     },
     toolsUsed: result.toolsUsed,
   };

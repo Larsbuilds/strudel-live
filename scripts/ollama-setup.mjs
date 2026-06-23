@@ -12,6 +12,7 @@ import { checkOllama } from '../server/ollama.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const MODEFILE = join(__dirname, 'ollama-strudel.Modelfile');
+const SYNTAX_MODEFILE = join(__dirname, 'ollama-strudel-coder.Modelfile');
 const useStrudelCoder = process.argv.includes('--strudel-coder');
 
 function run(cmd, args) {
@@ -28,11 +29,23 @@ if (spawnSync('which', ['ollama'], { encoding: 'utf8' }).status !== 0) {
 }
 
 if (useStrudelCoder) {
-  console.log('Option: amhinson/strudel-coder (fine-tuned on 2000 Strudel examples)\n');
-  run('ollama', ['pull', 'hf.co/amhinson/strudel-coder-0.5B:Q4_K_M']);
-  console.log('\nIn .env:');
+  console.log('Dual-LLM setup: strudel-live (orchestrator) + strudel-coder (syntax)\n');
+  run('ollama', ['pull', 'qwen2.5-coder:0.5b']);
+  if (!existsSync(MODEFILE) || !existsSync(SYNTAX_MODEFILE)) {
+    console.error('✗ Modelfile fehlt');
+    process.exit(1);
+  }
+  run('ollama', ['create', 'strudel-live', '-f', MODEFILE]);
+  run('ollama', ['create', 'strudel-coder', '-f', SYNTAX_MODEFILE]);
+  console.log('\n✓ Dual-LLM bereit\n');
+  console.log('In .env:');
   console.log('  AI_PROVIDER=ollama');
-  console.log('  OLLAMA_MODEL=hf.co/amhinson/strudel-coder-0.5B:Q4_K_M\n');
+  console.log('  USE_OLLAMA=true');
+  console.log('  OLLAMA_MODEL=strudel-live');
+  console.log('  OLLAMA_SYNTAX_MODEL=strudel-coder');
+  console.log('  OLLAMA_DUAL_LLM=true\n');
+  console.log('Hinweis: strudel-coder nutzt Qwen-Base + Strudel-Prompt.');
+  console.log('Fine-tune (amhinson/strudel-coder-0.5B) braucht GGUF-Import — siehe docs/LOCAL-AI.md\n');
 } else {
   run('ollama', ['pull', 'qwen2.5-coder:0.5b']);
 
@@ -50,8 +63,8 @@ if (useStrudelCoder) {
     console.log('  AI_PROVIDER=ollama');
     console.log('  USE_OLLAMA=true');
     console.log('  OLLAMA_MODEL=strudel-live\n');
-    console.log('Semantic search (optional): ollama pull nomic-embed-text && npm run semantic:index\n');
-    console.log('Besseres Modell: npm run ollama:setup -- --strudel-coder\n');
+    console.log('Dual-LLM (recommended): npm run ollama:setup -- --strudel-coder');
+    console.log('  → orchestrator (tools) + Strudel Coder (syntax)\n');
     console.log('Dann: npm run dev:full\n');
   } else {
     console.warn('\n⚠ Ollama läuft, Modell-Check:', check);
