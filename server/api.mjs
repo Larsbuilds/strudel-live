@@ -5,6 +5,9 @@ import { transcribeAudio } from './transcribe.mjs';
 import { savePattern } from './save-pattern.mjs';
 import { loadManifest } from './manifest.mjs';
 import { generateTransition } from './transition.mjs';
+import { generateSynthDef } from './synthdef.mjs';
+import { generateHydra } from './hydra.mjs';
+import { sendSynthDefToSuperCollider, checkSuperCollider } from './sc-send.mjs';
 
 function getEnv(mode = 'development') {
   return loadEnv(mode, process.cwd(), '');
@@ -69,6 +72,40 @@ export async function handleApiRequest(req, res, env) {
     try {
       const { fromTrack, toPrompt, bars } = await readJsonBody(req);
       const result = await generateTransition({ fromTrack, toPrompt, bars }, env);
+      sendJson(res, 200, { ok: true, ...result });
+    } catch (err) {
+      sendJson(res, err.status || 500, { ok: false, error: err.message });
+    }
+    return true;
+  }
+
+  if (url === '/api/synthdef' && req.method === 'POST') {
+    try {
+      const { prompt } = await readJsonBody(req);
+      const result = await generateSynthDef(prompt, env);
+      sendJson(res, 200, { ok: true, ...result, scAvailable: checkSuperCollider() });
+    } catch (err) {
+      sendJson(res, err.status || 500, { ok: false, error: err.message });
+    }
+    return true;
+  }
+
+  if (url === '/api/synthdef/send' && req.method === 'POST') {
+    try {
+      const { code } = await readJsonBody(req);
+      if (!code?.trim()) throw Object.assign(new Error('No SynthDef code'), { status: 400 });
+      const result = sendSynthDefToSuperCollider(code);
+      sendJson(res, result.ok ? 200 : 500, { ok: result.ok, ...result });
+    } catch (err) {
+      sendJson(res, err.status || 500, { ok: false, error: err.message });
+    }
+    return true;
+  }
+
+  if (url === '/api/hydra' && req.method === 'POST') {
+    try {
+      const { prompt } = await readJsonBody(req);
+      const result = await generateHydra(prompt, env);
       sendJson(res, 200, { ok: true, ...result });
     } catch (err) {
       sendJson(res, err.status || 500, { ok: false, error: err.message });

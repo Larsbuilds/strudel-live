@@ -1,0 +1,11 @@
+// Strudel + Hydra — start Hydra im UI (Sound & Vision), dann:
+// Im Hydra-Panel: feedStrudel lädt Strudel-Audio als s0-Quelle
+
+setcpm(130)
+
+stack(
+  s("bd*4, ~ sd").gain(0.85).color('red'),
+  n("0 2 4 7").scale("A2 minor").s("sawtooth").gain(0.35).color('cyan')
+)
+
+// Hydra-Visuals parallel im Sound&Vision-Panel starten

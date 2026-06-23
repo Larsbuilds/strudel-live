@@ -79,6 +79,42 @@
         </div>
       </details>
 
+      <details class="sv-panel" open>
+        <summary>🎨 Sound &amp; Vision (v0.4)</summary>
+
+        <div class="advanced-block">
+          <strong>Phase 11 — WAM Synthesizer</strong>
+          <select id="wam-plugin-select"></select>
+          <button type="button" id="wam-load-btn" class="secondary-btn small">WAM laden</button>
+          <div id="wam-gui-container" class="wam-gui"></div>
+          <p id="wam-status" class="mic-status"></p>
+        </div>
+
+        <div class="advanced-block">
+          <strong>Phase 12 — SuperCollider SynthDef</strong>
+          <form id="synthdef-form">
+            <input id="synthdef-prompt" type="text" placeholder="z.B. dreckiger morphing cyberpunk bass" />
+            <button type="submit" class="secondary-btn small">SynthDef generieren</button>
+          </form>
+          <textarea id="synthdef-code" class="code-preview" rows="6" placeholder="SuperCollider Code…"></textarea>
+          <button type="button" id="synthdef-send" class="secondary-btn small" disabled>An SC senden</button>
+          <p id="synthdef-status" class="mic-status"></p>
+        </div>
+
+        <div class="advanced-block">
+          <strong>Phase 14 — Hydra Visuals</strong>
+          <button type="button" id="hydra-start" class="secondary-btn small">Hydra starten</button>
+          <input id="hydra-prompt" type="text" placeholder="z.B. pulsierende techno visuals, rot/schwarz" />
+          <button type="button" id="hydra-generate" class="secondary-btn small">KI-Visuals</button>
+          <textarea id="hydra-code" class="code-preview" rows="3">osc(10,0.1).color(1,0.2,0.5).out()</textarea>
+          <button type="button" id="hydra-run" class="secondary-btn small">Visuals ausführen</button>
+          <p id="hydra-status" class="mic-status"></p>
+          <div id="hydra-canvas-wrap" class="hydra-wrap" hidden>Hydra läuft — Canvas oben im Draw-Layer</div>
+        </div>
+
+        <p class="dj-hint">Phase 13 RAVE: <code>npm run rave:help</code> · <code>docs/SOUND-VISION.md</code></p>
+      </details>
+
       <details class="advanced-panel">
         <summary>MIDI, Mikrofon &amp; Samples</summary>
         <div class="advanced-block">

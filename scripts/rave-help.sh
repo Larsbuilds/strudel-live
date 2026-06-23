@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# RAVE neural audio — Phase 13 info
+echo "=== RAVE Neural Audio Synthesis (Phase 13) ==="
+echo ""
+echo "RAVE transforms audio in real-time (voice → synth timbres)."
+echo "Requires: Python 3.10+, CUDA GPU, ~2GB model weights."
+echo ""
+echo "Setup (external):"
+echo "  pip install rave-python torch torchaudio"
+echo "  # Download model from https://github.com/acids-ircam/RAVE"
+echo ""
+echo "Integration plan:"
+echo "  Mic → Autotune (Phase 6) → RAVE → Strudel mix"
+echo ""
+echo "Not yet wired into strudel-live UI — too heavy for browser v0.4.0."
+echo "See docs/SOUND-VISION.md"

@@ -291,6 +291,57 @@ header p {
   margin: 0 0.35rem;
 }
 
+.sv-panel {
+  margin-top: 0.75rem;
+  padding: 0.85rem;
+  background: #10141c;
+  border: 1px solid #28483a;
+  border-radius: 10px;
+}
+
+.sv-panel summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #8ed8b8;
+}
+
+.wam-gui {
+  margin-top: 0.5rem;
+  max-height: 12rem;
+  overflow: auto;
+}
+
+.code-preview {
+  width: 100%;
+  margin: 0.4rem 0;
+  background: #0f0f12;
+  color: #c8e8d8;
+  border: 1px solid #3a3a48;
+  border-radius: 6px;
+  padding: 0.5rem;
+  font: 0.8rem ui-monospace, monospace;
+  resize: vertical;
+}
+
+#synthdef-prompt,
+#hydra-prompt,
+#wam-plugin-select {
+  width: 100%;
+  max-width: 28rem;
+  margin: 0.35rem 0;
+  background: #0f0f12;
+  color: inherit;
+  border: 1px solid #3a3a48;
+  border-radius: 6px;
+  padding: 0.4rem 0.5rem;
+}
+
+.hydra-wrap {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: #7dcea0;
+}
+
 #ai-prompt {
   flex: 1;
   resize: vertical;

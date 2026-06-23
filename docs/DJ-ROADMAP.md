@@ -56,3 +56,9 @@ Gerät im DJ-Panel verbinden — Werte werden im UI angezeigt und können in Pat
 ## Rechtliches
 
 Nur Tracks nutzen, die ihr streamen/dj'en dürft. `sc:fetch` cached lokal für private Jams — keine Weiterverbreitung.
+
+---
+
+## v0.4.0 — Sound & Vision Update
+
+Siehe [SOUND-VISION.md](./SOUND-VISION.md) für Phasen 11–14 im Detail.

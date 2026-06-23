@@ -53,7 +53,17 @@
 - [ ] Ableton Link Clock-Sync (extern)
 - [ ] Essentia Cue-Points (erweiterbar)
 
-Siehe `docs/DJ-ROADMAP.md`
+## Phase 11–14 — Sound & Vision ✅ Basis (v0.4)
+
+- [x] WAM-Host (OB-Xd, Dexed, Meld) im Browser
+- [x] KI SuperCollider SynthDef (`/api/synthdef`, `npm run synthdef`)
+- [x] sclang-Bridge (`/api/synthdef/send`)
+- [x] Hydra-Panel + KI-Visuals (`/api/hydra`, `@strudel/hydra`)
+- [ ] Faust live WASM compile
+- [ ] RAVE neural audio (siehe `npm run rave:help`)
+- [ ] FFT pro Demucs-Stem → Hydra
+
+Siehe `docs/SOUND-VISION.md` · `docs/DJ-ROADMAP.md`
 
 - [x] `npm run build && npm start` — Express + API + Static
 

@@ -7,6 +7,9 @@ import { initVoiceInput } from './voice-input.js';
 import { initWhisperRecorder } from './whisper-recorder.js';
 import { initDjPanel } from './dj-panel.js';
 import { initDjController } from './dj-controller.js';
+import { initWamHost } from './wam-host.js';
+import { initHydraPanel } from './hydra-panel.js';
+import { initSynthDefPanel } from './synthdef-panel.js';
 import { setLastPattern } from './session.js';
 import { parseScaleFromCode } from './scale-utils.js';
 
@@ -62,5 +65,8 @@ initMicPanel();
 initMidiPanel();
 initDjPanel({ editor });
 initDjController();
+initWamHost();
+initHydraPanel();
+initSynthDefPanel();
 
 loadPattern(Object.keys(patterns)[0] || '');

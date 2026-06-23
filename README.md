@@ -44,6 +44,21 @@ Im Browser: **DJ-Modus** → Track wählen → **Übergang generieren**
 
 Details: [docs/DJ-ROADMAP.md](docs/DJ-ROADMAP.md)
 
+## Sound & Vision (v0.4)
+
+| Phase | Feature |
+|-------|---------|
+| 11 | WAM-Synths (OB-Xd, Dexed) im UI |
+| 12 | KI → SuperCollider SynthDef → sclang |
+| 14 | Hydra Visuals + KI-Shader |
+
+```bash
+npm run synthdef -- --prompt "cyberpunk morphing bass"
+npm run rave:help   # Phase 13 Info
+```
+
+[docs/SOUND-VISION.md](docs/SOUND-VISION.md)
+
 ## NPM-Skripte
 
 ```bash
