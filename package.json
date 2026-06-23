@@ -1,0 +1,22 @@
+{
+  "name": "strudel-live",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Collaborative live-coding jams with Strudel (TidalCycles in the browser)",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "patterns": "node scripts/list-patterns.mjs"
+  },
+  "dependencies": {
+    "@strudel/repl": "^1.3.0"
+  },
+  "devDependencies": {
+    "vite": "^6.3.5"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

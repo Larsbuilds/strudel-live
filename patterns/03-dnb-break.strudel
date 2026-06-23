@@ -1,0 +1,12 @@
+// DNB-Break — schnelleres Tempo, synkopierter Kick
+setcpm(174)
+
+stack(
+  s("bd(3,8,2)").gain(0.9),
+  s("~ cp sd cp").gain(0.75),
+  s("hh*16").gain(0.25).speed(perlin.range(0.9, 1.1)),
+  n("0 3 7").scale("D2 minor")
+    .s("square")
+    .gain(0.2)
+    .lpf(1200)
+)

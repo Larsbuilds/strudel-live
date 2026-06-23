@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Strudel Live</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Strudel Live</h1>
+      <p>
+        Live-coding mit Freunden — Pattern aus <code>patterns/</code> laden oder direkt im Editor spielen.
+        <kbd>Ctrl</kbd>+<kbd>Enter</kbd> zum Ausführen.
+      </p>
+      <label>
+        Starter-Pattern:
+        <select id="pattern-picker"></select>
+      </label>
+    </header>
+    <main>
+      <strudel-editor id="repl"></strudel-editor>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

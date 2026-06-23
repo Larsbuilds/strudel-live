@@ -1,0 +1,5 @@
+// Einstieg: Kick + Snare — Switch-Angel-ähnlicher 4/4-Grundbeat
+setcpm(140)
+
+s("bd ~ bd ~, ~ sd ~ sd")
+  .gain(0.9)

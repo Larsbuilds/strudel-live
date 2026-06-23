@@ -1,0 +1,13 @@
+// Trance-Lead mit Saw und Filter — inspiriert von Live-Coding-Sessions
+setcpm(138)
+
+stack(
+  s("bd*4").gain(0.85),
+  s("~ sd").gain(0.7),
+  n("<0 2 4 7>*2").scale("A2 minor")
+    .s("sawtooth")
+    .gain(0.35)
+    .cutoff(sine.range(400, 4000).slow(8))
+    .room(0.4)
+    .delay(0.25)
+)
