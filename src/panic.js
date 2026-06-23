@@ -1,22 +1,23 @@
-import { getAudioContext } from '@strudel/webaudio';
-import { silence } from '@strudel/core';
 import { waitForRepl } from './ai-panel.js';
 import { getReplScheduler } from './strudel-quantize.js';
 import { resetWamAutomation } from './wam-automation.js';
 import { stopStemAnalysis } from './stem-analyser.js';
 import { stopRaveClient } from './rave-client.js';
 import { unloadFaustNode } from './faust-host.js';
-import { blackoutHydra } from './hydra-panel.js';
 import { getWamAudioContext } from './wam-host.js';
 import { getContext } from 'tone';
 
-function collectAudioContexts() {
+async function collectAudioContexts(editor) {
   const ctx = new Set();
   try {
-    const strudel = getAudioContext?.();
+    const mirror = await waitForRepl(editor);
+    const strudel =
+      mirror?.repl?.audio?.audioContext ||
+      mirror?.repl?.scheduler?.audioContext ||
+      mirror?.audioContext;
     if (strudel) ctx.add(strudel);
   } catch {
-    /* not started */
+    /* repl not ready */
   }
   try {
     const wam = getWamAudioContext();
@@ -34,7 +35,7 @@ function collectAudioContexts() {
 }
 
 export async function executePanic(editor) {
-  const contexts = collectAudioContexts();
+  const contexts = await collectAudioContexts(editor);
 
   await Promise.all(contexts.map((c) => c.suspend?.()));
 
@@ -43,11 +44,10 @@ export async function executePanic(editor) {
     mirror?.repl?.stop?.();
     const scheduler = getReplScheduler(mirror);
     scheduler?.stop?.();
-    if (mirror?.repl?.setPattern) {
-      await mirror.repl.setPattern(silence, false);
-    }
     if (mirror?.setCode) {
       mirror.setCode('// PANIC — silence\nsilence');
+    } else if (mirror?.repl?.evaluate) {
+      await mirror.repl.evaluate('silence', false);
     }
   } catch {
     /* repl not ready */
@@ -57,6 +57,7 @@ export async function executePanic(editor) {
   stopStemAnalysis();
   stopRaveClient();
   unloadFaustNode();
+  const { blackoutHydra } = await import('./hydra-panel.js');
   blackoutHydra();
 
   const micToggle = document.getElementById('mic-toggle');
@@ -74,8 +75,11 @@ export async function executePanic(editor) {
 export function initPanicButton(editor) {
   const btn = document.getElementById('panic-btn');
   const status = document.getElementById('panic-status');
+  let running = false;
 
   async function runPanic(source = 'ui') {
+    if (running) return;
+    running = true;
     if (btn) btn.disabled = true;
     if (status) status.textContent = 'NOT-AUS…';
     try {
@@ -91,6 +95,7 @@ export function initPanicButton(editor) {
       }
     } finally {
       if (btn) btn.disabled = false;
+      running = false;
     }
   }
 
@@ -108,15 +113,19 @@ export function initPanicButton(editor) {
     try {
       const res = await fetch('/api/panic');
       const data = await res.json();
-      if (data.at && data.at > lastRemote) {
-        lastRemote = data.at;
-        if (Date.now() - data.at < 3000) runPanic('remote');
-      }
+      if (!data.at || data.at <= lastRemote) return;
+      lastRemote = data.at;
+      if (Date.now() - data.at < 3000) runPanic('remote');
     } catch {
       /* offline */
     }
   };
-  setInterval(pollRemote, 400);
+  const pollId = setInterval(pollRemote, 3000);
 
-  return { runPanic };
+  return {
+    runPanic,
+    dispose() {
+      clearInterval(pollId);
+    },
+  };
 }

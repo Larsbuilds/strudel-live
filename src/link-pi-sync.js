@@ -10,6 +10,7 @@ const DEFAULT_KP = 0.12;
 const DEFAULT_KI = 0.015;
 const MAX_INTEGRAL = 0.05;
 const MIN_CPS = 0.05;
+const CPS_EPSILON = 0.002;
 
 export class LinkPiSync {
   constructor(editor, options = {}) {
@@ -20,11 +21,13 @@ export class LinkPiSync {
     this.lastTime = performance.now();
     this.mirror = null;
     this.lastPayload = null;
+    this.lastCps = null;
   }
 
   reset() {
     this.integralError = 0;
     this.lastTime = performance.now();
+    this.lastCps = null;
   }
 
   async ensureMirror() {
@@ -71,6 +74,10 @@ export class LinkPiSync {
     const baseCps = payload.bpm / 240;
     const adjustedCps = Math.max(MIN_CPS, baseCps + correction);
 
+    if (this.lastCps != null && Math.abs(adjustedCps - this.lastCps) < CPS_EPSILON) {
+      return this.lastPayload;
+    }
+    this.lastCps = adjustedCps;
     setCps.call(mirror.repl, adjustedCps);
     this.lastPayload = { ...payload, adjustedCps, phaseError, rttMs, dt };
     return this.lastPayload;

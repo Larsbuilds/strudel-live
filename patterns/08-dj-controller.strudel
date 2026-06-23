@@ -13,7 +13,7 @@ setcpm(128)
 
 stack(
   s("bd*4, ~ sd").gain(xf.range(0.8, 0)).lpf(lpfA),
-  n("0 2 4 7").scale("A2 minor").s("sawtooth")
+  n("0 2 4 7").scale("A:minor").s("sawtooth")
     .gain(xf.range(0, 0.5))
     .lpf(lpfB)
     .room(0.4)

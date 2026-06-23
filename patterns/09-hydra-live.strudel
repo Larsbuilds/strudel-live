@@ -5,7 +5,7 @@ setcpm(130)
 
 stack(
   s("bd*4, ~ sd").gain(0.85).color('red'),
-  n("0 2 4 7").scale("A2 minor").s("sawtooth").gain(0.35).color('cyan')
+  n("0 2 4 7").scale("A:minor").s("sawtooth").gain(0.35).color('cyan')
 )
 
 // Hydra-Visuals parallel im Sound&Vision-Panel starten

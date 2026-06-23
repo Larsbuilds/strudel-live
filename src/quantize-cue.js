@@ -1,7 +1,7 @@
 import { waitForRepl } from './ai-panel.js';
 import { getCyclePhase, getReplScheduler } from './strudel-quantize.js';
 
-let rafId = null;
+let intervalId = null;
 let armed = false;
 
 function ensureOverlay() {
@@ -19,14 +19,6 @@ function ensureOverlay() {
   return el;
 }
 
-function setBeatPulse(phase) {
-  if (!phase) {
-    document.body.style.removeProperty('--beat-phase');
-    return;
-  }
-  document.body.style.setProperty('--beat-phase', String(phase.posInBar));
-}
-
 function updateCueDisplay(phase, label = 'DROP') {
   const el = ensureOverlay();
   const count = el.querySelector('.quantize-cue__count');
@@ -42,7 +34,7 @@ function updateCueDisplay(phase, label = 'DROP') {
   ring.style.setProperty('--progress', String(1 - phase.posInBar));
 
   if (phase.drop) {
-    el.classList.add('quantize-cue--drop');
+    el.classList.add('quantize-cue--drop', 'quantize-cue--active');
     count.textContent = 'DROP';
     return;
   }
@@ -53,11 +45,9 @@ function updateCueDisplay(phase, label = 'DROP') {
     count.textContent = n <= 1 ? '1' : String(n);
   } else {
     el.classList.add('quantize-cue--active');
-    el.classList.remove('quantize-cue--armed');
+    el.classList.remove('quantize-cue--armed', 'quantize-cue--drop');
     count.textContent = String(phase.beatInBar + 1);
   }
-
-  setBeatPulse(phase);
 }
 
 export function armQuantizeCue(label = 'DROP') {
@@ -71,32 +61,73 @@ export function disarmQuantizeCue() {
   el?.classList.remove('quantize-cue--armed', 'quantize-cue--drop');
 }
 
+const POLL_MS = 250;
+const HIDE_AFTER_MISSES = 4;
+
 export function initQuantizeCue(editor) {
   const toggle = document.getElementById('quantize-cue-toggle');
-  let enabled = toggle?.checked ?? true;
+  let enabled = toggle?.checked ?? false;
+  let mirror = null;
+  let lastDisplayKey = '';
+  let missCount = 0;
 
-  toggle?.addEventListener('change', () => {
-    enabled = toggle.checked;
-    if (!enabled) updateCueDisplay(null);
+  void waitForRepl(editor).then((m) => {
+    mirror = m;
   });
 
-  const tick = async () => {
-    if (!enabled) {
-      rafId = requestAnimationFrame(tick);
-      return;
+  function stopLoop() {
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
     }
+  }
+
+  function pollCue() {
+    if (!enabled || armed) return;
     try {
-      const mirror = await waitForRepl(editor);
-      const scheduler = getReplScheduler(mirror);
+      const m = mirror ?? editor.editor;
+      if (!m) return;
+      const scheduler = getReplScheduler(m);
       const phase = getCyclePhase(scheduler, 1);
-      if (phase && !armed) updateCueDisplay(phase);
-      else if (!phase && !armed) updateCueDisplay(null);
+      if (!phase) {
+        missCount += 1;
+        if (missCount >= HIDE_AFTER_MISSES && lastDisplayKey !== '') {
+          lastDisplayKey = '';
+          updateCueDisplay(null);
+        }
+        return;
+      }
+
+      missCount = 0;
+      const key = `${phase.beatInBar}|${Math.round(phase.posInBar * 4)}`;
+      if (key === lastDisplayKey) return;
+      lastDisplayKey = key;
+      updateCueDisplay(phase);
     } catch {
       /* */
     }
-    rafId = requestAnimationFrame(tick);
-  };
-  rafId = requestAnimationFrame(tick);
+  }
+
+  function startLoop() {
+    stopLoop();
+    if (!enabled) return;
+    pollCue();
+    intervalId = setInterval(pollCue, POLL_MS);
+  }
+
+  toggle?.addEventListener('change', () => {
+    enabled = toggle.checked;
+    lastDisplayKey = '';
+    missCount = 0;
+    if (!enabled) {
+      stopLoop();
+      updateCueDisplay(null);
+      return;
+    }
+    startLoop();
+  });
+
+  if (enabled) startLoop();
 
   return {
     onQuantizeTick(phase) {
@@ -105,8 +136,11 @@ export function initQuantizeCue(editor) {
       updateCueDisplay(phase, label);
       if (phase?.drop) {
         setTimeout(disarmQuantizeCue, 600);
-        return;
       }
+    },
+    dispose() {
+      stopLoop();
+      document.getElementById('quantize-cue')?.remove();
     },
   };
 }

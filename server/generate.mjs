@@ -5,6 +5,9 @@ import { parseScaleFromCode } from './parse-scale.mjs';
 import { applyMusicConstraints } from './music-constraints.mjs';
 import { guardStrudelCode } from './code-validate.mjs';
 import { ollamaChat, STRUDEL_CODER_SYSTEM, buildOllamaMessages } from './ollama.mjs';
+import { isWeakStrudel, resolvePresetForPrompt } from './pattern-presets.mjs';
+
+const SAFE_FALLBACK_PATTERN = 'setcpm(30)\nstack(s("bd*4"), s("~ sd"))';
 
 function stripCodeFences(text) {
   return text
@@ -30,7 +33,7 @@ function buildUserMessage(prompt, previousCode, trackContext) {
     msg += `DJ context — loaded track "${trackContext.name || trackContext.id}"`;
     if (trackContext.bpm) msg += ` at ${trackContext.bpm} BPM`;
     if (trackContext.key) msg += `, key: ${trackContext.key}`;
-    if (trackContext.stems?.length) msg += `, stems available via samples("http://localhost:5432")`;
+    if (trackContext.stems?.length) msg += `, stems available via samples("http://localhost:5433")`;
     msg += '.\n\n';
   }
   if (!previousCode?.trim()) return msg + prompt;
@@ -101,7 +104,18 @@ export async function generateStrudel(prompt, env, { previousCode, trackContext 
         : await generateWithAnthropic(trimmed, env, previousCode, trackContext);
 
   const constraint = applyMusicConstraints(result.code, {});
-  const guarded = guardStrudelCode(constraint.code, { fallback: previousCode });
+  let code = constraint.code;
+  if (isWeakStrudel(code)) {
+    const preset = resolvePresetForPrompt(trimmed);
+    if (preset) {
+      const presetConstraint = applyMusicConstraints(preset.code, {});
+      code = presetConstraint.code;
+      constraint.fixes = [...(constraint.fixes || []), `preset:${preset.id}`];
+    }
+  }
+  const guarded = guardStrudelCode(code, {
+    fallback: previousCode?.trim() || SAFE_FALLBACK_PATTERN,
+  });
 
   const scale = parseScaleFromCode(guarded.code);
   return {

@@ -20,19 +20,36 @@ export function initAiPanel({ editor, hub }) {
     refineCheck,
     igniteCheck,
     conductorPromptEl: document.getElementById('conductor-prompt'),
+    hub,
+    editor,
   });
 
   async function checkStatus() {
     try {
-      const res = await fetch('/api/health');
-      const data = await res.json();
+      const [healthRes, statusRes] = await Promise.all([
+        fetch('/api/health'),
+        fetch('/api/status'),
+      ]);
+      const data = await healthRes.json();
+      const status = await statusRes.json().catch(() => ({}));
+
+      const ollama = status.providers?.ollama;
       setupEl.hidden = data.ai;
+
       const whisperBtn = document.getElementById('whisper-btn');
       if (whisperBtn) whisperBtn.disabled = !data.whisper;
+
       if (!data.ai) {
-        statusEl.textContent = 'API-Key fehlt — npm run setup';
+        statusEl.textContent = 'KI fehlt — npm run ollama:setup oder API-Key';
         statusEl.dataset.state = 'warn';
+      } else if (ollama) {
+        statusEl.textContent = `Lokales Modell (Ollama · ${data.ollama?.model || 'strudel-live'})`;
+        statusEl.dataset.state = 'ok';
+      } else if (data.ai) {
+        statusEl.textContent = 'Cloud-KI aktiv';
+        statusEl.dataset.state = 'ok';
       }
+
       if (!data.servers?.samples) {
         statusEl.textContent = (statusEl.textContent ? statusEl.textContent + ' · ' : '') + 'Tipp: npm run dev:full für Samples';
       }
@@ -131,16 +148,26 @@ export function initAiPanel({ editor, hub }) {
   });
 }
 
+const replWaiters = new WeakMap();
+
+/** Shared waiter per REPL element — avoids stacking intervals when polled every frame. */
 export function waitForRepl(element) {
-  return new Promise((resolve) => {
-    if (element.editor) return resolve(element.editor);
+  if (element?.editor) return Promise.resolve(element.editor);
+
+  let pending = replWaiters.get(element);
+  if (pending) return pending;
+
+  pending = new Promise((resolve) => {
     const timer = setInterval(() => {
       if (element.editor) {
         clearInterval(timer);
+        replWaiters.delete(element);
         resolve(element.editor);
       }
     }, 50);
   });
+  replWaiters.set(element, pending);
+  return pending;
 }
 
 export async function applyCodeToRepl(editorElement, code) {

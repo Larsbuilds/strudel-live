@@ -25,7 +25,7 @@ async function bootHydra(hydraCode) {
   document.getElementById('hydra-run')?.click();
 }
 
-export async function executeIgniteManifest(manifest, { hub, editor }) {
+export async function executeIgniteManifest(manifest, { hub, editor, hydraEnabled = false }) {
   const { setup, initial_states: states, summary } = manifest;
   const mods = setup?.modules || {};
   const steps = [];
@@ -42,7 +42,7 @@ export async function executeIgniteManifest(manifest, { hub, editor }) {
     }
   }
 
-  if (mods.hydra && states.hydra) {
+  if (hydraEnabled && mods.hydra && states.hydra) {
     await bootHydra(states.hydra);
     steps.push('hydra');
   }
@@ -57,17 +57,21 @@ export async function executeIgniteManifest(manifest, { hub, editor }) {
       await startRaveClient(512);
       steps.push('rave');
     } catch (err) {
-      steps.push(`rave: ${err.message}`);
+      steps.push(`rave übersprungen (${err.message})`);
     }
   }
 
   if (mods.wam) {
-    const wamSelect = document.getElementById('wam-plugin-select');
-    if (wamSelect && !wamSelect.value) wamSelect.selectedIndex = 0;
-    document.getElementById('wam-load-btn')?.click();
-    steps.push('wam');
-    await new Promise((r) => setTimeout(r, 800));
-    if (states.wam) applyWamAutomation(states.wam);
+    try {
+      const wamSelect = document.getElementById('wam-plugin-select');
+      if (wamSelect && !wamSelect.value) wamSelect.selectedIndex = 0;
+      document.getElementById('wam-load-btn')?.click();
+      await new Promise((r) => setTimeout(r, 800));
+      if (states.wam) applyWamAutomation(states.wam);
+      steps.push('wam');
+    } catch (err) {
+      steps.push(`wam übersprungen (${err.message})`);
+    }
   }
 
   await hub.applyPattern(states.strudel, {
@@ -76,6 +80,8 @@ export async function executeIgniteManifest(manifest, { hub, editor }) {
     source: 'ignite',
     quantize: false,
   });
+
+  document.getElementById('repl')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   return { steps, summary };
 }
@@ -103,14 +109,19 @@ export async function runIgnite({ prompt, hub, editor, statusEl }) {
 
   if (statusEl) statusEl.textContent = `${data.summary} — starte Module…`;
 
-  const result = await executeIgniteManifest(data, { hub, editor });
+  const result = await executeIgniteManifest(data, {
+    hub,
+    editor,
+    hydraEnabled: document.getElementById('ignite-hydra-toggle')?.checked,
+  });
 
+  const presetNote = data.presetId ? ` · Preset ${data.presetId}` : '';
   const fixNote =
-    data.constraints?.fixes?.length > 0 ? ` · Constraints: ${data.constraints.fixes.join(', ')}` : '';
+    data.constraints?.fixes?.length > 0 ? ` · ${data.constraints.fixes.join(', ')}` : '';
 
   if (statusEl) {
     statusEl.dataset.state = 'ok';
-    statusEl.textContent = `Ignite — ${result.summary} (${result.steps.join(', ')})${fixNote}`;
+    statusEl.textContent = `Ignite — ${result.summary} (${result.steps.join(', ')})${presetNote}${fixNote}`;
   }
 
   document.getElementById('save-pattern-btn').disabled = false;

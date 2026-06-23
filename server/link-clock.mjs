@@ -46,7 +46,7 @@ export function initLinkClock(env = process.env) {
     const startBpm = Number(env.LINK_BPM) || 120;
     link = new AbletonLink(startBpm);
     link.enable();
-    link.startUpdate(60, (beat, phase, bpm) => {
+    link.startUpdate(15, (beat, phase, bpm) => {
       state = {
         available: true,
         enabled: true,

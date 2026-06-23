@@ -6,7 +6,7 @@ RULES:
 - Use stack() for layering outgoing stems (sample playback) and incoming synth patterns.
 - Crossfade using gain patterns: start track A at 1, fade to 0; track B from 0 to 1 over the transition bars.
 - Use .lpf() or .cutoff() for filter sweeps during transitions.
-- Load samples via samples("http://localhost:5432") then s("soundcloud/stemname") — use exact paths from metadata.
+- Load samples via samples("http://localhost:5433") then s("soundcloud/stemname") — use exact paths from metadata.
 - Transition length: 16 bars default (4 cycles at 4/4) unless specified.
 - Include comments only with // for section markers.
 - Must run in @strudel/repl without imports.

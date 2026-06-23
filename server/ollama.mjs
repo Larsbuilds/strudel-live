@@ -18,10 +18,19 @@ export function getOllamaModel(env = process.env) {
   return env.OLLAMA_MODEL || 'strudel-live';
 }
 
+function fetchTimeout(ms) {
+  if (typeof AbortSignal !== 'undefined' && AbortSignal.timeout) {
+    return AbortSignal.timeout(ms);
+  }
+  const ac = new AbortController();
+  setTimeout(() => ac.abort(), ms);
+  return ac.signal;
+}
+
 export async function checkOllama(env = process.env) {
   try {
     const res = await fetch(`${getOllamaBase(env)}/api/tags`, {
-      signal: AbortSignal.timeout(3000),
+      signal: fetchTimeout(5000),
     });
     if (!res.ok) return { ok: false, error: `HTTP ${res.status}` };
     const data = await res.json();
@@ -56,7 +65,7 @@ export async function ollamaChat(messages, env = process.env, { json = false, ma
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
-    signal: AbortSignal.timeout(120000),
+    signal: fetchTimeout(180000),
   });
 
   if (!res.ok) {

@@ -14,6 +14,18 @@ const SCALE_RE = /\.scale\(\s*['"]([^'"]+)['"]\s*\)/i;
 const CHORD_RE = /chord\(\s*['"]([^'"]+)['"]\s*\)/i;
 
 function parseRootNote(scaleStr) {
+  const colon = scaleStr.trim().match(/^([A-Ga-g][#b]?):(\w[\w\s-]*)$/);
+  if (colon) {
+    const letter = colon[1][0].toLowerCase();
+    const accidental = colon[1].slice(1);
+    const modeRaw = colon[2].toLowerCase();
+    let root = NOTE_OFFSETS[letter] ?? 0;
+    if (accidental === '#') root += 1;
+    if (accidental === 'b') root -= 1;
+    const mode = modeRaw.includes('minor') || modeRaw === 'min' ? 'minor' : modeRaw;
+    return { root: ((root % 12) + 12) % 12, mode };
+  }
+
   const match = scaleStr.trim().match(/^([A-Ga-g])([#b]?)(\d+)?\s*(.*)$/);
   if (!match) return { root: 9, octave: 2, mode: 'minor' };
   const letter = match[1].toLowerCase();

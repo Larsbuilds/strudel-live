@@ -49,8 +49,9 @@ export function getHealth(env) {
       sclang: checkSuperCollider(),
     },
     servers: {
-      samples: portOpen(5432),
+      samples: portOpen(5433) || portOpen(5432),
       app: portOpen(5173) || portOpen(5174),
+      rave: portOpen(Number(process.env.RAVE_PORT || 8765)),
     },
     paths: {
       samples: existsSync(join(process.cwd(), 'samples')),

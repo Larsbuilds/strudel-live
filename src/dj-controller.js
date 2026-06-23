@@ -1,10 +1,8 @@
 import { djState, updateDjCc } from './dj-state.js';
 
-const CC_CROSSFADER = 8;
-const CC_LPF_A = 1;
-const CC_LPF_B = 2;
-
 let midiAccess = null;
+let meterIntervalId = null;
+let lastMeterKey = '';
 
 export async function initDjController() {
   const status = document.getElementById('dj-ctrl-status');
@@ -35,16 +33,19 @@ export async function initDjController() {
         status.textContent = `Verbunden: ${djState.deviceName}`;
         status.dataset.state = 'ok';
       }
-      if (meters) meters.hidden = false;
-      renderMeters(meters);
+      if (meters) {
+        meters.hidden = false;
+        renderMeters(meters);
+      }
+      if (!meterIntervalId) {
+        meterIntervalId = setInterval(() => {
+          if (djState.connected && meters && !meters.hidden) renderMeters(meters);
+        }, 250);
+      }
     } catch (err) {
       if (status) status.textContent = err.message;
     }
   });
-
-  setInterval(() => {
-    if (djState.connected && meters && !meters.hidden) renderMeters(meters);
-  }, 100);
 }
 
 function onMidiMessage(msg) {
@@ -55,9 +56,32 @@ function onMidiMessage(msg) {
 
 function renderMeters(el) {
   if (!el) return;
-  el.innerHTML = `
-    <div class="dj-meter">Crossfader (CC8): <meter min="0" max="1" value="${djState.crossfader}"></meter> ${(djState.crossfader * 100).toFixed(0)}%</div>
-    <div class="dj-meter">LPF A (CC1): <meter min="0" max="1" value="${djState.cc[1] ?? 0.5}"></meter></div>
-    <div class="dj-meter">LPF B (CC2): <meter min="0" max="1" value="${djState.cc[2] ?? 0.5}"></meter></div>
-  `;
+  const key = [
+    djState.crossfader.toFixed(2),
+    (djState.cc[1] ?? 0.5).toFixed(2),
+    (djState.cc[2] ?? 0.5).toFixed(2),
+  ].join('|');
+  if (key === lastMeterKey) return;
+  lastMeterKey = key;
+
+  let cross = el.querySelector('[data-meter="xf"]');
+  let lpfA = el.querySelector('[data-meter="lpf-a"]');
+  let lpfB = el.querySelector('[data-meter="lpf-b"]');
+
+  if (!cross) {
+    el.innerHTML = `
+      <div class="dj-meter">Crossfader (CC8): <meter data-meter="xf" min="0" max="1"></meter> <span data-meter="xf-label"></span></div>
+      <div class="dj-meter">LPF A (CC1): <meter data-meter="lpf-a" min="0" max="1"></meter></div>
+      <div class="dj-meter">LPF B (CC2): <meter data-meter="lpf-b" min="0" max="1"></meter></div>
+    `;
+    cross = el.querySelector('[data-meter="xf"]');
+    lpfA = el.querySelector('[data-meter="lpf-a"]');
+    lpfB = el.querySelector('[data-meter="lpf-b"]');
+  }
+
+  cross.value = djState.crossfader;
+  lpfA.value = djState.cc[1] ?? 0.5;
+  lpfB.value = djState.cc[2] ?? 0.5;
+  const label = el.querySelector('[data-meter="xf-label"]');
+  if (label) label.textContent = `${(djState.crossfader * 100).toFixed(0)}%`;
 }

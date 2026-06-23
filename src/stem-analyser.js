@@ -1,4 +1,4 @@
-const SAMPLE_SERVER = 'http://localhost:5432';
+const SAMPLE_SERVER = 'http://localhost:5433';
 const STEM_NAMES = ['drums', 'bass', 'vocals', 'other'];
 const DEFAULT_SMOOTH_ALPHA = 0.2;
 

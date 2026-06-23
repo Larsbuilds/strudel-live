@@ -7,7 +7,6 @@ import { initWhisperRecorder } from './whisper-recorder.js';
 import { initDjPanel } from './dj-panel.js';
 import { initDjController } from './dj-controller.js';
 import { initWamHost } from './wam-host.js';
-import { initHydraPanel } from './hydra-panel.js';
 import { initSynthDefPanel } from './synthdef-panel.js';
 import { initConductorPanel } from './conductor-panel.js';
 import { initFaustPanel } from './faust-host.js';
@@ -18,54 +17,91 @@ import { initQuantizeCue } from './quantize-cue.js';
 import { setQuantizeCueHandler } from './conductor-panel.js';
 import { createWorkflowHub } from './workflow-hub.js';
 import { initPatternPicker } from './pattern-picker.js';
+import { initOnce, resetInits } from './init-once.js';
 
-const editor = document.getElementById('repl');
-const picker = document.getElementById('pattern-picker');
-const promptInput = document.getElementById('ai-prompt');
+const cleaners = [];
 
-const hub = createWorkflowHub(editor);
+function bootstrap() {
+  const editor = document.getElementById('repl');
+  const picker = document.getElementById('pattern-picker');
+  const promptInput = document.getElementById('ai-prompt');
 
-const { refresh: refreshPatterns } = initPatternPicker({
-  picker,
-  onSelect: (code, meta) => hub.applyPattern(code, meta),
-});
+  const hub = createWorkflowHub(editor);
 
-initAiPanel({ editor, hub });
+  const { refresh: refreshPatterns } = initPatternPicker({
+    picker,
+    onSelect: (code, meta) => hub.applyPattern(code, meta),
+  });
 
-initVoiceInput({ promptInput });
-
-initWhisperRecorder({
-  promptInput,
-  onTranscript: (text) => {
-    promptInput.value = text;
-    document.getElementById('ai-form')?.requestSubmit();
-  },
-  statusEl: document.getElementById('voice-status'),
-});
-
-initMicPanel();
-initMidiPanel();
-initDjPanel({ hub });
-initDjController();
-initWamHost();
-initHydraPanel();
-initSynthDefPanel();
-initConductorPanel({ hub, editor });
-initFaustPanel();
-initRavePanel();
-
-const cue = initQuantizeCue(editor);
-setQuantizeCueHandler((phase) => cue.onQuantizeTick(phase));
-initPanicButton(editor);
-initLinkSync(editor);
-
-window.addEventListener('strudel-live:patterns-saved', () => refreshPatterns());
-
-(async () => {
-  const patterns = await refreshPatterns();
-  const first = Object.keys(patterns)[0];
-  if (first) {
-    picker.value = first;
-    await hub.applyPattern(patterns[first], { source: 'init', name: first });
+  if (import.meta.hot) {
+    import.meta.hot.on('strudel-live:patterns-changed', () => {
+      refreshPatterns();
+    });
   }
-})();
+
+  initOnce('ai-panel', () => initAiPanel({ editor, hub }));
+  initOnce('voice', () => initVoiceInput({ promptInput }));
+  initOnce('whisper', () =>
+    initWhisperRecorder({
+      promptInput,
+      onTranscript: (text) => {
+        promptInput.value = text;
+        document.getElementById('ai-form')?.requestSubmit();
+      },
+      statusEl: document.getElementById('voice-status'),
+    }),
+  );
+
+  initOnce('mic', () => initMicPanel());
+  initOnce('midi', () => initMidiPanel());
+  initOnce('dj', () => initDjPanel({ hub }));
+  initOnce('dj-ctrl', () => initDjController());
+  initOnce('wam', () => initWamHost());
+  initOnce('hydra', () => import('./hydra-panel.js').then((m) => m.initHydraPanel()));
+  initOnce('synthdef', () => initSynthDefPanel());
+  initOnce('conductor', () => initConductorPanel({ hub, editor }));
+  initOnce('faust', () => initFaustPanel());
+  initOnce('rave', () => initRavePanel());
+
+  initOnce('quantize-cue', () => {
+    const cue = initQuantizeCue(editor);
+    setQuantizeCueHandler((phase) => cue.onQuantizeTick(phase));
+    cleaners.push(() => cue.dispose());
+  });
+
+  initOnce('panic', () => {
+    const panic = initPanicButton(editor);
+    cleaners.push(() => panic.dispose());
+  });
+
+  initOnce('link', () => {
+    const link = initLinkSync(editor);
+    cleaners.push(() => link.dispose());
+  });
+
+  initOnce('patterns-saved', () => {
+    window.addEventListener('strudel-live:patterns-saved', () => refreshPatterns());
+  });
+
+  initOnce('patterns-init', () => {
+    void (async () => {
+      const patterns = await refreshPatterns();
+      const first = Object.keys(patterns)[0];
+      if (first) picker.value = first;
+    })();
+  });
+}
+
+if (!globalThis.__strudelLiveBootstrapped) {
+  globalThis.__strudelLiveBootstrapped = true;
+  bootstrap();
+}
+
+if (import.meta.hot) {
+  import.meta.hot.dispose(() => {
+    cleaners.forEach((clean) => clean());
+    cleaners.length = 0;
+    resetInits();
+    delete globalThis.__strudelLiveBootstrapped;
+  });
+}

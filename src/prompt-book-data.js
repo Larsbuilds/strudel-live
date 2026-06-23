@@ -10,6 +10,7 @@ export const PROMPT_CATEGORIES = [
       {
         label: '90s Uplifting',
         text: '90s Trance, 140 BPM, euphoric uplifting, Saw-Lead und Pad in A-Moll, rollende Hi-Hats, blaue Neon-Visuals, langsame Kaleidoskop-Modulation',
+        pattern: '02-trance-lead',
         expect: { bpm: 140, hydra: true, mic: false, mood: 'bright' },
       },
       {
@@ -26,11 +27,13 @@ export const PROMPT_CATEGORIES = [
       {
         label: 'Deep Hypnotic',
         text: 'Hypnotic Deep Techno 128 BPM, dunkelrote Visuals, harte Kicks, subtiler Bass, ich will live dazu singen mit Key-Sync',
+        pattern: '10-deep-techno',
         expect: { bpm: 128, hydra: true, mic: true },
       },
       {
         label: 'Minimal Berlin',
         text: 'Berlin Minimal Techno 125 BPM, trocken und reduziert, nur Drums und Clicks, schwarz-weiße minimalistische Visuals, kein Mic',
+        pattern: '10-deep-techno',
         expect: { bpm: 125, hydra: true, mic: false },
       },
       {
@@ -63,6 +66,7 @@ export const PROMPT_CATEGORIES = [
       {
         label: 'Liquid DNB',
         text: 'Liquid Drum and Bass 174 BPM, warme Pads, synkopierter Break, cyan-blaue fließende Hydra-Visuals, sanft',
+        pattern: '03-dnb-break',
         expect: { bpm: 174, hydra: true },
       },
       {

@@ -66,6 +66,14 @@ let playbackNode = null;
 let blobUrls = [];
 let raveStatusEl = null;
 
+async function assertRaveServer() {
+  const res = await fetch('/api/health');
+  const data = await res.json();
+  if (!data.servers?.rave) {
+    throw new Error('RAVE offline — npm run rave:server');
+  }
+}
+
 function workletUrl(source) {
   const url = URL.createObjectURL(new Blob([source], { type: 'application/javascript' }));
   blobUrls.push(url);
@@ -76,6 +84,8 @@ export async function startRaveClient(frameSize = 512) {
   if (frameSize !== 512 && frameSize !== 1024) {
     throw new Error('RAVE frame size must be 512 or 1024');
   }
+
+  await assertRaveServer();
 
   stopRaveClient();
 
@@ -98,6 +108,9 @@ export async function startRaveClient(frameSize = 512) {
 
   raveWs = new WebSocket(RAVE_WS);
   raveWs.binaryType = 'arraybuffer';
+  raveWs.onerror = () => {
+    /* surfaced via status line — avoid duplicate console noise when server drops */
+  };
 
   captureNode.port.onmessage = (e) => {
     if (raveWs?.readyState === WebSocket.OPEN) {

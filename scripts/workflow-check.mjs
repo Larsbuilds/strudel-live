@@ -47,8 +47,8 @@ try {
     pass(`Dev-Server :${PORT} — /api/health`);
     data.ai ? pass('  ↳ AI configured') : fail('  ↳ AI not configured');
     pass(`  ↳ ${data.patterns} patterns · ${data.djTracks} DJ tracks`);
-    if (!data.servers.samples) fail('  ↳ Sample-Server :5432 offline (npm run dev:full)');
-    else pass('  ↳ Sample-Server :5432');
+    if (!data.servers.samples) fail(`  ↳ Sample-Server :${process.env.SAMPLES_PORT || 5433} offline (npm run dev:full)`);
+    else pass(`  ↳ Sample-Server :${process.env.SAMPLES_PORT || 5433}`);
   } else fail(`Dev-Server antwortet mit ${status}`);
 } catch {
   fail(`Dev-Server nicht erreichbar — npm run dev (Port ${PORT})`);

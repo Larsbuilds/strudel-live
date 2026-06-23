@@ -1,10 +1,26 @@
 import { PROMPT_CATEGORIES } from './prompt-book-data.js';
 
-export function initPromptBook({ promptInput, chipsEl, refineCheck, igniteCheck, conductorPromptEl }) {
+export function initPromptBook({ promptInput, chipsEl, refineCheck, igniteCheck, conductorPromptEl, hub, editor }) {
   if (!chipsEl) return;
 
   chipsEl.innerHTML = '';
   chipsEl.classList.add('prompt-chips');
+
+  async function loadPreset(patternId) {
+    if (!hub || !patternId) return;
+    const res = await fetch('/api/patterns');
+    const data = await res.json();
+    const code = data.patterns?.[patternId];
+    if (!code) return;
+    await hub.applyPattern(code, { source: 'preset', name: patternId });
+    const status = document.getElementById('ai-status');
+    if (status) {
+      status.dataset.state = 'ok';
+      status.textContent = `Preset — ${patternId}`;
+    }
+    document.getElementById('repl')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('save-pattern-btn').disabled = false;
+  }
 
   for (const cat of PROMPT_CATEGORIES) {
     const heading = document.createElement('span');
@@ -16,9 +32,14 @@ export function initPromptBook({ promptInput, chipsEl, refineCheck, igniteCheck,
       const chip = document.createElement('button');
       chip.type = 'button';
       chip.className = 'chip';
-      chip.title = p.text;
+      chip.title = p.pattern ? `${p.text}\n\nShift+Klick: Preset „${p.pattern}“ ohne KI` : p.text;
       chip.textContent = p.label;
-      chip.addEventListener('click', () => {
+      chip.addEventListener('click', (e) => {
+        if (e.shiftKey && p.pattern) {
+          e.preventDefault();
+          loadPreset(p.pattern);
+          return;
+        }
         const target = p.conductor && conductorPromptEl ? conductorPromptEl : promptInput;
         if (!target) return;
         target.value = p.text;
@@ -29,8 +50,7 @@ export function initPromptBook({ promptInput, chipsEl, refineCheck, igniteCheck,
           if (igniteCheck) igniteCheck.checked = false;
         } else if (p.conductor) {
           if (refineCheck) refineCheck.checked = false;
-          document.querySelector('.dj-panel')?.setAttribute('open', '');
-          conductorPromptEl?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          conductorPromptEl?.focus({ preventScroll: true });
         } else {
           if (refineCheck) refineCheck.checked = false;
           if (igniteCheck) igniteCheck.checked = true;
