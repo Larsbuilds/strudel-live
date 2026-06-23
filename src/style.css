@@ -23,10 +23,113 @@ header h1 {
 header p {
   margin: 0 0 0.75rem;
   color: #a8a8b8;
-  max-width: 52rem;
+  max-width: 56rem;
 }
 
-label {
+.setup-banner {
+  background: #2a2218;
+  border: 1px solid #6b5020;
+  color: #f0d8a8;
+  padding: 0.65rem 0.85rem;
+  border-radius: 8px;
+  margin-bottom: 0.85rem;
+  font-size: 0.9rem;
+}
+
+.ai-panel {
+  margin-bottom: 0.85rem;
+  padding: 0.85rem;
+  background: #16161c;
+  border: 1px solid #2a2a32;
+  border-radius: 10px;
+}
+
+.ai-panel label {
+  display: block;
+  margin-bottom: 0.45rem;
+  font-weight: 600;
+}
+
+.ai-row {
+  display: flex;
+  gap: 0.65rem;
+  align-items: stretch;
+}
+
+#ai-prompt {
+  flex: 1;
+  resize: vertical;
+  min-height: 3.2rem;
+  background: #0f0f12;
+  color: inherit;
+  border: 1px solid #3a3a48;
+  border-radius: 8px;
+  padding: 0.55rem 0.65rem;
+  font: inherit;
+}
+
+#ai-submit {
+  align-self: stretch;
+  min-width: 10rem;
+  background: #5b4dff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#ai-submit:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+#ai-submit:hover:not(:disabled) {
+  background: #6d60ff;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.55rem;
+}
+
+.chip {
+  background: #1f1f28;
+  color: #c8c8d8;
+  border: 1px solid #3a3a48;
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.chip:hover {
+  border-color: #5b4dff;
+  color: #fff;
+}
+
+.ai-status {
+  margin: 0.55rem 0 0;
+  font-size: 0.88rem;
+  color: #9090a8;
+}
+
+.ai-status[data-state='ok'] {
+  color: #7dcea0;
+}
+
+.ai-status[data-state='error'] {
+  color: #f08080;
+}
+
+.ai-status[data-state='warn'] {
+  color: #f0c878;
+}
+
+.pattern-picker {
   display: flex;
   gap: 0.5rem;
   align-items: center;

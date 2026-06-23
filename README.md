@@ -15,6 +15,26 @@ git clone https://github.com/Larsbuilds/strudel-live.git
 cd strudel-live && npm install && npm run dev
 ```
 
+## AI: Text → Musik (ohne selbst zu coden)
+
+1. Einmalig API-Key setzen:
+
+```bash
+npm run setup    # erstellt .env
+# OPENAI_API_KEY=sk-... in .env eintragen (oder ANTHROPIC_API_KEY)
+```
+
+2. App starten und im Browser beschreiben, was es klingen soll — **Generieren & Abspielen**.
+
+Die KI schreibt Strudel-Code, lädt ihn in den Editor und startet die Wiedergabe automatisch.
+
+| Provider | Env-Variable | Default-Modell |
+|----------|--------------|----------------|
+| OpenAI | `OPENAI_API_KEY` | `gpt-4o-mini` |
+| Anthropic | `ANTHROPIC_API_KEY` | `claude-sonnet-4-20250514` |
+
+OpenAI-Key: [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+
 ## Quick start
 
 ```bash

@@ -10,10 +10,33 @@
     <header>
       <h1>Strudel Live</h1>
       <p>
-        Live-coding mit Freunden — Pattern aus <code>patterns/</code> laden oder direkt im Editor spielen.
-        <kbd>Ctrl</kbd>+<kbd>Enter</kbd> zum Ausführen.
+        Beschreibe den Sound in normaler Sprache — die KI schreibt Strudel-Code und spielt ihn ab.
+        Oder wähle ein Starter-Pattern und feile per Hand nach (<kbd>Ctrl</kbd>+<kbd>Enter</kbd>).
       </p>
-      <label>
+
+      <div id="ai-setup" class="setup-banner" hidden>
+        <strong>Einmaliges Setup:</strong>
+        <code>cp .env.example .env</code> — dann <code>OPENAI_API_KEY</code> oder
+        <code>ANTHROPIC_API_KEY</code> eintragen und <code>npm run dev</code> neu starten.
+      </div>
+
+      <section class="ai-panel">
+        <form id="ai-form">
+          <label for="ai-prompt">Was soll es klingen?</label>
+          <div class="ai-row">
+            <textarea
+              id="ai-prompt"
+              rows="2"
+              placeholder="z.B. schneller Trance-Beat mit hartem Kick und Saw-Lead in A-Moll, 140 BPM"
+            ></textarea>
+            <button type="submit" id="ai-submit">Generieren &amp; Abspielen</button>
+          </div>
+        </form>
+        <div id="ai-chips" class="chips"></div>
+        <p id="ai-status" class="ai-status" aria-live="polite"></p>
+      </section>
+
+      <label class="pattern-picker">
         Starter-Pattern:
         <select id="pattern-picker"></select>
       </label>

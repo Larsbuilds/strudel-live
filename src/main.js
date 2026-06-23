@@ -1,21 +1,28 @@
 import '@strudel/repl';
 import { patterns } from './patterns.js';
+import { initAiPanel, applyCodeToRepl } from './ai-panel.js';
 
 const editor = document.getElementById('repl');
 const picker = document.getElementById('pattern-picker');
 
-for (const [name, code] of Object.entries(patterns)) {
+for (const [name] of Object.entries(patterns)) {
   const option = document.createElement('option');
   option.value = name;
   option.textContent = name;
   picker.append(option);
 }
 
-function loadPattern(name) {
+async function loadPattern(name) {
   const code = patterns[name];
   if (!code) return;
-  editor.textContent = `\n${code.trim()}\n`;
+  await applyCodeToRepl(editor, code);
 }
 
 picker.addEventListener('change', () => loadPattern(picker.value));
+
+initAiPanel({
+  editor,
+  onCode: (code) => applyCodeToRepl(editor, code),
+});
+
 loadPattern(picker.value);
