@@ -1,0 +1,7 @@
+// SuperDirt via OSC — braucht SuperCollider + pnpm run osc im upstream strudel repo
+// Setup: docs/SUPERCOLLIDER.md
+// REPL-Setting: Audio Engine Target → OSC
+
+setcpm(120)
+
+s("bd sd hh cp").gain(0.9).osc()

@@ -6,6 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "samples": "sampler ./samples",
+    "dev:full": "concurrently -n app,samples -c blue,magenta \"npm run dev\" \"npm run samples\"",
     "build": "vite build",
     "preview": "vite preview",
     "patterns": "node scripts/list-patterns.mjs",
@@ -17,6 +19,8 @@
     "openai": "^4.77.0"
   },
   "devDependencies": {
+    "@strudel/sampler": "^0.2.4",
+    "concurrently": "^9.1.2",
     "vite": "^6.3.5"
   },
   "engines": {

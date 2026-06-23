@@ -1,96 +1,85 @@
 # Strudel Live
 
-Collaborative live-coding jams with [Strudel](https://strudel.cc) — the JavaScript port of TidalCycles, like Switch Angel uses for trance and DNB sessions.
+KI-gesteuertes Live-Coding mit [Strudel](https://strudel.cc) — Text oder Sprache rein, Musik raus. Erweiterbar mit MIDI (Ableton), eigenen Samples und SuperDirt.
 
-This repo is a small local workspace: edit patterns in `patterns/`, run a browser REPL, and jam together. AGPL-3.0 applies to Strudel itself; see [Strudel license notes](https://strudel.cc/technical-manual/project-start/#respect-the-license).
+**Repo:** https://github.com/Larsbuilds/strudel-live
 
-## Repository
-
-**https://github.com/Larsbuilds/strudel-live**
-
-Clone for friends:
+## Schnellstart (Mac)
 
 ```bash
 git clone https://github.com/Larsbuilds/strudel-live.git
-cd strudel-live && npm install && npm run dev
+cd strudel-live
+npm install
+npm run setup          # erstellt .env
+# OPENAI_API_KEY in .env eintragen
+npm run dev            # → http://localhost:5173
 ```
 
-## AI: Text → Musik (ohne selbst zu coden)
+1. Einmal in die Seite klicken (Audio-Freigabe)
+2. Text eingeben oder **🎤 Sprechen** (Chrome, kein Extra-Key)
+3. **Generieren & Abspielen**
 
-1. Einmalig API-Key setzen:
+## Was dieses Setup kann
+
+| Feature | Befehl / Ort |
+|---------|----------------|
+| **KI: Text → Musik** | Prompt oben im Browser |
+| **Sprache → Text** | 🎤 Button (Web Speech API) |
+| **Starter-Patterns** | Dropdown (Trance, DNB, …) |
+| **Eigene Samples** | `npm run dev:full` + Dateien in `samples/` |
+| **MIDI → Ableton** | Pattern `04-midi-ableton` + `docs/MIDI-MAC.md` |
+| **SuperDirt / OSC** | `docs/SUPERCOLLIDER.md` |
+| **Mikrofon-Monitor** | „Erweitert“ im UI (Basis für Autotune) |
+
+## NPM-Skripte
 
 ```bash
-npm run setup    # erstellt .env
-# OPENAI_API_KEY=sk-... in .env eintragen (oder ANTHROPIC_API_KEY)
+npm run dev        # REPL + KI (Port 5173)
+npm run samples    # Sample-Server (Port 5432)
+npm run dev:full   # Beides parallel
+npm run patterns   # Pattern-Liste
+npm run setup      # .env anlegen
 ```
 
-2. App starten und im Browser beschreiben, was es klingen soll — **Generieren & Abspielen**.
+## Dokumentation
 
-Die KI schreibt Strudel-Code, lädt ihn in den Editor und startet die Wiedergabe automatisch.
+| Datei | Inhalt |
+|-------|--------|
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Gesamtsystem, Schichten, Diagramm |
+| [docs/GEMINI-EXTRACT.md](docs/GEMINI-EXTRACT.md) | Was aus KI-Chats stimmt / falsch ist |
+| [docs/MINI-NOTATION.md](docs/MINI-NOTATION.md) | Spickzettel `[ ] * < >` |
+| [docs/MIDI-MAC.md](docs/MIDI-MAC.md) | IAC Driver → Ableton |
+| [docs/SUPERCOLLIDER.md](docs/SUPERCOLLIDER.md) | OSC / SuperDirt |
+| [docs/ROADMAP.md](docs/ROADMAP.md) | Phasen 1–6 |
 
-| Provider | Env-Variable | Default-Modell |
-|----------|--------------|----------------|
+## Strudel ≠ Ableton (kurz)
+
+Strudel ersetzt keine DAW — es ist das **algorithmische Gehirn** (Patterns live ändern). Ableton/Serum liefern den **Sound** via MIDI. Switch Angel nutzt beides.
+
+## KI-Provider
+
+| Provider | Variable | Modell |
+|----------|----------|--------|
 | OpenAI | `OPENAI_API_KEY` | `gpt-4o-mini` |
 | Anthropic | `ANTHROPIC_API_KEY` | `claude-sonnet-4-20250514` |
 
-OpenAI-Key: [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+Key: [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
 
-## Quick start
+## Gemini-Warnung
 
-```bash
-cd strudel-live
-npm install
-npm run dev
-```
+Diese Pakete sind **nicht** Musik-Strudel:
 
-Open http://localhost:5173 — pick a starter pattern from the dropdown, then **Ctrl+Enter** to evaluate.
+- `strudel-cli` (npm) — altes JS-Framework 2018
+- `strudel-science/strudel-kit` — wissenschaftliches UI-Toolkit
 
-List pattern files:
+Wir nutzen `@strudel/*` von [strudel.cc](https://strudel.cc).
 
-```bash
-npm run patterns
-```
+## Mit Freunden jammen
 
-## Project layout
+1. Repo klonen, `npm install`, `.env` mit eigenem Key
+2. Patterns in `patterns/` pushen (erscheinen automatisch im Dropdown)
+3. Optional: MIDI-Setup teilen (`docs/MIDI-MAC.md`)
 
-| Path | Purpose |
-|------|---------|
-| `patterns/` | `.strudel` pattern files — add your own jams here |
-| `src/` | Vite app embedding `@strudel/repl` |
-| `docs/ROADMAP.md` | Ideas: AI co-pilot, voice control, full REPL clone |
+## Lizenz
 
-## Important: Gemini vs. real Strudel
-
-The Gemini answer mixes up **three different projects**:
-
-| Name | What it actually is |
-|------|---------------------|
-| **`strudel-cli` on npm** | Unrelated 2018 JS framework scaffolder — **not** music Strudel |
-| **`strudel-science/strudel-kit`** | Scientific UI toolkit (React/MUI) — **not** music Strudel |
-| **`@strudel/*` on npm** | **Music Strudel** (TidalCycles in JS) — this is what we use |
-
-For the full upstream REPL (shuffle examples, all samples):
-
-```bash
-git clone https://codeberg.org/uzu/strudel.git
-cd strudel && pnpm i && pnpm dev
-# → http://localhost:4321
-```
-
-## Jam with friends
-
-1. Clone this repo
-2. `npm install && npm run dev`
-3. Add patterns under `patterns/` — they appear automatically in the dropdown
-4. Share screen or stream audio while live-coding
-
-## Learn Strudel
-
-- [Getting started](https://strudel.cc/learn/getting-started/)
-- [Workshop](https://strudel.cc/workshop/getting-started/)
-- [Online REPL](https://strudel.cc/)
-- Tidal Discord `#strudel` channel
-
-## License
-
-Pattern files in `patterns/` are yours to share. Strudel packages are AGPL-3.0-or-later.
+Patterns: eure Werke. Strudel-Pakete: AGPL-3.0-or-later.

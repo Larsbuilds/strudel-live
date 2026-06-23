@@ -29,9 +29,13 @@
               rows="2"
               placeholder="z.B. schneller Trance-Beat mit hartem Kick und Saw-Lead in A-Moll, 140 BPM"
             ></textarea>
-            <button type="submit" id="ai-submit">Generieren &amp; Abspielen</button>
+            <div class="ai-actions">
+              <button type="button" id="voice-btn" class="voice-btn" title="Spracheingabe (Chrome)">🎤 Sprechen</button>
+              <button type="submit" id="ai-submit">Generieren &amp; Abspielen</button>
+            </div>
           </div>
         </form>
+        <p id="voice-status" class="voice-status" aria-live="polite"></p>
         <div id="ai-chips" class="chips"></div>
         <p id="ai-status" class="ai-status" aria-live="polite"></p>
       </section>
@@ -40,6 +44,20 @@
         Starter-Pattern:
         <select id="pattern-picker"></select>
       </label>
+
+      <details class="advanced-panel">
+        <summary>Erweitert: Mikrofon, MIDI &amp; Samples</summary>
+        <ul class="advanced-list">
+          <li><strong>MIDI → Ableton:</strong> Pattern <code>04-midi-ableton</code> — siehe <code>docs/MIDI-MAC.md</code></li>
+          <li><strong>Eigene Samples:</strong> <code>npm run dev:full</code> — Dateien in <code>samples/</code></li>
+          <li><strong>SuperDirt/OSC:</strong> <code>docs/SUPERCOLLIDER.md</code></li>
+        </ul>
+        <label class="mic-toggle">
+          <input type="checkbox" id="mic-toggle" />
+          Mikrofon-Monitor (Vorbereitung für Autotune)
+        </label>
+        <p id="mic-status" class="mic-status" aria-live="polite"></p>
+      </details>
     </header>
     <main>
       <strudel-editor id="repl"></strudel-editor>

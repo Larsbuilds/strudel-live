@@ -1,0 +1,15 @@
+// MIDI → Ableton / externe Synths (Mac: IAC Driver muss aktiv sein)
+// Setup: docs/MIDI-MAC.md
+//
+// Nach Ctrl+Enter: Browser-Konsole zeigt verfügbare MIDI-Geräte.
+// Namen ggf. anpassen: "IAC Driver", "IAC Driver Bus 1", etc.
+
+setcpm(128)
+
+stack(
+  // Drums bleiben im Browser
+  s("bd*4, ~ sd").gain(0.85),
+  s("hh*8").gain(0.25),
+  // Akkorde an Ableton-Synth
+  chord("<C^7 A7 Dm7 G7>").voicing().midi("IAC Driver")
+)

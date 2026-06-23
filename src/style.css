@@ -56,6 +56,104 @@ header p {
   align-items: stretch;
 }
 
+.ai-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: 10rem;
+}
+
+#ai-submit,
+.voice-btn {
+  border-radius: 8px;
+  padding: 0.55rem 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+#ai-submit {
+  flex: 1;
+  background: #5b4dff;
+  color: white;
+}
+
+.voice-btn {
+  background: #1f1f28;
+  color: #e8e8ec;
+  border: 1px solid #3a3a48;
+}
+
+.voice-btn.listening {
+  background: #4a2020;
+  border-color: #c05050;
+}
+
+.voice-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+#ai-submit:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+#ai-submit:hover:not(:disabled) {
+  background: #6d60ff;
+}
+
+.voice-status {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  color: #9090a8;
+}
+
+.advanced-panel {
+  margin-top: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  background: #121218;
+  border: 1px solid #2a2a32;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.advanced-panel summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.advanced-list {
+  margin: 0.55rem 0;
+  padding-left: 1.2rem;
+  color: #a8a8b8;
+}
+
+.advanced-list li {
+  margin-bottom: 0.35rem;
+}
+
+.mic-toggle {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.mic-status {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  color: #9090a8;
+}
+
+.mic-status[data-state='ok'] {
+  color: #7dcea0;
+}
+
+.mic-status[data-state='error'] {
+  color: #f08080;
+}
+
 #ai-prompt {
   flex: 1;
   resize: vertical;
@@ -66,27 +164,6 @@ header p {
   border-radius: 8px;
   padding: 0.55rem 0.65rem;
   font: inherit;
-}
-
-#ai-submit {
-  align-self: stretch;
-  min-width: 10rem;
-  background: #5b4dff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 0 1rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-#ai-submit:disabled {
-  opacity: 0.55;
-  cursor: wait;
-}
-
-#ai-submit:hover:not(:disabled) {
-  background: #6d60ff;
 }
 
 .chips {
