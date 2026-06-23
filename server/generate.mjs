@@ -2,6 +2,8 @@ import OpenAI from 'openai';
 import Anthropic from '@anthropic-ai/sdk';
 import { SYSTEM_PROMPT } from './system-prompt.mjs';
 import { parseScaleFromCode } from './parse-scale.mjs';
+import { applyMusicConstraints } from './music-constraints.mjs';
+import { guardStrudelCode } from './code-validate.mjs';
 
 function stripCodeFences(text) {
   return text
@@ -82,6 +84,17 @@ export async function generateStrudel(prompt, env, { previousCode, trackContext 
       ? await generateWithOpenAI(trimmed, env, previousCode, trackContext)
       : await generateWithAnthropic(trimmed, env, previousCode, trackContext);
 
-  const scale = parseScaleFromCode(result.code);
-  return { ...result, scale };
+  const constraint = applyMusicConstraints(result.code, {});
+  const guarded = guardStrudelCode(constraint.code, { fallback: previousCode });
+
+  const scale = parseScaleFromCode(guarded.code);
+  return {
+    ...result,
+    code: guarded.code,
+    scale,
+    constraints: constraint,
+    syntax: guarded.validation,
+    usedFallback: guarded.usedFallback,
+    rejectedError: guarded.rejectedError,
+  };
 }

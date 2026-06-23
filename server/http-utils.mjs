@@ -1,4 +1,7 @@
 export function readJsonBody(req) {
+  if (req.body !== undefined && req.body !== null && typeof req.body === 'object') {
+    return Promise.resolve(req.body);
+  }
   return new Promise((resolve, reject) => {
     let data = '';
     req.on('data', (chunk) => {

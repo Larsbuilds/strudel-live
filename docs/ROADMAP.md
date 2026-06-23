@@ -1,70 +1,70 @@
 # Roadmap — strudel-live
 
-## Phase 1 — Lernen
+**Aktuell: v0.6.0** — Vollständige Feature-Liste: [FEATURES.md](FEATURES.md) · v0.6 Plan: [V0.6-ROADMAP.md](V0.6-ROADMAP.md)
 
-- [ ] `npm run dev` — KI oder Starter-Pattern
-- [ ] [Workshop](https://strudel.cc/workshop/getting-started/)
-- [ ] `docs/MINI-NOTATION.md`
+## Phase 1–6 — Kern ✅
 
-## Phase 2 — Lokales Setup ✅
-
-- [x] KI Text → Strudel → Auto-Play
-- [x] Verfeinern-Modus („mehr Reverb“, „nur Drums“)
-- [x] Pattern speichern → `patterns/generated/`
-- [x] Browser-Spracheingabe (Chrome)
-- [x] OpenAI Whisper (🎙 Button + `npm run voice`)
-- [x] Auto-load `patterns/**/*.strudel` + Hot-Reload
-- [x] `npm run check` Setup-Validator
-- [ ] API-Key in `.env`
-
-## Phase 3 — MIDI → DAW ✅ vorbereitet
-
-- [x] Pattern `04-midi-ableton`
-- [x] `docs/MIDI-MAC.md`
-- [x] MIDI-Geräteliste im Browser (Web MIDI)
-- [ ] IAC Driver + Ableton testen (manuell)
-
-## Phase 4 — SuperDirt / OSC ✅ vorbereitet
-
-- [x] `docs/SUPERCOLLIDER.md`
-- [x] Pattern `05-superdirt-osc`
-- [x] `npm run osc:check` + `npm run superdirt:help`
-- [ ] SuperCollider installieren (manuell)
-
-## Phase 5 — Sprache ✅
-
-- [x] Web Speech API
-- [x] Whisper API (`/api/transcribe`, 🎙 UI)
-- [x] `npm run voice -- --prompt "..."` CLI
-- [x] `npm run voice -- --audio file.webm`
-
-## Phase 6 — Gesang & Autotune ✅
-
-- [x] Mikrofon-Monitor / Autotune / Key-Sync
+- [x] KI Text → Strudel, Verfeinern, Speichern
+- [x] Browser-Sprache + Whisper + `npm run voice`
+- [x] MIDI-Geräteliste, Pattern `04-midi-ableton`
+- [x] SuperDirt/OSC vorbereitet (`05-superdirt-osc`)
+- [x] Mikrofon: Monitor / Autotune / Key-Sync
+- [x] `npm run dev:full`, `npm run check`, Production-Build
 
 ## Phase 7–10 — DJ-Modus ✅ Basis
 
-- [x] `npm run sc:fetch` — SoundCloud/URL → WAV (`yt-dlp`)
-- [x] `samples/manifest.json` Track-Registry
-- [x] `npm run dj:analyze` — BPM + Metadaten
-- [x] `npm run dj:stems` — Demucs 4-Stem (optional)
-- [x] KI-Übergangs-Engine (`/api/transition`, DJ-Panel)
-- [x] DJ-Controller Web MIDI (CC8/1/2)
-- [ ] Ableton Link Clock-Sync (extern)
-- [ ] Essentia Cue-Points (erweiterbar)
+- [x] `sc:fetch`, `dj:analyze`, `dj:stems`, Manifest
+- [x] `/api/transition`, DJ-Panel, Controller CC8/1/2
+- [x] Ableton Link Clock-Sync (`/api/link`, Link-Sync UI)
+- [ ] Essentia Cue-Points
 
-## Phase 11–14 — Sound & Vision ✅ Basis (v0.4)
+## Phase 11–15 — Sound & Vision ✅ Basis
 
-- [x] WAM-Host (OB-Xd, Dexed, Meld) im Browser
-- [x] KI SuperCollider SynthDef (`/api/synthdef`, `npm run synthdef`)
-- [x] sclang-Bridge (`/api/synthdef/send`)
-- [x] Hydra-Panel + KI-Visuals (`/api/hydra`, `@strudel/hydra`)
-- [ ] Faust live WASM compile
-- [ ] RAVE neural audio (siehe `npm run rave:help`)
-- [ ] FFT pro Demucs-Stem → Hydra
+- [x] WAM-Host (OB-Xd, Dexed, Meld)
+- [x] Faust Cloud API + AudioWorklet UI (`/api/faust`)
+- [x] KI SynthDef + sclang (`/api/synthdef`)
+- [x] RAVE Bridge (`rave:server`, 512/1024 PCM)
+- [x] Hydra + KI-Shader (`/api/hydra`)
+- [x] Stem-FFT → Hydra (geglättet α=0.2)
+- [x] AI Conductor (`/api/conduct`) + Quantisierung
 
-Siehe `docs/SOUND-VISION.md` · `docs/DJ-ROADMAP.md`
+## Phase 16 — Live UX & Safety ✅ (v0.5.x)
 
-- [x] `npm run build && npm start` — Express + API + Static
+- [x] **Ignite** — One-Prompt-Boot (`/api/ignite`)
+- [x] **Prompt-Buch** — Club-Standard-Prompts
+- [x] **Music Constraints** — deterministische Guardrails
+- [x] **NOT-AUS** — UI + `npm run panic`
+- [x] **Takt-Cue** — Countdown + Rand-Puls
+- [ ] Z3 SMT optional (siehe [MUSIC-LOGIC.md](MUSIC-LOGIC.md))
 
-Siehe `docs/ARCHITECTURE.md` · `docs/GEMINI-EXTRACT.md`
+## Phase 17 — v0.6.0 Orchestration ✅ (teilweise)
+
+- [x] Multi-Agent Conductor (Audio / Video / Synth parallel)
+- [x] Acorn Syntax-Guard (`code-validate.mjs`)
+- [x] Ableton Link (`abletonlink` + `link-sync.js`)
+- [x] RAVE ONNX (`onnxruntime-node`, `RAVE_MODEL_PATH`)
+- [ ] Demo-Video + HN Release
+
+- [ ] Gültiger `OPENAI_API_KEY` in `.env`
+- [ ] Demucs (`pip install demucs`)
+- [ ] SuperCollider für SynthDefs
+- [ ] RAVE ONNX-Modell exportieren + Latenz &lt; 15 ms
+- [ ] Faust-Service Zuverlässigkeit
+
+## Docs
+
+| Datei | Thema |
+|-------|-------|
+| [FEATURES.md](FEATURES.md) | Alles was gebaut ist |
+| [WORKFLOW.md](WORKFLOW.md) | Schritt-für-Schritt |
+| [PROMPT-BOOK.md](PROMPT-BOOK.md) | Club-Prompts |
+| [SOUND-VISION.md](SOUND-VISION.md) | Phasen 11–15 |
+| [DJ-ROADMAP.md](DJ-ROADMAP.md) | DJ 7–10 |
+| [MUSIC-LOGIC.md](MUSIC-LOGIC.md) | Constraints / Isabelle vs Z3 |
+
+## Tests
+
+```bash
+npm run check && npm run dev:full   # Terminal 1
+npm run workflow:check && npm run audit
+```

@@ -3,8 +3,10 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { config } from 'dotenv';
 import { handleApiRequest, getEnv } from './api.mjs';
+import { bootServerServices } from './boot.mjs';
 
 config();
+await bootServerServices(process.env);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');

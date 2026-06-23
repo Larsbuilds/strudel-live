@@ -38,8 +38,9 @@ async function callLLM(system, prompt, env) {
   throw Object.assign(new Error('No AI API key configured'), { status: 503 });
 }
 
-export async function generateHydra(prompt, env) {
+export async function generateHydra(prompt, env, { stemLevels } = {}) {
   if (!prompt?.trim()) throw Object.assign(new Error('Prompt is empty'), { status: 400 });
-  const { text, model, provider } = await callLLM(HYDRA_PROMPT, prompt.trim(), env);
+  const fullPrompt = stemLevels ? `${prompt.trim()}\n\n${stemLevels}` : prompt.trim();
+  const { text, model, provider } = await callLLM(HYDRA_PROMPT, fullPrompt, env);
   return { code: stripFences(text), model, provider };
 }

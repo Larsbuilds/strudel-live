@@ -1,121 +1,123 @@
 # Strudel Live
 
-Vollständiges KI-Live-Coding-System: **Text, Sprache, Whisper → Strudel → Sound** — plus MIDI zu Ableton, Autotune mit Key-Sync, eigene Samples.
+**KI-Live-DJ & Live-Coding:** Ein Prompt → Strudel + Hydra + Mic + Stems + WAM — quantisiert, mit NOT-AUS.
 
-**Repo:** https://github.com/Larsbuilds/strudel-live
+**Repo:** https://github.com/Larsbuilds/strudel-live · **Version:** 0.6.0
 
-## Schnellstart (Mac)
+## Schnellstart
 
 ```bash
 git clone https://github.com/Larsbuilds/strudel-live.git
 cd strudel-live
-npm install
-npm run setup          # .env anlegen
+npm install && npm run setup
 # OPENAI_API_KEY in .env
-npm run check          # Setup prüfen
-npm run dev            # http://localhost:5173
+npm run check
+npm run dev:full          # App :5173 + Samples :5432
 ```
 
-## Features
+→ http://localhost:5173 → **Prompt-Buch-Chip** oder Text → **Ignite & Start**
 
-| Feature | Wie |
-|---------|-----|
-| **KI Text → Musik** | Prompt → Generieren & Abspielen |
-| **Verfeinern** | Checkbox + „mehr Reverb“, „nur Drums“ |
-| **Pattern speichern** | Button → `patterns/generated/` |
-| **🎤 Browser-Sprache** | Chrome, kein Extra-Key |
-| **🎙 Whisper** | Bessere STT (braucht OpenAI-Key) |
-| **Autotune** | Mikrofon → chromatisch oder Key-Sync mit KI-Pattern |
-| **MIDI-Liste** | Zeigt IAC Driver / Geräte für `.midi("...")` |
-| **Eigene Samples** | `npm run dev:full` |
-| **CLI** | `npm run voice -- --prompt "techno beat"` |
+## Was drin ist (Kurz)
 
-## DJ-Modus (Phasen 7–10)
+| Bereich | Highlights |
+|---------|------------|
+| **Ignite** | Ein Prompt bootet Strudel + Hydra + Mic/RAVE/WAM automatisch |
+| **DJ** | SoundCloud → Analyse → Demucs-Stems → KI-Übergänge |
+| **Vision** | Hydra KI-Shader, Stem-FFT (`window.dj_stems`) |
+| **Conductor** | Ein Prompt → Strudel + WAM + Hydra auf der Eins |
+| **Safety** | NOT-AUS (`npm run panic`), Takt-Countdown, **Ableton Link** |
+| **Voice** | Browser-Sprache, Whisper, Autotune, Key-Sync |
+
+**Vollständige Liste:** [docs/FEATURES.md](docs/FEATURES.md)
+
+## Club-Prompts
+
+[docs/PROMPT-BOOK.md](docs/PROMPT-BOOK.md) — z. B. *90s Trance 140 BPM blaue Neon* vs. *Industrial Schranz 150 BPM Stroboskop*
+
+## DJ-Workflow
 
 ```bash
 npm run dj:deps
-npm run sc:fetch -- --url "https://soundcloud.com/artist/track"
+npm run sc:fetch -- --url "https://soundcloud.com/…"
 npm run dj:analyze -- --track samples/soundcloud/track.wav
-npm run dj:stems -- --track samples/soundcloud/track.wav   # optional, Demucs
+npm run dj:stems -- --track samples/soundcloud/track.wav   # optional
 npm run dev:full
 ```
 
-Im Browser: **DJ-Modus** → Track wählen → **Übergang generieren**
+→ DJ-Modus → Track → Stem-FFT → Conductor
 
-Details: [docs/DJ-ROADMAP.md](docs/DJ-ROADMAP.md)
+Details: [docs/DJ-ROADMAP.md](docs/DJ-ROADMAP.md) · [docs/WORKFLOW.md](docs/WORKFLOW.md)
 
-## Sound & Vision (v0.4)
+## Sound & Vision
 
 | Phase | Feature |
 |-------|---------|
-| 11 | WAM-Synths (OB-Xd, Dexed) im UI |
-| 12 | KI → SuperCollider SynthDef → sclang |
-| 14 | Hydra Visuals + KI-Shader |
-
-```bash
-npm run synthdef -- --prompt "cyberpunk morphing bass"
-npm run rave:help   # Phase 13 Info
-```
+| 11 | WAM (OB-Xd, Dexed, Meld) |
+| 11b | Faust → WASM AudioWorklet |
+| 12 | KI → SuperCollider SynthDef |
+| 13 | RAVE WebSocket + ONNX (`npm run rave:server`, `RAVE_MODEL_PATH`) |
+| 14 | Hydra + Stem-FFT |
+| 15 | AI Conductor |
 
 [docs/SOUND-VISION.md](docs/SOUND-VISION.md)
 
 ## NPM-Skripte
 
 ```bash
-npm run dev          # Entwicklung (Port 5173)
-npm run dev:full     # + Sample-Server (5432)
-npm run build        # Production-Build
-npm start            # Production (API + Static)
-npm run workflow:check  # Integrationstest (APIs + Tools)
-npm run voice        # CLI: Text/Audio → Pattern
-npm run sc:fetch     # SoundCloud/URL → samples/
-npm run dj:analyze   # BPM-Analyse
-npm run dj:stems     # Demucs Stem-Separation
-npm run dj:deps      # DJ-Dependencies prüfen
-npm run osc:check    # SuperDirt OSC prüfen
-npm run superdirt:help
+npm run dev:full         # Entwicklung + Samples
+npm run build && npm start   # Production
+npm run check            # Setup
+npm run workflow:check   # API-Integration
+npm run audit            # Doku + Module + APIs
+npm run panic            # Remote NOT-AUS
+npm run voice            # CLI Voice-Jam
+npm run sc:fetch         # SoundCloud/URL
+npm run dj:analyze       # BPM
+npm run dj:stems         # Demucs
+npm run synthdef         # SC SynthDef CLI
+npm run osc:synthdef     # Alias synthdef CLI
+npm run rave:server      # RAVE :8765
+npm run rave:help        # RAVE Info
+npm run link:status      # Ableton Link BPM/Beat
+npm run samples          # Nur Sample-Server :5432
+npm run patterns         # Pattern-Liste
+npm run preview          # build + start
 ```
 
-## Workflow-Beispiel
+## APIs
 
-1. *„Trance 140 BPM, A-Moll, Saw-Lead“* → Generieren
-2. Checkbox **Verfeinern** → *„mehr Delay und Reverb“*
-3. **Pattern speichern**
-4. Mikrofon → **Key-Sync** → dazu singen
-5. Optional: Pattern `04-midi-ableton` → Akkorde in Ableton
+`generate` · `ignite` · `conduct` · `transition` · `hydra` · `synthdef` · `faust` · `transcribe` · `panic` · `link` · `dj/manifest`
 
-## Architektur
+Siehe [docs/FEATURES.md](docs/FEATURES.md#alle-api-endpunkte)
+
+## Dokumentation
+
+| Doc | Inhalt |
+|-----|--------|
+| [FEATURES.md](docs/FEATURES.md) | Master-Feature-Liste |
+| [ROADMAP.md](docs/ROADMAP.md) | Phasen-Status |
+| [PROMPT-BOOK.md](docs/PROMPT-BOOK.md) | Club-Prompts |
+| [WORKFLOW.md](docs/WORKFLOW.md) | End-to-End |
+| [MUSIC-LOGIC.md](docs/MUSIC-LOGIC.md) | Constraints, kein Isabelle |
+| [ARCHITECTURE.md](docs/ARCHITECTURE.md) | System |
+| [MIDI-MAC.md](docs/MIDI-MAC.md) | Ableton-Routing |
+| [SUPERCOLLIDER.md](docs/SUPERCOLLIDER.md) | SuperDirt |
+
+## Architektur (vereinfacht)
 
 ```
-Text / 🎤 / 🎙 Whisper
-        ↓
-   OpenAI / Claude
-        ↓
-   Strudel REPL ──┬── Browser-Audio
-                  ├── MIDI → Ableton (IAC)
-                  ├── OSC → SuperDirt
-                  └── Mic → Autotune (Key-Sync)
-```
-
-Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
-
-## Docs
-
-- [ROADMAP](docs/ROADMAP.md) — Phasen 1–6
-- [MINI-NOTATION](docs/MINI-NOTATION.md)
-- [MIDI-MAC](docs/MIDI-MAC.md)
-- [SUPERCOLLIDER](docs/SUPERCOLLIDER.md)
-- [GEMINI-EXTRACT](docs/GEMINI-EXTRACT.md)
-
-## Mit Freunden
-
-```bash
-git clone https://github.com/Larsbuilds/strudel-live.git
-npm install && npm run setup
-# jeder eigener OPENAI_API_KEY in .env
-npm run dev
+Prompt / 🎤 / 🎙
+      ↓
+  /api/ignite | /api/conduct | /api/generate
+      ↓
+ workflow-hub → Strudel REPL
+      ├→ Hydra (Stem-FFT)
+      ├→ WAM / Faust / RAVE
+      ├→ MIDI → Ableton
+      ├→ OSC → SuperCollider
+      └→ Mic → Autotune (Key-Sync)
 ```
 
 ## Lizenz
 
-Patterns: eure Werke. Strudel: AGPL-3.0-or-later.
+Patterns: eure Werke. Strudel-Packages: AGPL-3.0-or-later.

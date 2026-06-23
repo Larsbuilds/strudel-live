@@ -57,8 +57,16 @@ flowchart TB
 | Befehl | Port | Zweck |
 |--------|------|-------|
 | `npm run dev` | 5173 | REPL + KI-Panel |
-| `npm run samples` | 5432 | Eigene WAV/MP3 aus `samples/` |
-| `npm run dev:full` | beide | Jam mit lokalen Samples |
+| `npm run dev:full` | 5173+5432 | App + Samples |
+| `npm run samples` | 5432 | Nur Sample-Server |
+| `npm run build` / `start` | 5173 | Production |
+| `npm run check` | — | Setup |
+| `npm run workflow:check` | — | API-Integration |
+| `npm run audit` | — | Doku + Module + APIs |
+| `npm run panic` | — | Remote NOT-AUS |
+| `npm run ignite` | — | siehe `/api/ignite` im Browser |
+
+Siehe [FEATURES.md](FEATURES.md) für alle Skripte.
 
 ## Repos & Links
 

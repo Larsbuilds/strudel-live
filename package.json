@@ -1,6 +1,6 @@
 {
   "name": "strudel-live",
-  "version": "0.4.1",
+  "version": "0.6.0",
   "private": true,
   "description": "Collaborative AI-driven Strudel live-coding — text, voice, MIDI, autotune",
   "type": "module",
@@ -24,19 +24,27 @@
     "synthdef": "node scripts/synthdef-cli.mjs",
     "osc:synthdef": "node scripts/synthdef-cli.mjs",
     "rave:help": "bash scripts/rave-help.sh",
-    "workflow:check": "node scripts/workflow-check.mjs"
+    "rave:server": "node server/rave-server.mjs",
+    "link:status": "node scripts/link-status.mjs",
+    "panic": "node scripts/panic.mjs",
+    "workflow:check": "node scripts/workflow-check.mjs",
+    "audit": "node scripts/repo-audit.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
     "@strudel/hydra": "1.2.6",
     "@strudel/repl": "1.3.0",
+    "abletonlink": "^0.2.0-beta.0",
+    "acorn": "^8.17.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "music-metadata": "^11.13.0",
     "music-tempo": "^1.0.3",
+    "onnxruntime-node": "^1.27.0",
     "openai": "^4.77.0",
     "pitchy": "^4.1.0",
-    "tone": "^15.0.4"
+    "tone": "^15.0.4",
+    "ws": "^8.21.0"
   },
   "devDependencies": {
     "@strudel/sampler": "^0.2.4",

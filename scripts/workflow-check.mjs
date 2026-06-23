@@ -87,6 +87,9 @@ const importChecks = [
   '../server/transition.mjs',
   '../server/synthdef.mjs',
   '../server/hydra.mjs',
+  '../server/conductor.mjs',
+  '../server/ignite.mjs',
+  '../server/faust.mjs',
   '../server/transcribe.mjs',
 ];
 for (const mod of importChecks) {

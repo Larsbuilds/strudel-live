@@ -1,4 +1,5 @@
 import { setSelectedTrack } from './session.js';
+import { startStemAnalysis, stopStemAnalysis, getStemBridge } from './stem-analyser.js';
 
 export async function initDjPanel({ hub }) {
   const trackSelect = document.getElementById('dj-track-select');
@@ -7,6 +8,8 @@ export async function initDjPanel({ hub }) {
   const transitionForm = document.getElementById('dj-transition-form');
   const toPrompt = document.getElementById('dj-to-prompt');
   const status = document.getElementById('dj-status');
+  const stemBtn = document.getElementById('dj-stem-analyse');
+  const stemStatus = document.getElementById('dj-stem-status');
 
   let manifest = { tracks: {} };
 
@@ -40,8 +43,40 @@ export async function initDjPanel({ hub }) {
   trackSelect?.addEventListener('change', () => {
     const track = manifest.tracks[trackSelect.value] || null;
     setSelectedTrack(track);
+    stopStemAnalysis();
+    if (stemStatus) stemStatus.textContent = '';
+    if (stemBtn) stemBtn.disabled = !track;
     if (!trackMeta) return;
     trackMeta.textContent = track ? JSON.stringify(track, null, 2) : '';
+  });
+
+  stemBtn?.addEventListener('click', async () => {
+    const track = manifest.tracks[trackSelect?.value];
+    if (!track) {
+      if (stemStatus) stemStatus.textContent = 'Erst Track wählen.';
+      return;
+    }
+    const bridge = getStemBridge();
+    if (bridge.active) {
+      stopStemAnalysis();
+      if (stemStatus) stemStatus.textContent = 'Stem-Analyse gestoppt.';
+      stemBtn.textContent = 'Stem-FFT für Hydra starten';
+      return;
+    }
+    if (stemStatus) stemStatus.textContent = 'Lade Stems + FFT…';
+    try {
+      const loaded = await startStemAnalysis(track);
+      if (stemStatus) {
+        stemStatus.textContent = `Stem-FFT aktiv: ${loaded.join(', ')} — window.dj_stems in Hydra nutzen`;
+        stemStatus.dataset.state = 'ok';
+      }
+      stemBtn.textContent = 'Stem-Analyse stoppen';
+    } catch (err) {
+      if (stemStatus) {
+        stemStatus.textContent = err.message;
+        stemStatus.dataset.state = 'error';
+      }
+    }
   });
 
   refreshBtn?.addEventListener('click', loadManifest);

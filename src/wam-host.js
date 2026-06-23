@@ -1,4 +1,5 @@
 import { WAM_PLUGINS } from './wam-registry.js';
+import { registerWamInstance } from './wam-automation.js';
 
 let audioContext = null;
 let currentWam = null;
@@ -40,6 +41,7 @@ export function initWamHost() {
       }
 
       currentWam = await WAM.createInstance(audioContext, {});
+      registerWamInstance(currentWam);
       const node = currentWam.audioNode;
       if (node) node.connect(audioContext.destination);
 
@@ -69,6 +71,7 @@ async function unloadWam(container) {
   currentGui = null;
   if (currentWam?.destroy) await currentWam.destroy();
   currentWam = null;
+  registerWamInstance(null);
   if (container) container.innerHTML = '';
 }
 

@@ -78,6 +78,28 @@ header p {
   color: white;
 }
 
+.ai-panel--ignite #ai-submit {
+  background: #c44a1a;
+}
+
+.ai-panel--ignite #ai-submit:hover:not(:disabled) {
+  background: #e05a22;
+}
+
+.ai-advanced {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.ai-advanced summary {
+  cursor: pointer;
+  color: #a8a8b8;
+}
+
+.ignite-toggle {
+  font-weight: 600;
+}
+
 .voice-btn {
   background: #1f1f28;
   color: #e8e8ec;
@@ -354,11 +376,28 @@ header p {
   font: inherit;
 }
 
-.chips {
+.chips,
+.prompt-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
   margin-top: 0.55rem;
+  align-items: center;
+}
+
+.chip-category {
+  width: 100%;
+  flex-basis: 100%;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #7878a0;
+  margin-top: 0.35rem;
+}
+
+.chip-category:first-child {
+  margin-top: 0;
 }
 
 .chip {
@@ -425,4 +464,161 @@ code,
 kbd {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 0.9em;
+}
+
+/* Beat pulse — driven by --beat-phase (0–1) from quantize-cue */
+body {
+  box-shadow: inset 0 0 0 0 transparent;
+  transition: box-shadow 0.05s linear;
+}
+
+body[style*='--beat-phase'] {
+  box-shadow: inset 0 0 calc(12px + 20px * var(--beat-phase, 0)) 0
+    rgba(255, 60, 60, calc(0.15 + 0.45 * var(--beat-phase, 0)));
+}
+
+.panic-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+  padding: 0.65rem 0.85rem;
+  background: #1a1214;
+  border: 1px solid #4a2028;
+  border-radius: 10px;
+}
+
+.panic-btn {
+  background: #c41e2a;
+  color: #fff;
+  border: 2px solid #ff4d5a;
+  border-radius: 8px;
+  padding: 0.55rem 1.25rem;
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(196, 30, 42, 0.45);
+}
+
+.panic-btn:hover {
+  background: #e02535;
+}
+
+.panic-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.panic-status {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #c8a0a8;
+  flex: 1;
+  min-width: 12rem;
+}
+
+.quantize-cue-toggle {
+  margin: 0;
+}
+
+.link-sync-toggle {
+  margin: 0;
+}
+
+.link-status {
+  margin: 0;
+  font-size: 0.85rem;
+  font-family: ui-monospace, monospace;
+  color: var(--muted, #888);
+  min-width: 10rem;
+}
+
+.link-status--live {
+  color: #4ade80;
+}
+
+.quantize-cue {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 9999;
+  width: 5.5rem;
+  height: 5.5rem;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.quantize-cue--active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.quantize-cue__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 80, 80, 0.25);
+  background: conic-gradient(
+    rgba(255, 60, 60, 0.85) calc((1 - var(--progress, 0)) * 360deg),
+    transparent 0
+  );
+  mask: radial-gradient(farthest-side, transparent 58%, #000 60%);
+}
+
+.quantize-cue__count {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #ff6b6b;
+  text-shadow: 0 0 12px rgba(255, 80, 80, 0.8);
+}
+
+.quantize-cue__label {
+  position: absolute;
+  left: 50%;
+  bottom: -1.35rem;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #a8a8b8;
+}
+
+.quantize-cue--armed .quantize-cue__count {
+  color: #ff3030;
+  animation: cue-pulse 0.5s ease-in-out infinite alternate;
+}
+
+.quantize-cue--drop .quantize-cue__count {
+  font-size: 1.1rem;
+  color: #fff;
+  animation: cue-drop 0.35s ease-out;
+}
+
+@keyframes cue-pulse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.12);
+  }
+}
+
+@keyframes cue-drop {
+  from {
+    transform: scale(1.4);
+    opacity: 0.5;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }

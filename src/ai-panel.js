@@ -1,12 +1,6 @@
 import { session } from './session.js';
-
-const EXAMPLE_PROMPTS = [
-  'Schneller Trance-Beat mit Kick, Hi-Hats und Saw-Lead in A-Moll',
-  'Dark techno, 128 BPM, harter 4/4 Kick, minimal',
-  'DNB Break bei 174 BPM mit synkopiertem Kick',
-  'mehr Reverb und langsamerer Filter',
-  'nur Drums, kein Lead',
-];
+import { runIgnite } from './ignite-boot.js';
+import { initPromptBook } from './prompt-book.js';
 
 export function initAiPanel({ editor, hub }) {
   const form = document.getElementById('ai-form');
@@ -14,22 +8,19 @@ export function initAiPanel({ editor, hub }) {
   const submitBtn = document.getElementById('ai-submit');
   const saveBtn = document.getElementById('save-pattern-btn');
   const refineCheck = document.getElementById('refine-mode');
+  const igniteCheck = document.getElementById('ignite-mode');
   const djContextCheck = document.getElementById('dj-context-mode');
   const statusEl = document.getElementById('ai-status');
   const chipsEl = document.getElementById('ai-chips');
   const setupEl = document.getElementById('ai-setup');
 
-  for (const text of EXAMPLE_PROMPTS) {
-    const chip = document.createElement('button');
-    chip.type = 'button';
-    chip.className = 'chip';
-    chip.textContent = text;
-    chip.addEventListener('click', () => {
-      promptInput.value = text;
-      promptInput.focus();
-    });
-    chipsEl.append(chip);
-  }
+  initPromptBook({
+    promptInput,
+    chipsEl,
+    refineCheck,
+    igniteCheck,
+    conductorPromptEl: document.getElementById('conductor-prompt'),
+  });
 
   async function checkStatus() {
     try {
@@ -52,6 +43,20 @@ export function initAiPanel({ editor, hub }) {
 
   checkStatus();
 
+  function syncSubmitLabel() {
+    if (!submitBtn) return;
+    if (refineCheck?.checked) {
+      submitBtn.textContent = 'Verfeinern & Abspielen';
+    } else if (igniteCheck?.checked !== false) {
+      submitBtn.textContent = 'Ignite & Start';
+    } else {
+      submitBtn.textContent = 'Generieren & Abspielen';
+    }
+  }
+  refineCheck?.addEventListener('change', syncSubmitLabel);
+  igniteCheck?.addEventListener('change', syncSubmitLabel);
+  syncSubmitLabel();
+
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const prompt = promptInput.value.trim();
@@ -59,11 +64,20 @@ export function initAiPanel({ editor, hub }) {
 
     submitBtn.disabled = true;
     statusEl.dataset.state = 'loading';
-    statusEl.textContent = refineCheck?.checked
-      ? 'KI verfeinert das aktuelle Pattern…'
-      : 'KI schreibt Strudel-Code…';
+
+    const useIgnite = igniteCheck?.checked !== false && !refineCheck?.checked;
 
     try {
+      if (useIgnite) {
+        statusEl.textContent = 'Ignite — Session wird gebootet…';
+        await runIgnite({ prompt, hub, editor, statusEl });
+        return;
+      }
+
+      statusEl.textContent = refineCheck?.checked
+        ? 'KI verfeinert das aktuelle Pattern…'
+        : 'KI schreibt Strudel-Code…';
+
       const previousCode = refineCheck?.checked ? hub.getLastCode() : undefined;
       const trackContext =
         djContextCheck?.checked && session.selectedTrack ? session.selectedTrack : undefined;

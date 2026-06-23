@@ -41,10 +41,13 @@ npm run workflow:check  # APIs + Integration
 
 ## KI-Workflow (ohne SoundCloud)
 
-1. Text / 🎤 / 🎙 → **Generieren & Abspielen**
-2. **Verfeinern** → „mehr Reverb"
-3. **Speichern** → erscheint im Pattern-Dropdown (auto-refresh)
-4. Optional: Hydra + WAM parallel
+1. **Prompt-Buch** — Chip wählen oder eigenen Text → **Ignite & Start**
+2. Oder: Text / 🎤 / 🎙 → Ignite
+3. **Erweitert → Verfeinern** → „mehr Reverb"
+4. **Conductor** (DJ-Modus) für Übergänge im laufenden Set
+5. **Speichern** → Pattern-Dropdown (auto-refresh)
+
+Club-Prompts: [docs/PROMPT-BOOK.md](PROMPT-BOOK.md)
 
 ## Integration prüfen
 

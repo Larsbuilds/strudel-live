@@ -1,5 +1,6 @@
 import { initHydra, clearHydra } from '@strudel/hydra';
 import { session } from './session.js';
+import { stemLevelsForPrompt } from './stem-analyser.js';
 
 let hydraReady = false;
 
@@ -49,7 +50,7 @@ export function initHydraPanel() {
       const res = await fetch('/api/hydra', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({ prompt, stemLevels: stemLevelsForPrompt() }),
       });
       const data = await res.json();
       if (!data.ok) throw new Error(data.error);
@@ -93,6 +94,16 @@ function runHydraCode(code, status) {
       status.textContent = `Hydra-Fehler: ${err.message}`;
       status.dataset.state = 'error';
     }
+  }
+}
+
+export function blackoutHydra() {
+  if (!hydraReady) return;
+  try {
+    // eslint-disable-next-line no-eval
+    eval('solid(0,0,0).out()');
+  } catch {
+    /* hydra not init */
   }
 }
 

@@ -13,38 +13,62 @@
         AI Live-DJ: Text/Sprache → Strudel · SoundCloud-Stems · KI-Übergänge · DJ-Controller
       </p>
 
+      <div class="panic-bar">
+        <button type="button" id="panic-btn" class="panic-btn" title="Ctrl/Cmd+Escape">
+          NOT-AUS
+        </button>
+        <p id="panic-status" class="panic-status" aria-live="polite"></p>
+        <label class="refine-toggle quantize-cue-toggle">
+          <input type="checkbox" id="quantize-cue-toggle" checked />
+          Takt-Cue (Rand + Countdown)
+        </label>
+        <label class="refine-toggle link-sync-toggle">
+          <input type="checkbox" id="link-sync-toggle" />
+          Link-Sync
+        </label>
+        <p id="link-status" class="link-status" aria-live="polite">Link: —</p>
+      </div>
+
       <div id="ai-setup" class="setup-banner" hidden>
         <strong>Setup:</strong> <code>npm run setup</code> → <code>OPENAI_API_KEY</code> in <code>.env</code> → <code>npm run dev</code>
       </div>
 
-      <section class="ai-panel">
+      <section class="ai-panel ai-panel--ignite">
         <form id="ai-form">
-          <label for="ai-prompt">Was soll es klingen?</label>
+          <label for="ai-prompt">Was soll passieren?</label>
           <div class="ai-row">
             <textarea
               id="ai-prompt"
-              rows="2"
-              placeholder="z.B. Trance 140 BPM A-Moll — oder „mehr Reverb“ mit Verfeinern"
+              rows="3"
+              placeholder="z.B. Hypnotic Deep Techno, dunkelrote Visuals, harte Kicks — ich will live mitsingen"
             ></textarea>
             <div class="ai-actions">
               <button type="button" id="voice-btn" class="voice-btn" title="Browser-Sprache">🎤 Sprechen</button>
               <button type="button" id="whisper-btn" class="voice-btn" title="Whisper STT">🎙 Whisper</button>
-              <button type="submit" id="ai-submit">Generieren &amp; Abspielen</button>
+              <button type="submit" id="ai-submit">Ignite &amp; Start</button>
               <button type="button" id="save-pattern-btn" class="secondary-btn" disabled>Speichern</button>
             </div>
           </div>
-          <label class="refine-toggle">
-            <input type="checkbox" id="refine-mode" />
-            Aktuelles Pattern verfeinern
+          <label class="refine-toggle ignite-toggle">
+            <input type="checkbox" id="ignite-mode" checked />
+            Ein Prompt startet alles (Hydra, Mic, Module automatisch)
           </label>
-          <label class="refine-toggle">
-            <input type="checkbox" id="dj-context-mode" />
-            DJ-Track-Kontext (BPM/Stems aus Manifest)
-          </label>
+          <details class="ai-advanced">
+            <summary>Erweitert</summary>
+            <label class="refine-toggle">
+              <input type="checkbox" id="refine-mode" />
+              Aktuelles Pattern verfeinern (nur Strudel)
+            </label>
+            <label class="refine-toggle">
+              <input type="checkbox" id="dj-context-mode" />
+              DJ-Track-Kontext (BPM/Stems aus Manifest)
+            </label>
+          </details>
         </form>
         <p id="voice-status" class="voice-status" aria-live="polite"></p>
         <div id="ai-chips" class="chips"></div>
         <p id="ai-status" class="ai-status" aria-live="polite"></p>
+        <p class="dj-hint">Club-Prompts: Chips unten · <code>docs/PROMPT-BOOK.md</code></p>
       </section>
 
       <label class="pattern-picker">
@@ -63,6 +87,10 @@
           <button type="button" id="dj-manifest-refresh" class="secondary-btn small">Aktualisieren</button>
           <select id="dj-track-select" class="dj-track-select"></select>
           <pre id="dj-track-meta" class="dj-track-meta"></pre>
+          <button type="button" id="dj-stem-analyse" class="secondary-btn small" disabled>
+            Stem-FFT für Hydra starten
+          </button>
+          <p id="dj-stem-status" class="mic-status"></p>
         </div>
         <form id="dj-transition-form" class="dj-transition-form">
           <label for="dj-to-prompt">KI-Übergang → Ziel-Sound</label>
@@ -74,6 +102,21 @@
           <button type="submit" class="secondary-btn">Übergang generieren</button>
         </form>
         <p id="dj-status" class="ai-status" aria-live="polite"></p>
+
+        <div class="advanced-block">
+          <strong>Phase 15 — AI Performance Conductor</strong>
+          <form id="conductor-form">
+            <input
+              id="conductor-prompt"
+              type="text"
+              placeholder='z.B. „Übergang jetzt düster und aggressiv"'
+            />
+            <button type="submit" class="secondary-btn">Conductor ausführen</button>
+          </form>
+          <p id="conductor-status" class="mic-status"></p>
+          <p class="dj-hint">Ein Prompt → Strudel + WAM + Hydra · Wechsel auf nächste Eins quantisiert</p>
+        </div>
+
         <div class="advanced-block">
           <strong>DJ-Controller</strong>
           <button type="button" id="dj-ctrl-connect" class="secondary-btn small">MIDI Input verbinden</button>
@@ -84,7 +127,7 @@
       </details>
 
       <details class="sv-panel" open>
-        <summary>🎨 Sound &amp; Vision (v0.4)</summary>
+        <summary>🎨 Sound &amp; Vision (v0.5)</summary>
 
         <div class="advanced-block">
           <strong>Phase 11 — WAM Synthesizer</strong>
@@ -92,6 +135,31 @@
           <button type="button" id="wam-load-btn" class="secondary-btn small">WAM laden</button>
           <div id="wam-gui-container" class="wam-gui"></div>
           <p id="wam-status" class="mic-status"></p>
+        </div>
+
+        <div class="advanced-block">
+          <strong>Phase 11b — Faust DSP (Cloud → AudioWorklet)</strong>
+          <form id="faust-form">
+            <textarea id="faust-code" class="code-preview" rows="3" placeholder="process = _;">process = _;</textarea>
+            <button type="submit" class="secondary-btn small">Kompilieren &amp; laden</button>
+            <button type="button" id="faust-unload" class="secondary-btn small">Entladen</button>
+          </form>
+          <p id="faust-status" class="mic-status"></p>
+        </div>
+
+        <div class="advanced-block">
+          <strong>Phase 13 — RAVE Bridge</strong>
+          <label>
+            PCM-Frame:
+            <select id="rave-frame-size">
+              <option value="512" selected>512 (reaktiv)</option>
+              <option value="1024">1024 (stabiler)</option>
+            </select>
+          </label>
+          <button type="button" id="rave-start" class="secondary-btn small">RAVE starten</button>
+          <button type="button" id="rave-stop" class="secondary-btn small">Stop</button>
+          <p id="rave-status" class="mic-status"></p>
+          <p class="dj-hint"><code>npm run rave:server</code> in separatem Terminal</p>
         </div>
 
         <div class="advanced-block">
@@ -120,7 +188,7 @@
           <div id="hydra-canvas-wrap" class="hydra-wrap" hidden>Hydra läuft — Canvas oben im Draw-Layer</div>
         </div>
 
-        <p class="dj-hint">Phase 13 RAVE: <code>npm run rave:help</code> · <code>docs/SOUND-VISION.md</code></p>
+        <p class="dj-hint">Stem-FFT: geglättet (α=0.2) · Conductor: quantisiert auf Eins · <code>docs/SOUND-VISION.md</code></p>
       </details>
 
       <details class="advanced-panel">

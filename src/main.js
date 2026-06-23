@@ -9,6 +9,13 @@ import { initDjController } from './dj-controller.js';
 import { initWamHost } from './wam-host.js';
 import { initHydraPanel } from './hydra-panel.js';
 import { initSynthDefPanel } from './synthdef-panel.js';
+import { initConductorPanel } from './conductor-panel.js';
+import { initFaustPanel } from './faust-host.js';
+import { initRavePanel } from './rave-client.js';
+import { initPanicButton } from './panic.js';
+import { initLinkSync } from './link-sync.js';
+import { initQuantizeCue } from './quantize-cue.js';
+import { setQuantizeCueHandler } from './conductor-panel.js';
 import { createWorkflowHub } from './workflow-hub.js';
 import { initPatternPicker } from './pattern-picker.js';
 
@@ -43,6 +50,14 @@ initDjController();
 initWamHost();
 initHydraPanel();
 initSynthDefPanel();
+initConductorPanel({ hub, editor });
+initFaustPanel();
+initRavePanel();
+
+const cue = initQuantizeCue(editor);
+setQuantizeCueHandler((phase) => cue.onQuantizeTick(phase));
+initPanicButton(editor);
+initLinkSync(editor);
 
 window.addEventListener('strudel-live:patterns-saved', () => refreshPatterns());
 
