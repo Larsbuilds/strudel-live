@@ -2,7 +2,7 @@
 
 **KI-Live-DJ & Live-Coding:** Ein Prompt → Strudel + Hydra + Mic + Stems + WAM — quantisiert, mit NOT-AUS.
 
-**Repo:** https://github.com/Larsbuilds/strudel-live · **Version:** 0.6.0
+**Repo:** https://github.com/Larsbuilds/strudel-live · **Version:** 0.6.1
 
 ## Schnellstart
 
