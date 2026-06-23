@@ -53,6 +53,7 @@ const REQUIRED_DOCS = [
   'docs/V0.6-ROADMAP.md',
   'docs/ABLETON-LINK.md',
   'docs/RAVE.md',
+  'docs/CLUB-HARDENING.md',
 ];
 
 for (const doc of REQUIRED_DOCS) {

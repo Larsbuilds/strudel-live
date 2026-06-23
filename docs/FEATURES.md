@@ -187,5 +187,9 @@ npm run superdirt:help   # SC Install-Hilfe
 npm run check           # Tools + .env
 npm run workflow:check  # APIs + Imports (Dev-Server nötig)
 npm run audit           # Doku + Module + APIs + Build
+npm run stress:smoke    # Link + RAVE Kurz-Härtetest
+npm run stress:club     # Gig-Vorbereitung (Link + 2h RAVE)
 npm run build           # Production-Build
 ```
+
+Gig-Checkliste: [CLUB-HARDENING.md](CLUB-HARDENING.md)

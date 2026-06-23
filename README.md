@@ -69,6 +69,8 @@ npm run build && npm start   # Production
 npm run check            # Setup
 npm run workflow:check   # API-Integration
 npm run audit            # Doku + Module + APIs
+npm run stress:smoke     # Link + RAVE Kurz-Härtetest (~2 min)
+npm run stress:club      # Gig-Vorbereitung (2h+ RAVE)
 npm run panic            # Remote NOT-AUS
 npm run voice            # CLI Voice-Jam
 npm run sc:fetch         # SoundCloud/URL
@@ -98,6 +100,7 @@ Siehe [docs/FEATURES.md](docs/FEATURES.md#alle-api-endpunkte)
 | [ROADMAP.md](docs/ROADMAP.md) | Phasen-Status |
 | [PROMPT-BOOK.md](docs/PROMPT-BOOK.md) | Club-Prompts |
 | [WORKFLOW.md](docs/WORKFLOW.md) | End-to-End |
+| [CLUB-HARDENING.md](docs/CLUB-HARDENING.md) | Gig-Stresstests |
 | [MUSIC-LOGIC.md](docs/MUSIC-LOGIC.md) | Constraints, kein Isabelle |
 | [ARCHITECTURE.md](docs/ARCHITECTURE.md) | System |
 | [MIDI-MAC.md](docs/MIDI-MAC.md) | Ableton-Routing |
