@@ -17,6 +17,9 @@ import { initQuantizeCue } from './quantize-cue.js';
 import { setQuantizeCueHandler } from './conductor-panel.js';
 import { createWorkflowHub } from './workflow-hub.js';
 import { initPatternPicker } from './pattern-picker.js';
+import { initTransport } from './transport.js';
+import { initNowPlaying } from './now-playing.js';
+import { initSessionLog } from './session-log.js';
 import { initOnce, resetInits } from './init-once.js';
 
 const cleaners = [];
@@ -27,6 +30,10 @@ function bootstrap() {
   const promptInput = document.getElementById('ai-prompt');
 
   const hub = createWorkflowHub(editor);
+
+  initOnce('session-log', () =>
+    initSessionLog({ hub, promptInput: document.getElementById('ai-prompt') }),
+  );
 
   const { refresh: refreshPatterns } = initPatternPicker({
     picker,
@@ -46,9 +53,14 @@ function bootstrap() {
       promptInput,
       onTranscript: (text) => {
         promptInput.value = text;
-        document.getElementById('ai-form')?.requestSubmit();
+        const refineBtn = document.getElementById('ai-refine');
+        if (refineBtn && hub?.isPlaying?.()) {
+          refineBtn.click();
+          document.getElementById('ai-form')?.requestSubmit(refineBtn);
+        } else {
+          document.getElementById('ai-form')?.requestSubmit();
+        }
       },
-      statusEl: document.getElementById('voice-status'),
     }),
   );
 
@@ -57,6 +69,7 @@ function bootstrap() {
   initOnce('dj', () => initDjPanel({ hub }));
   initOnce('dj-ctrl', () => initDjController());
   initOnce('wam', () => initWamHost());
+  initOnce('visuals', () => import('./visuals-panel.js').then((m) => m.initVisualsPanel()));
   initOnce('hydra', () => import('./hydra-panel.js').then((m) => m.initHydraPanel()));
   initOnce('synthdef', () => initSynthDefPanel());
   initOnce('conductor', () => initConductorPanel({ hub, editor }));
@@ -68,6 +81,10 @@ function bootstrap() {
     setQuantizeCueHandler((phase) => cue.onQuantizeTick(phase));
     cleaners.push(() => cue.dispose());
   });
+
+  initOnce('transport', () => initTransport(editor, hub));
+  initOnce('now-playing', () => initNowPlaying(editor, hub));
+  initOnce('dj-faders', () => import('./dj-faders.js').then((m) => m.initDjFaders()));
 
   initOnce('panic', () => {
     const panic = initPanicButton(editor);
@@ -84,11 +101,7 @@ function bootstrap() {
   });
 
   initOnce('patterns-init', () => {
-    void (async () => {
-      const patterns = await refreshPatterns();
-      const first = Object.keys(patterns)[0];
-      if (first) picker.value = first;
-    })();
+    void refreshPatterns();
   });
 }
 

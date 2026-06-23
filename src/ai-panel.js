@@ -2,12 +2,14 @@ import { session } from './session.js';
 import { runIgnite } from './ignite-boot.js';
 import { initPromptBook } from './prompt-book.js';
 
+const GENERATE_TIMEOUT_MS = 120_000;
+
 export function initAiPanel({ editor, hub }) {
   const form = document.getElementById('ai-form');
   const promptInput = document.getElementById('ai-prompt');
-  const submitBtn = document.getElementById('ai-submit');
+  const igniteBtn = document.getElementById('ai-ignite');
+  const refineBtn = document.getElementById('ai-refine');
   const saveBtn = document.getElementById('save-pattern-btn');
-  const refineCheck = document.getElementById('refine-mode');
   const igniteCheck = document.getElementById('ignite-mode');
   const djContextCheck = document.getElementById('dj-context-mode');
   const statusEl = document.getElementById('ai-status');
@@ -17,7 +19,7 @@ export function initAiPanel({ editor, hub }) {
   initPromptBook({
     promptInput,
     chipsEl,
-    refineCheck,
+    refineCheck: null,
     igniteCheck,
     conductorPromptEl: document.getElementById('conductor-prompt'),
     hub,
@@ -60,72 +62,153 @@ export function initAiPanel({ editor, hub }) {
 
   checkStatus();
 
-  function syncSubmitLabel() {
-    if (!submitBtn) return;
-    if (refineCheck?.checked) {
-      submitBtn.textContent = 'Verfeinern & Abspielen';
-    } else if (igniteCheck?.checked !== false) {
-      submitBtn.textContent = 'Ignite & Start';
-    } else {
-      submitBtn.textContent = 'Generieren & Abspielen';
+  function clearPrompt() {
+    if (promptInput) {
+      promptInput.value = '';
+      promptInput.placeholder = 'Sag oder tippe was dazu soll — z.B. „mehr Bass“';
     }
   }
-  refineCheck?.addEventListener('change', syncSubmitLabel);
-  igniteCheck?.addEventListener('change', syncSubmitLabel);
-  syncSubmitLabel();
+
+  async function previewIntents(prompt) {
+    try {
+      const res = await fetch(`/api/intent?prompt=${encodeURIComponent(prompt)}`);
+      const data = await res.json();
+      return data.labels || [];
+    } catch {
+      return [];
+    }
+  }
+
+  async function runRefine(prompt) {
+    const previousCode = await hub.getLastCode();
+    if (!previousCode?.trim()) {
+      throw new Error('Kein laufendes Pattern — zuerst Ignite oder „Basis abspielen“.');
+    }
+
+    const labels = await previewIntents(prompt);
+    statusEl.textContent = labels.length
+      ? `Erkannt: ${labels.join(', ')} — erweitere Pattern…`
+      : 'KI erweitert das Pattern im Editor…';
+    statusEl.dataset.state = 'loading';
+
+    const trackContext =
+      djContextCheck?.checked && session.selectedTrack ? session.selectedTrack : undefined;
+
+    const ac = new AbortController();
+    const timer = setTimeout(() => ac.abort(), GENERATE_TIMEOUT_MS);
+
+    let res;
+    try {
+      res = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt, previousCode, trackContext }),
+        signal: ac.signal,
+      });
+    } finally {
+      clearTimeout(timer);
+    }
+
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'Generation failed');
+
+    const unchanged = data.code?.trim() === previousCode.trim();
+    const fixNote = data.constraints?.fixes?.includes('refine:unchanged')
+      ? ''
+      : data.constraints?.fixes?.includes('refine:layer-merge') ||
+          data.constraints?.fixes?.includes('agent:tools')
+        ? data.agent?.layersRemoved > 0
+          ? ' · Layer entfernt'
+          : ' · Layer hinzugefügt'
+        : '';
+    const intentNote = data.intents?.length ? ` · ${data.intents.join(', ')}` : '';
+    const agentNote =
+      data.agent?.layersAdded > 0 || data.agent?.layersRemoved > 0
+        ? ` · Agent: ${data.agent.tools?.map((t) => t.args?.label || t.args?.concept).join(', ')}`
+        : '';
+
+    if (!unchanged) {
+      await hub.applyPattern(data.code, {
+        prompt,
+        scale: data.scale,
+        source: 'ai',
+        fixes: data.constraints?.fixes,
+        intents: data.intents,
+      });
+    }
+
+    statusEl.dataset.state = unchanged ? 'warn' : 'ok';
+    statusEl.textContent = unchanged
+      ? `Keine Änderung${intentNote} — Formulierung anpassen oder lauter sagen`
+      : `Erweitert — ${data.provider}/${data.model}${fixNote}${intentNote}${agentNote}`;
+
+    clearPrompt();
+    if (saveBtn) saveBtn.disabled = false;
+  }
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const prompt = promptInput.value.trim();
     if (!prompt) return;
 
-    submitBtn.disabled = true;
+    const mode = event.submitter?.value || 'ignite';
+    const busy = [igniteBtn, refineBtn].filter(Boolean);
+    busy.forEach((b) => (b.disabled = true));
     statusEl.dataset.state = 'loading';
 
-    const useIgnite = igniteCheck?.checked !== false && !refineCheck?.checked;
-
     try {
-      if (useIgnite) {
-        statusEl.textContent = 'Ignite — Session wird gebootet…';
-        await runIgnite({ prompt, hub, editor, statusEl });
+      if (mode === 'refine') {
+        await runRefine(prompt);
         return;
       }
 
-      statusEl.textContent = refineCheck?.checked
-        ? 'KI verfeinert das aktuelle Pattern…'
-        : 'KI schreibt Strudel-Code…';
+      const useIgnite = igniteCheck?.checked !== false;
+      if (useIgnite) {
+        statusEl.textContent = 'Ignite — Session wird gebootet…';
+        await runIgnite({ prompt, hub, editor, statusEl });
+        clearPrompt();
+        return;
+      }
 
-      const previousCode = refineCheck?.checked ? hub.getLastCode() : undefined;
-      const trackContext =
-        djContextCheck?.checked && session.selectedTrack ? session.selectedTrack : undefined;
-
+      statusEl.textContent = 'KI schreibt Strudel-Code…';
       const res = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt, previousCode, trackContext }),
+        body: JSON.stringify({ prompt }),
       });
       const data = await res.json();
       if (!data.ok) throw new Error(data.error || 'Generation failed');
 
-      await hub.applyPattern(data.code, {
-        prompt,
-        scale: data.scale,
-        source: 'ai',
-      });
+      await hub.applyPattern(data.code, { prompt, scale: data.scale, source: 'ai', fixes: data.constraints?.fixes });
       statusEl.dataset.state = 'ok';
-      statusEl.textContent = `Läuft — ${data.provider} / ${data.model}${data.scale ? ` · ${data.scale.label}` : ''}`;
+      statusEl.textContent = `Läuft — ${data.provider} / ${data.model}`;
+      clearPrompt();
       if (saveBtn) saveBtn.disabled = false;
     } catch (err) {
       statusEl.dataset.state = 'error';
-      statusEl.textContent = err.message;
-      if (err.message.includes('API key')) setupEl.hidden = false;
+      statusEl.textContent =
+        err.name === 'AbortError'
+          ? 'Zeitüberschreitung — Ollama hängt? Server neu starten.'
+          : err.message;
+      if (err.message?.includes('API key')) setupEl.hidden = false;
     } finally {
-      submitBtn.disabled = false;
+      busy.forEach((b) => (b.disabled = false));
     }
   });
 
+  refineBtn?.addEventListener('click', () => {
+    if (!promptInput.value.trim()) {
+      promptInput.placeholder = 'Kurz sagen was dazu soll — z.B. „mehr Hats und Acid-Bass“';
+      promptInput.focus();
+    }
+  });
+
+  window.addEventListener('strudel-live:voice-start', () => {
+    clearPrompt();
+  });
+
   saveBtn?.addEventListener('click', async () => {
-    const lastCode = hub.getLastCode();
+    const lastCode = await hub.getLastCode();
     if (!lastCode) return;
     saveBtn.disabled = true;
     try {
@@ -150,7 +233,6 @@ export function initAiPanel({ editor, hub }) {
 
 const replWaiters = new WeakMap();
 
-/** Shared waiter per REPL element — avoids stacking intervals when polled every frame. */
 export function waitForRepl(element) {
   if (element?.editor) return Promise.resolve(element.editor);
 

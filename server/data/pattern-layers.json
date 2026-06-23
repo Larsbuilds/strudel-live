@@ -1,0 +1,1030 @@
+{
+  "generatedAt": "2026-06-23T21:25:08.214Z",
+  "presets": {
+    "02-trance-lead": [
+      {
+        "presetId": "02-trance-lead",
+        "index": 0,
+        "concept": "drums",
+        "variant": "kick",
+        "label": "02-trance-lead layer 1",
+        "code": "s(\"bd*4\").gain(0.85)",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      },
+      {
+        "presetId": "02-trance-lead",
+        "index": 1,
+        "concept": "drums",
+        "variant": "snare",
+        "label": "02-trance-lead layer 2",
+        "code": "s(\"~ sd\").gain(0.7)",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      },
+      {
+        "presetId": "02-trance-lead",
+        "index": 2,
+        "concept": "pad",
+        "variant": "saw",
+        "label": "02-trance-lead layer 3",
+        "code": "n(\"<0 2 4 7>*2\").scale(\"A:minor\")\n    .s(\"sawtooth\")\n    .gain(0.35)\n    .cutoff(sine.range(400, 4000).slow(8))\n    .room(0.4)\n    .delay(0.25)",
+        "uses": [
+          "s",
+          "n",
+          "gain",
+          "room",
+          "delay",
+          "scale",
+          "sine"
+        ]
+      }
+    ],
+    "03-dnb-break": [
+      {
+        "presetId": "03-dnb-break",
+        "index": 0,
+        "concept": "drums",
+        "variant": "kick",
+        "label": "03-dnb-break layer 1",
+        "code": "s(\"bd(3,8,2)\").gain(0.9)",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      },
+      {
+        "presetId": "03-dnb-break",
+        "index": 1,
+        "concept": "drums",
+        "variant": "snare",
+        "label": "03-dnb-break layer 2",
+        "code": "s(\"~ cp sd cp\").gain(0.75)",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      },
+      {
+        "presetId": "03-dnb-break",
+        "index": 2,
+        "concept": "drums",
+        "variant": "hats",
+        "label": "03-dnb-break layer 3",
+        "code": "s(\"hh*16\").gain(0.25).speed(perlin.range(0.9, 1.1))",
+        "uses": [
+          "s",
+          "gain",
+          "speed",
+          "perlin"
+        ]
+      },
+      {
+        "presetId": "03-dnb-break",
+        "index": 3,
+        "concept": "lead",
+        "variant": "saw",
+        "label": "03-dnb-break layer 4",
+        "code": "n(\"0 3 7\").scale(\"D:minor\")\n    .s(\"square\")\n    .gain(0.2)\n    .lpf(1200)",
+        "uses": [
+          "s",
+          "n",
+          "gain",
+          "lpf",
+          "scale"
+        ]
+      }
+    ],
+    "04-midi-ableton": [
+      {
+        "presetId": "04-midi-ableton",
+        "index": 0,
+        "concept": "texture",
+        "variant": "layer_0",
+        "label": "04-midi-ableton layer 1",
+        "code": "// Drums bleiben im Browser\n  s(\"bd*4, ~ sd\").gain(0.85)",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      },
+      {
+        "presetId": "04-midi-ableton",
+        "index": 1,
+        "concept": "drums",
+        "variant": "perc",
+        "label": "04-midi-ableton layer 2",
+        "code": "s(\"hh*8\").gain(0.25)",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      },
+      {
+        "presetId": "04-midi-ableton",
+        "index": 2,
+        "concept": "texture",
+        "variant": "layer_2",
+        "label": "04-midi-ableton layer 3",
+        "code": "// Akkorde an Ableton-Synth\n  chord(\"<C^7 A7 Dm7 G7>\").voicing().midi(\"IAC Driver\")",
+        "uses": []
+      }
+    ],
+    "06-local-samples": [
+      {
+        "presetId": "06-local-samples",
+        "index": 0,
+        "concept": "drums",
+        "variant": "kick",
+        "label": "06-local-samples layer 1",
+        "code": "s(\"bd sd\").gain(0.9)",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      },
+      {
+        "presetId": "06-local-samples",
+        "index": 1,
+        "concept": "drums",
+        "variant": "perc",
+        "label": "06-local-samples layer 2",
+        "code": "s(\"hh*8\").gain(0.3)",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      }
+    ],
+    "07-dj-stems": [
+      {
+        "presetId": "07-dj-stems",
+        "index": 0,
+        "concept": "drums",
+        "variant": "perc",
+        "label": "07-dj-stems layer 1",
+        "code": "s(`soundcloud/${TRACK}-drums`).gain(0.9)",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      },
+      {
+        "presetId": "07-dj-stems",
+        "index": 1,
+        "concept": "drums",
+        "variant": "perc",
+        "label": "07-dj-stems layer 2",
+        "code": "s(`soundcloud/${TRACK}-bass`).gain(0.75)",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      },
+      {
+        "presetId": "07-dj-stems",
+        "index": 2,
+        "concept": "drums",
+        "variant": "perc",
+        "label": "07-dj-stems layer 3",
+        "code": "s(`soundcloud/${TRACK}-vocals`).gain(0.6).room(0.3)",
+        "uses": [
+          "s",
+          "gain",
+          "room"
+        ]
+      },
+      {
+        "presetId": "07-dj-stems",
+        "index": 3,
+        "concept": "drums",
+        "variant": "perc",
+        "label": "07-dj-stems layer 4",
+        "code": "s(`soundcloud/${TRACK}-other`).gain(0.4)",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      }
+    ],
+    "08-dj-controller": [
+      {
+        "presetId": "08-dj-controller",
+        "index": 0,
+        "concept": "drums",
+        "variant": "kick",
+        "label": "08-dj-controller layer 1",
+        "code": "s(\"bd*4, ~ sd\").gain(xf.range(0.8, 0)).lpf(lpfA)",
+        "uses": [
+          "s",
+          "gain",
+          "lpf"
+        ]
+      },
+      {
+        "presetId": "08-dj-controller",
+        "index": 1,
+        "concept": "pad",
+        "variant": "saw",
+        "label": "08-dj-controller layer 2",
+        "code": "n(\"0 2 4 7\").scale(\"A:minor\").s(\"sawtooth\")\n    .gain(xf.range(0, 0.5))\n    .lpf(lpfB)\n    .room(0.4)",
+        "uses": [
+          "s",
+          "n",
+          "gain",
+          "lpf",
+          "room",
+          "scale"
+        ]
+      }
+    ],
+    "09-hydra-live": [
+      {
+        "presetId": "09-hydra-live",
+        "index": 0,
+        "concept": "drums",
+        "variant": "kick",
+        "label": "09-hydra-live layer 1",
+        "code": "s(\"bd*4, ~ sd\").gain(0.85).color('red')",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      },
+      {
+        "presetId": "09-hydra-live",
+        "index": 1,
+        "concept": "lead",
+        "variant": "saw",
+        "label": "09-hydra-live layer 2",
+        "code": "n(\"0 2 4 7\").scale(\"A:minor\").s(\"sawtooth\").gain(0.35).color('cyan')",
+        "uses": [
+          "s",
+          "n",
+          "gain",
+          "scale"
+        ]
+      }
+    ],
+    "10-deep-techno": [
+      {
+        "presetId": "10-deep-techno",
+        "index": 0,
+        "concept": "drums",
+        "variant": "kick",
+        "label": "10-deep-techno layer 1",
+        "code": "s(\"bd*4\").gain(0.92)",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      },
+      {
+        "presetId": "10-deep-techno",
+        "index": 1,
+        "concept": "drums",
+        "variant": "clap",
+        "label": "10-deep-techno layer 2",
+        "code": "s(\"~ ~ cp ~\").gain(0.58)",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      },
+      {
+        "presetId": "10-deep-techno",
+        "index": 2,
+        "concept": "drums",
+        "variant": "perc",
+        "label": "10-deep-techno layer 3",
+        "code": "s(\"hh*8\").gain(() => 0.26 + (globalThis.dj_stems?.drums?.() ?? 0) * 0.15).speed(perlin.range(0.94, 1.06))",
+        "uses": [
+          "s",
+          "gain",
+          "speed",
+          "perlin"
+        ]
+      },
+      {
+        "presetId": "10-deep-techno",
+        "index": 3,
+        "concept": "drums",
+        "variant": "openhat",
+        "label": "10-deep-techno layer 4",
+        "code": "s(\"~ oh ~ oh\").gain(0.32).speed(0.88)",
+        "uses": [
+          "s",
+          "gain",
+          "speed"
+        ]
+      },
+      {
+        "presetId": "10-deep-techno",
+        "index": 4,
+        "concept": "pad",
+        "variant": "warm",
+        "label": "10-deep-techno layer 5",
+        "code": "note(\"c2(5,8)\").s(\"sine\").gain(0.42).lpf(sine.range(90, 240).slow(16)).room(0.2)",
+        "uses": [
+          "s",
+          "note",
+          "gain",
+          "lpf",
+          "room",
+          "sine"
+        ]
+      },
+      {
+        "presetId": "10-deep-techno",
+        "index": 5,
+        "concept": "pad",
+        "variant": "saw",
+        "label": "10-deep-techno layer 6",
+        "code": "n(\"<0 3 7>*2\").scale(\"A:minor\").s(\"triangle\").gain(0.14).delay(0.3).room(0.45)",
+        "uses": [
+          "s",
+          "n",
+          "gain",
+          "room",
+          "delay",
+          "scale"
+        ]
+      }
+    ],
+    "11-schranz": [
+      {
+        "presetId": "11-schranz",
+        "index": 0,
+        "concept": "drums",
+        "variant": "kick_hard",
+        "label": "11-schranz layer 1",
+        "code": "s(\"bd*4\").gain(0.95).crush(8)",
+        "uses": [
+          "s",
+          "gain",
+          "crush"
+        ]
+      },
+      {
+        "presetId": "11-schranz",
+        "index": 1,
+        "concept": "drums",
+        "variant": "roll",
+        "label": "11-schranz layer 2",
+        "code": "s(\"hh*16\").gain(0.32).speed(perlin.range(0.85, 1.15))",
+        "uses": [
+          "s",
+          "gain",
+          "speed",
+          "perlin"
+        ]
+      },
+      {
+        "presetId": "11-schranz",
+        "index": 2,
+        "concept": "drums",
+        "variant": "clap",
+        "label": "11-schranz layer 3",
+        "code": "s(\"~ cp ~ cp\").gain(0.55).pan(sine.range(-0.4, 0.4).fast(2))",
+        "uses": [
+          "s",
+          "gain",
+          "pan",
+          "sine"
+        ]
+      },
+      {
+        "presetId": "11-schranz",
+        "index": 3,
+        "concept": "drums",
+        "variant": "openhat",
+        "label": "11-schranz layer 4",
+        "code": "s(\"oh*8\").gain(0.18).speed(1.2)",
+        "uses": [
+          "s",
+          "gain",
+          "speed"
+        ]
+      },
+      {
+        "presetId": "11-schranz",
+        "index": 4,
+        "concept": "bass",
+        "variant": "reese",
+        "label": "11-schranz layer 5",
+        "code": "note(\"c1*4\").s(\"sawtooth\").gain(0.35).lpf(180).distort(0.4)",
+        "uses": [
+          "s",
+          "note",
+          "gain",
+          "lpf",
+          "distort"
+        ]
+      }
+    ],
+    "12-liquid-dnb": [
+      {
+        "presetId": "12-liquid-dnb",
+        "index": 0,
+        "concept": "drums",
+        "variant": "kick",
+        "label": "12-liquid-dnb layer 1",
+        "code": "s(\"bd(3,8,2)\").gain(0.88)",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      },
+      {
+        "presetId": "12-liquid-dnb",
+        "index": 1,
+        "concept": "drums",
+        "variant": "snare",
+        "label": "12-liquid-dnb layer 2",
+        "code": "s(\"~ cp sd cp\").gain(0.72)",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      },
+      {
+        "presetId": "12-liquid-dnb",
+        "index": 2,
+        "concept": "drums",
+        "variant": "hats",
+        "label": "12-liquid-dnb layer 3",
+        "code": "s(\"hh*16\").gain(0.22).speed(perlin.range(0.92, 1.08))",
+        "uses": [
+          "s",
+          "gain",
+          "speed",
+          "perlin"
+        ]
+      },
+      {
+        "presetId": "12-liquid-dnb",
+        "index": 3,
+        "concept": "pad",
+        "variant": "saw",
+        "label": "12-liquid-dnb layer 4",
+        "code": "n(\"0 3 7 10\").scale(\"D:minor\").s(\"sawtooth\").gain(0.28).lpf(1400).room(0.55).delay(0.35)",
+        "uses": [
+          "s",
+          "n",
+          "gain",
+          "lpf",
+          "room",
+          "delay",
+          "scale"
+        ]
+      },
+      {
+        "presetId": "12-liquid-dnb",
+        "index": 4,
+        "concept": "pad",
+        "variant": "warm",
+        "label": "12-liquid-dnb layer 5",
+        "code": "n(\"<0 5 7>*4\").scale(\"D:minor\").s(\"triangle\").gain(0.12).attack(0.4).release(2).room(0.7)",
+        "uses": [
+          "s",
+          "n",
+          "gain",
+          "room",
+          "scale",
+          "attack",
+          "release"
+        ]
+      }
+    ],
+    "13-acid-techno": [
+      {
+        "presetId": "13-acid-techno",
+        "index": 0,
+        "concept": "drums",
+        "variant": "kick",
+        "label": "13-acid-techno layer 1",
+        "code": "s(\"bd*4\").gain(0.9)",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      },
+      {
+        "presetId": "13-acid-techno",
+        "index": 1,
+        "concept": "drums",
+        "variant": "clap",
+        "label": "13-acid-techno layer 2",
+        "code": "s(\"~ ~ cp ~\").gain(0.5)",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      },
+      {
+        "presetId": "13-acid-techno",
+        "index": 2,
+        "concept": "drums",
+        "variant": "perc",
+        "label": "13-acid-techno layer 3",
+        "code": "s(\"hh*8\").gain(0.24)",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      },
+      {
+        "presetId": "13-acid-techno",
+        "index": 3,
+        "concept": "pad",
+        "variant": "saw",
+        "label": "13-acid-techno layer 4",
+        "code": "n(\"0 3 7 10 12\").scale(\"A:minor\").s(\"sawtooth\")\n    .gain(0.38)\n    .lpf(sine.range(200, 3200).slow(4))\n    .resonance(12)\n    .decay(0.15)\n    .delay(0.2)",
+        "uses": [
+          "s",
+          "n",
+          "gain",
+          "lpf",
+          "delay",
+          "scale",
+          "sine"
+        ]
+      }
+    ],
+    "14-ambient-drone": [
+      {
+        "presetId": "14-ambient-drone",
+        "index": 0,
+        "concept": "pad",
+        "variant": "warm",
+        "label": "14-ambient-drone layer 1",
+        "code": "n(\"0 3 7 10\").scale(\"A:minor\").s(\"sine\").gain(0.22).attack(2).release(8).room(0.85)",
+        "uses": [
+          "s",
+          "n",
+          "gain",
+          "room",
+          "scale",
+          "attack",
+          "release"
+        ]
+      },
+      {
+        "presetId": "14-ambient-drone",
+        "index": 1,
+        "concept": "pad",
+        "variant": "saw",
+        "label": "14-ambient-drone layer 2",
+        "code": "n(\"<0 5 7 12>*2\").scale(\"A:minor\").s(\"triangle\").gain(0.14).lpf(sine.range(400, 2000).slow(16)).delay(0.5)",
+        "uses": [
+          "s",
+          "n",
+          "gain",
+          "lpf",
+          "delay",
+          "scale",
+          "sine"
+        ]
+      },
+      {
+        "presetId": "14-ambient-drone",
+        "index": 2,
+        "concept": "drums",
+        "variant": "openhat",
+        "label": "14-ambient-drone layer 3",
+        "code": "s(\"~ ~ ~ oh\").gain(0.08).speed(0.75).room(0.9)",
+        "uses": [
+          "s",
+          "gain",
+          "room",
+          "speed"
+        ]
+      },
+      {
+        "presetId": "14-ambient-drone",
+        "index": 3,
+        "concept": "bass",
+        "variant": "sub",
+        "label": "14-ambient-drone layer 4",
+        "code": "note(\"c2\").s(\"sine\").gain(0.18).lpf(90).room(0.6)",
+        "uses": [
+          "s",
+          "note",
+          "gain",
+          "lpf",
+          "room"
+        ]
+      }
+    ],
+    "15-stem-reactive": [
+      {
+        "presetId": "15-stem-reactive",
+        "index": 0,
+        "concept": "drums",
+        "variant": "kick",
+        "label": "15-stem-reactive layer 1",
+        "code": "s(\"bd*4\").gain(() => 0.88 + (globalThis.dj_stems?.drums?.() ?? 0) * 0.1)",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      },
+      {
+        "presetId": "15-stem-reactive",
+        "index": 1,
+        "concept": "drums",
+        "variant": "perc",
+        "label": "15-stem-reactive layer 2",
+        "code": "s(\"hh*8\").gain(() => 0.24 + (globalThis.dj_stems?.drums?.() ?? 0) * 0.2)",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      },
+      {
+        "presetId": "15-stem-reactive",
+        "index": 2,
+        "concept": "drums",
+        "variant": "clap",
+        "label": "15-stem-reactive layer 3",
+        "code": "s(\"~ cp ~\").gain(0.55)",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      },
+      {
+        "presetId": "15-stem-reactive",
+        "index": 3,
+        "concept": "pad",
+        "variant": "warm",
+        "label": "15-stem-reactive layer 4",
+        "code": "note(\"c2(5,8)\").s(\"sine\").gain(() => 0.4 + (globalThis.dj_stems?.bass?.() ?? 0) * 0.25).lpf(200)",
+        "uses": [
+          "s",
+          "note",
+          "gain",
+          "lpf"
+        ]
+      },
+      {
+        "presetId": "15-stem-reactive",
+        "index": 4,
+        "concept": "pad",
+        "variant": "saw",
+        "label": "15-stem-reactive layer 5",
+        "code": "n(\"<0 3 7>*2\").scale(\"A:minor\").s(\"triangle\")\n    .gain(() => 0.12 + (globalThis.dj_stems?.vocals?.() ?? 0) * 0.2)\n    .delay(0.3)\n    .room(0.45)",
+        "uses": [
+          "s",
+          "n",
+          "gain",
+          "room",
+          "delay",
+          "scale"
+        ]
+      }
+    ],
+    "generated/2026-06-23T15-33-50-90s-trance-140-bpm-euphoric-uplifting-sa": [
+      {
+        "presetId": "generated/2026-06-23T15-33-50-90s-trance-140-bpm-euphoric-uplifting-sa",
+        "index": 0,
+        "concept": "drums",
+        "variant": "kick_hard",
+        "label": "generated/2026-06-23T15-33-50-90s-trance-140-bpm-euphoric-uplifting-sa layer 1",
+        "code": "s(\"bd*4\").gain(0.95).scale(\"A:minor\").crush(8)",
+        "uses": [
+          "s",
+          "gain",
+          "crush",
+          "scale"
+        ]
+      },
+      {
+        "presetId": "generated/2026-06-23T15-33-50-90s-trance-140-bpm-euphoric-uplifting-sa",
+        "index": 1,
+        "concept": "drums",
+        "variant": "roll",
+        "label": "generated/2026-06-23T15-33-50-90s-trance-140-bpm-euphoric-uplifting-sa layer 2",
+        "code": "s(\"hh*16\").gain(0.32).speed(perlin.range(0.85, 1.15))",
+        "uses": [
+          "s",
+          "gain",
+          "speed",
+          "perlin"
+        ]
+      },
+      {
+        "presetId": "generated/2026-06-23T15-33-50-90s-trance-140-bpm-euphoric-uplifting-sa",
+        "index": 2,
+        "concept": "drums",
+        "variant": "clap",
+        "label": "generated/2026-06-23T15-33-50-90s-trance-140-bpm-euphoric-uplifting-sa layer 3",
+        "code": "s(\"~ cp ~ cp\").gain(0.55).pan(sine.range(-0.4, 0.4).fast(2))",
+        "uses": [
+          "s",
+          "gain",
+          "pan",
+          "sine"
+        ]
+      },
+      {
+        "presetId": "generated/2026-06-23T15-33-50-90s-trance-140-bpm-euphoric-uplifting-sa",
+        "index": 3,
+        "concept": "drums",
+        "variant": "openhat",
+        "label": "generated/2026-06-23T15-33-50-90s-trance-140-bpm-euphoric-uplifting-sa layer 4",
+        "code": "s(\"oh*8\").gain(0.18).speed(1.2)",
+        "uses": [
+          "s",
+          "gain",
+          "speed"
+        ]
+      },
+      {
+        "presetId": "generated/2026-06-23T15-33-50-90s-trance-140-bpm-euphoric-uplifting-sa",
+        "index": 4,
+        "concept": "bass",
+        "variant": "reese",
+        "label": "generated/2026-06-23T15-33-50-90s-trance-140-bpm-euphoric-uplifting-sa layer 5",
+        "code": "note(\"c1*4\").s(\"sawtooth\").gain(0.35).lpf(180).distort(0.4)",
+        "uses": [
+          "s",
+          "note",
+          "gain",
+          "lpf",
+          "distort"
+        ]
+      }
+    ],
+    "generated/2026-06-23T15-33-51-90s-trance-140-bpm-euphoric-uplifting-sa": [
+      {
+        "presetId": "generated/2026-06-23T15-33-51-90s-trance-140-bpm-euphoric-uplifting-sa",
+        "index": 0,
+        "concept": "drums",
+        "variant": "kick_hard",
+        "label": "generated/2026-06-23T15-33-51-90s-trance-140-bpm-euphoric-uplifting-sa layer 1",
+        "code": "s(\"bd*4\").gain(0.95).scale(\"A:minor\").crush(8)",
+        "uses": [
+          "s",
+          "gain",
+          "crush",
+          "scale"
+        ]
+      },
+      {
+        "presetId": "generated/2026-06-23T15-33-51-90s-trance-140-bpm-euphoric-uplifting-sa",
+        "index": 1,
+        "concept": "drums",
+        "variant": "roll",
+        "label": "generated/2026-06-23T15-33-51-90s-trance-140-bpm-euphoric-uplifting-sa layer 2",
+        "code": "s(\"hh*16\").gain(0.32).speed(perlin.range(0.85, 1.15))",
+        "uses": [
+          "s",
+          "gain",
+          "speed",
+          "perlin"
+        ]
+      },
+      {
+        "presetId": "generated/2026-06-23T15-33-51-90s-trance-140-bpm-euphoric-uplifting-sa",
+        "index": 2,
+        "concept": "drums",
+        "variant": "clap",
+        "label": "generated/2026-06-23T15-33-51-90s-trance-140-bpm-euphoric-uplifting-sa layer 3",
+        "code": "s(\"~ cp ~ cp\").gain(0.55).pan(sine.range(-0.4, 0.4).fast(2))",
+        "uses": [
+          "s",
+          "gain",
+          "pan",
+          "sine"
+        ]
+      },
+      {
+        "presetId": "generated/2026-06-23T15-33-51-90s-trance-140-bpm-euphoric-uplifting-sa",
+        "index": 3,
+        "concept": "drums",
+        "variant": "openhat",
+        "label": "generated/2026-06-23T15-33-51-90s-trance-140-bpm-euphoric-uplifting-sa layer 4",
+        "code": "s(\"oh*8\").gain(0.18).speed(1.2)",
+        "uses": [
+          "s",
+          "gain",
+          "speed"
+        ]
+      },
+      {
+        "presetId": "generated/2026-06-23T15-33-51-90s-trance-140-bpm-euphoric-uplifting-sa",
+        "index": 4,
+        "concept": "bass",
+        "variant": "reese",
+        "label": "generated/2026-06-23T15-33-51-90s-trance-140-bpm-euphoric-uplifting-sa layer 5",
+        "code": "note(\"c1*4\").s(\"sawtooth\").gain(0.35).lpf(180).distort(0.4)",
+        "uses": [
+          "s",
+          "note",
+          "gain",
+          "lpf",
+          "distort"
+        ]
+      }
+    ],
+    "generated/2026-06-23T15-34-13-neurofunk-dnb-172-bpm-wobble-bass-scharf": [
+      {
+        "presetId": "generated/2026-06-23T15-34-13-neurofunk-dnb-172-bpm-wobble-bass-scharf",
+        "index": 0,
+        "concept": "drums",
+        "variant": "kick",
+        "label": "generated/2026-06-23T15-34-13-neurofunk-dnb-172-bpm-wobble-bass-scharf layer 1",
+        "code": "s(\"bd(3,8,2)\").gain(0.9)",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      },
+      {
+        "presetId": "generated/2026-06-23T15-34-13-neurofunk-dnb-172-bpm-wobble-bass-scharf",
+        "index": 1,
+        "concept": "drums",
+        "variant": "snare",
+        "label": "generated/2026-06-23T15-34-13-neurofunk-dnb-172-bpm-wobble-bass-scharf layer 2",
+        "code": "s(\"~ cp sd cp\").gain(0.75)",
+        "uses": [
+          "s",
+          "gain"
+        ]
+      },
+      {
+        "presetId": "generated/2026-06-23T15-34-13-neurofunk-dnb-172-bpm-wobble-bass-scharf",
+        "index": 2,
+        "concept": "drums",
+        "variant": "hats",
+        "label": "generated/2026-06-23T15-34-13-neurofunk-dnb-172-bpm-wobble-bass-scharf layer 3",
+        "code": "s(\"hh*16\").gain(0.25).speed(perlin.range(0.9, 1.1))",
+        "uses": [
+          "s",
+          "gain",
+          "speed",
+          "perlin"
+        ]
+      },
+      {
+        "presetId": "generated/2026-06-23T15-34-13-neurofunk-dnb-172-bpm-wobble-bass-scharf",
+        "index": 3,
+        "concept": "lead",
+        "variant": "saw",
+        "label": "generated/2026-06-23T15-34-13-neurofunk-dnb-172-bpm-wobble-bass-scharf layer 4",
+        "code": "n(\"0 3 7\").scale(\"D:minor\")\n    .s(\"square\")\n    .gain(0.2)\n    .lpf(1200)",
+        "uses": [
+          "s",
+          "n",
+          "gain",
+          "lpf",
+          "scale"
+        ]
+      }
+    ],
+    "generated/2026-06-23T21-13-24-mehr-kicks": [
+      {
+        "presetId": "generated/2026-06-23T21-13-24-mehr-kicks",
+        "index": 0,
+        "concept": "drums",
+        "variant": "kick",
+        "label": "generated/2026-06-23T21-13-24-mehr-kicks layer 1",
+        "code": "s(\"bd*4\")",
+        "uses": [
+          "s"
+        ]
+      },
+      {
+        "presetId": "generated/2026-06-23T21-13-24-mehr-kicks",
+        "index": 1,
+        "concept": "drums",
+        "variant": "snare",
+        "label": "generated/2026-06-23T21-13-24-mehr-kicks layer 2",
+        "code": "s(\"~ sd\")",
+        "uses": [
+          "s"
+        ]
+      },
+      {
+        "presetId": "generated/2026-06-23T21-13-24-mehr-kicks",
+        "index": 2,
+        "concept": "bass",
+        "variant": "sub",
+        "label": "generated/2026-06-23T21-13-24-mehr-kicks layer 3",
+        "code": "note(\"c1*4\").s(\"sawtooth\").gain(0.44).lpf(85).postgain(0.95)",
+        "uses": [
+          "s",
+          "note",
+          "gain",
+          "lpf"
+        ]
+      },
+      {
+        "presetId": "generated/2026-06-23T21-13-24-mehr-kicks",
+        "index": 3,
+        "concept": "pad",
+        "variant": "warm",
+        "label": "generated/2026-06-23T21-13-24-mehr-kicks layer 4",
+        "code": "note(\"c2*8\").s(\"sawtooth\").gain(0.38).lpf(sine.range(280, 2800).fast(2)).distort(0.35)",
+        "uses": [
+          "s",
+          "note",
+          "gain",
+          "lpf",
+          "distort",
+          "sine"
+        ]
+      },
+      {
+        "presetId": "generated/2026-06-23T21-13-24-mehr-kicks",
+        "index": 4,
+        "concept": "bass",
+        "variant": "sub",
+        "label": "generated/2026-06-23T21-13-24-mehr-kicks layer 5",
+        "code": "note(\"c1*2\").s(\"sawtooth\").gain(0.4).lpf(sine.range(80, 400).slow(8)).postgain(0.9)",
+        "uses": [
+          "s",
+          "note",
+          "gain",
+          "lpf",
+          "sine"
+        ]
+      },
+      {
+        "presetId": "generated/2026-06-23T21-13-24-mehr-kicks",
+        "index": 5,
+        "concept": "drums",
+        "variant": "clap",
+        "label": "generated/2026-06-23T21-13-24-mehr-kicks layer 6",
+        "code": "s(\"~ cp ~ cp\").gain(0.58).pan(sine.range(-0.3, 0.4).fast(2))",
+        "uses": [
+          "s",
+          "gain",
+          "pan",
+          "sine"
+        ]
+      },
+      {
+        "presetId": "generated/2026-06-23T21-13-24-mehr-kicks",
+        "index": 6,
+        "concept": "drums",
+        "variant": "roll",
+        "label": "generated/2026-06-23T21-13-24-mehr-kicks layer 7",
+        "code": "s(\"hh*16\").gain(0.32).speed(perlin.range(0.88, 1.12))",
+        "uses": [
+          "s",
+          "gain",
+          "speed",
+          "perlin"
+        ]
+      },
+      {
+        "presetId": "generated/2026-06-23T21-13-24-mehr-kicks",
+        "index": 7,
+        "concept": "drums",
+        "variant": "clap",
+        "label": "generated/2026-06-23T21-13-24-mehr-kicks layer 8",
+        "code": "s(\"~ cp ~ cp\").gain(0.35).delay(0.45).room(0.4)",
+        "uses": [
+          "s",
+          "gain",
+          "room",
+          "delay"
+        ]
+      },
+      {
+        "presetId": "generated/2026-06-23T21-13-24-mehr-kicks",
+        "index": 8,
+        "concept": "drums",
+        "variant": "perc",
+        "label": "generated/2026-06-23T21-13-24-mehr-kicks layer 9",
+        "code": "s(\"hh*8\").gain(0.3).speed(perlin.range(0.86, 1.14)).sometimes(x => x.fast(2))",
+        "uses": [
+          "s",
+          "gain",
+          "speed",
+          "perlin"
+        ]
+      },
+      {
+        "presetId": "generated/2026-06-23T21-13-24-mehr-kicks",
+        "index": 9,
+        "concept": "bass",
+        "variant": "sub",
+        "label": "generated/2026-06-23T21-13-24-mehr-kicks layer 10",
+        "code": "note(\"c1*4\").s(\"sawtooth\").gain(0.44).lpf(85).postgain(0.95)",
+        "uses": [
+          "s",
+          "note",
+          "gain",
+          "lpf"
+        ]
+      }
+    ]
+  }
+}

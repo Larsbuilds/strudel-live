@@ -17,3 +17,6 @@ samples/**
 # AI-generated patterns (keep folder README)
 patterns/generated/**
 !patterns/generated/README.md
+
+# semantic embedding cache (built via npm run semantic:index)
+server/data/embedding-cache.json

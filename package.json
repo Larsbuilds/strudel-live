@@ -34,7 +34,9 @@
     "stress:rave": "node scripts/rave-stress-test.mjs",
     "stress:smoke": "STRESS_DURATION=15 node scripts/rave-stress-test.mjs && node scripts/link-reconnect-stress.mjs",
     "stress:club": "node scripts/link-reconnect-stress.mjs && STRESS_DURATION=7200 node scripts/rave-stress-test.mjs",
-    "ollama:setup": "node scripts/ollama-setup.mjs"
+    "ollama:setup": "node scripts/ollama-setup.mjs",
+    "semantic:seed": "node scripts/seed-semantic-db.mjs",
+    "semantic:index": "node scripts/semantic-index.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",

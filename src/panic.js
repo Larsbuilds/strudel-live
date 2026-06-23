@@ -57,7 +57,7 @@ export async function executePanic(editor) {
   stopStemAnalysis();
   stopRaveClient();
   unloadFaustNode();
-  const { blackoutHydra } = await import('./hydra-panel.js');
+  const { blackoutHydra } = await import('./visuals-panel.js');
   blackoutHydra();
 
   const micToggle = document.getElementById('mic-toggle');

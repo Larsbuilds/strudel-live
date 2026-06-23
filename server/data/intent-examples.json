@@ -1,0 +1,1064 @@
+[
+  {
+    "id": "acid_line",
+    "concept": "acid",
+    "variant": "line",
+    "label": "Acid 303",
+    "phrases": [
+      "acid",
+      "303",
+      "tb-303",
+      "squelch",
+      "acid line",
+      "acid bass",
+      "acid techno",
+      "filter acid",
+      "acid synth",
+      "acid pattern",
+      "squelchy"
+    ]
+  },
+  {
+    "id": "bass_reese",
+    "concept": "bass",
+    "variant": "reese",
+    "label": "Reese Bass",
+    "phrases": [
+      "reese",
+      "reese bass",
+      "wobble bass",
+      "neurofunk bass",
+      "moving bass",
+      "detuned bass",
+      "uk garage bass"
+    ],
+    "excludeIf": [
+      "liquid",
+      "liquid dnb",
+      "warm pads"
+    ]
+  },
+  {
+    "id": "bass_sub",
+    "concept": "bass",
+    "variant": "sub",
+    "label": "Sub-Bass",
+    "phrases": [
+      "mehr bass",
+      "more bass",
+      "bassline",
+      "sub bass",
+      "tiefer bass",
+      "deeper bass",
+      "low end",
+      "low-end",
+      "subwoofer",
+      "sub line",
+      "bass stärker",
+      "bass lauter",
+      "add bass",
+      "bass hinzufügen",
+      "heavy bass",
+      "rumbling bass",
+      "808 bass",
+      "bass boost",
+      "mehr tiefe",
+      "more low end",
+      "fetter bass",
+      "thicker bass"
+    ],
+    "excludeIf": [
+      "bass drum",
+      "kick drum",
+      "drum and bass",
+      "dnb",
+      "reese",
+      "bassdrum"
+    ]
+  },
+  {
+    "id": "chip_ambient_ambient_drone",
+    "concept": "preset",
+    "variant": "14-ambient-drone",
+    "label": "Ambient Drone",
+    "action": "load_preset",
+    "presetId": "14-ambient-drone",
+    "phrases": [
+      "ambient drone"
+    ],
+    "context": "ignite",
+    "source": "prompt-book"
+  },
+  {
+    "id": "chip_ambient_downtempo",
+    "concept": "ambient",
+    "variant": "warm",
+    "label": "Downtempo",
+    "phrases": [
+      "downtempo"
+    ],
+    "context": "refine",
+    "source": "prompt-book"
+  },
+  {
+    "id": "chip_bass_liquid_dnb",
+    "concept": "preset",
+    "variant": "12-liquid-dnb",
+    "label": "Liquid DNB",
+    "action": "load_preset",
+    "presetId": "12-liquid-dnb",
+    "phrases": [
+      "liquid dnb"
+    ],
+    "context": "ignite",
+    "source": "prompt-book"
+  },
+  {
+    "id": "chip_bass_neurofunk",
+    "concept": "preset",
+    "variant": "03-dnb-break",
+    "label": "Neurofunk",
+    "action": "load_preset",
+    "presetId": "03-dnb-break",
+    "phrases": [
+      "neurofunk"
+    ],
+    "context": "ignite",
+    "source": "prompt-book"
+  },
+  {
+    "id": "chip_dj_conductor_drop",
+    "concept": "dj",
+    "variant": "warm",
+    "label": "Conductor Drop",
+    "phrases": [
+      "conductor drop"
+    ],
+    "context": "refine",
+    "source": "prompt-book"
+  },
+  {
+    "id": "chip_dj_vocal_underlay",
+    "concept": "dj",
+    "variant": "warm",
+    "label": "Vocal Underlay",
+    "phrases": [
+      "vocal underlay"
+    ],
+    "context": "refine",
+    "source": "prompt-book"
+  },
+  {
+    "id": "chip_hard_hard_techno",
+    "concept": "hard",
+    "variant": "warm",
+    "label": "Hard Techno",
+    "phrases": [
+      "hard techno"
+    ],
+    "context": "refine",
+    "source": "prompt-book"
+  },
+  {
+    "id": "chip_hard_schranz",
+    "concept": "preset",
+    "variant": "11-schranz",
+    "label": "Schranz",
+    "action": "load_preset",
+    "presetId": "11-schranz",
+    "phrases": [
+      "schranz"
+    ],
+    "context": "ignite",
+    "source": "prompt-book"
+  },
+  {
+    "id": "chip_techno_deep_hypnotic",
+    "concept": "preset",
+    "variant": "10-deep-techno",
+    "label": "Deep Hypnotic",
+    "action": "load_preset",
+    "presetId": "10-deep-techno",
+    "phrases": [
+      "deep hypnotic"
+    ],
+    "context": "ignite",
+    "source": "prompt-book"
+  },
+  {
+    "id": "chip_techno_minimal_berlin",
+    "concept": "preset",
+    "variant": "10-deep-techno",
+    "label": "Minimal Berlin",
+    "action": "load_preset",
+    "presetId": "10-deep-techno",
+    "phrases": [
+      "minimal berlin"
+    ],
+    "context": "ignite",
+    "source": "prompt-book"
+  },
+  {
+    "id": "chip_techno_peak-time",
+    "concept": "preset",
+    "variant": "10-deep-techno",
+    "label": "Peak-Time",
+    "action": "load_preset",
+    "presetId": "10-deep-techno",
+    "phrases": [
+      "peak-time"
+    ],
+    "context": "ignite",
+    "source": "prompt-book"
+  },
+  {
+    "id": "chip_trance_90s_uplifting",
+    "concept": "preset",
+    "variant": "02-trance-lead",
+    "label": "90s Uplifting",
+    "action": "load_preset",
+    "presetId": "02-trance-lead",
+    "phrases": [
+      "90s uplifting"
+    ],
+    "context": "ignite",
+    "source": "prompt-book"
+  },
+  {
+    "id": "chip_trance_acid_trance",
+    "concept": "preset",
+    "variant": "13-acid-techno",
+    "label": "Acid Trance",
+    "action": "load_preset",
+    "presetId": "13-acid-techno",
+    "phrases": [
+      "acid trance"
+    ],
+    "context": "ignite",
+    "source": "prompt-book"
+  },
+  {
+    "id": "drums_clap",
+    "concept": "drums",
+    "variant": "clap",
+    "label": "Clap",
+    "phrases": [
+      "clap",
+      "mehr clap",
+      "more clap",
+      "hand clap",
+      "cp",
+      "clap layer",
+      "clap auf zwei und vier",
+      "add clap",
+      "clap snare"
+    ],
+    "excludeIf": [
+      "snare only"
+    ]
+  },
+  {
+    "id": "drums_hats",
+    "concept": "drums",
+    "variant": "hats",
+    "label": "Hi-Hats",
+    "phrases": [
+      "hats",
+      "hat",
+      "hi-hat",
+      "hi hat",
+      "hihat",
+      "hh",
+      "mehr hats",
+      "more hats",
+      "closed hat",
+      "hat pattern",
+      "16th hats",
+      "shuffled hats",
+      "offbeat hats",
+      "hats lauter",
+      "add hats",
+      "hi hats"
+    ]
+  },
+  {
+    "id": "drums_kick",
+    "concept": "drums",
+    "variant": "kick",
+    "label": "Kick",
+    "phrases": [
+      "kick",
+      "kicks",
+      "mehr kick",
+      "more kick",
+      "harder kick",
+      "härtere kicks",
+      "punchy kick",
+      "four on the floor",
+      "bd",
+      "bass drum",
+      "tribal kick",
+      "techno kick",
+      "stärkerer kick",
+      "kick drum",
+      "add kick",
+      "kick lauter"
+    ],
+    "excludeIf": [
+      "bassline",
+      "sub bass",
+      "mehr bass",
+      "more bass",
+      "low end",
+      "drum and bass",
+      "dnb",
+      "liquid"
+    ]
+  },
+  {
+    "id": "drums_openhat",
+    "concept": "drums",
+    "variant": "openhat",
+    "label": "Open Hat",
+    "phrases": [
+      "open hat",
+      "openhat",
+      "oh",
+      "offbeat open hat",
+      "open hi hat"
+    ]
+  },
+  {
+    "id": "drums_perc",
+    "concept": "drums",
+    "variant": "perc",
+    "label": "Percussion",
+    "phrases": [
+      "percussion",
+      "perc",
+      "mehr percussion",
+      "more percussion",
+      "shaker",
+      "conga",
+      "bongo",
+      "tribal percussion",
+      "groove percussion",
+      "drums mehr"
+    ],
+    "excludeIf": [
+      "mehr bass",
+      "bassline",
+      "sub"
+    ]
+  },
+  {
+    "id": "drums_roll",
+    "concept": "drums",
+    "variant": "roll",
+    "label": "Roll/Fill",
+    "phrases": [
+      "roll",
+      "fill",
+      "drum fill",
+      "hat roll",
+      "snare roll",
+      "build up drums",
+      "tension fill",
+      "transition fill",
+      "aufbau",
+      "fill einbauen"
+    ]
+  },
+  {
+    "id": "drums_snare",
+    "concept": "drums",
+    "variant": "snare",
+    "label": "Snare",
+    "phrases": [
+      "snare",
+      "mehr snare",
+      "more snare",
+      "backbeat",
+      "clap snare",
+      "rimshot",
+      "snare drum",
+      "sd",
+      "snare lauter",
+      "add snare",
+      "snare punch"
+    ],
+    "excludeIf": [
+      "bass",
+      "sub"
+    ]
+  },
+  {
+    "id": "fx_delay",
+    "concept": "fx",
+    "variant": "echo",
+    "label": "Delay/Echo",
+    "phrases": [
+      "delay",
+      "echo",
+      "mehr delay",
+      "more delay",
+      "dub delay",
+      "feedback delay",
+      "echo effect",
+      "delayed"
+    ]
+  },
+  {
+    "id": "fx_filter",
+    "concept": "fx",
+    "variant": "sweep",
+    "label": "Filter Sweep",
+    "phrases": [
+      "filter sweep",
+      "filter",
+      "lpf sweep",
+      "cutoff sweep",
+      "sweep",
+      "filter automation",
+      "filter öffnen",
+      "open filter",
+      "resonance sweep"
+    ]
+  },
+  {
+    "id": "groove_shuffle",
+    "concept": "groove",
+    "variant": "shuffle",
+    "label": "Shuffle Groove",
+    "phrases": [
+      "shuffle",
+      "swing",
+      "groove",
+      "humanize",
+      "loose groove",
+      "swing feel",
+      "shuffle hats",
+      "groovy",
+      "mehr groove"
+    ]
+  },
+  {
+    "id": "lead_arp",
+    "concept": "lead",
+    "variant": "arp",
+    "label": "Arpeggio",
+    "phrases": [
+      "arp",
+      "arpeggio",
+      "arpeggiator",
+      "arp line",
+      "running notes",
+      "sequenced melody",
+      "arp pattern"
+    ]
+  },
+  {
+    "id": "lead_saw",
+    "concept": "lead",
+    "variant": "saw",
+    "label": "Saw Lead",
+    "phrases": [
+      "lead",
+      "melody",
+      "melodic",
+      "hook",
+      "lead synth",
+      "saw lead",
+      "top line",
+      "melodie",
+      "lead line",
+      "add lead",
+      "lead einbauen"
+    ]
+  },
+  {
+    "id": "pad_warm",
+    "concept": "pad",
+    "variant": "warm",
+    "label": "Warm Pad",
+    "phrases": [
+      "pad",
+      "pads",
+      "warm pad",
+      "ambient pad",
+      "atmosphere",
+      "atmosphäre",
+      "reverb",
+      "raum",
+      "room",
+      "spacious",
+      "lush pad",
+      "background pad",
+      "textural pad",
+      "pad layer",
+      "ambient layer"
+    ]
+  },
+  {
+    "id": "preset_01_kick_snare",
+    "concept": "preset",
+    "variant": "01-kick-snare",
+    "label": "Kick Snare Basics",
+    "action": "load_preset",
+    "presetId": "01-kick-snare",
+    "phrases": [
+      "kick snare",
+      "grundbeat",
+      "simple drums",
+      "minimal drums only",
+      "einstieg beat",
+      "basic beat",
+      "starter pattern"
+    ],
+    "context": "ignite",
+    "source": "preset"
+  },
+  {
+    "id": "preset_02_trance",
+    "concept": "preset",
+    "variant": "02-trance-lead",
+    "label": "Trance Lead",
+    "action": "load_preset",
+    "presetId": "02-trance-lead",
+    "phrases": [
+      "trance",
+      "uplifting trance",
+      "90s trance",
+      "euphoric trance",
+      "140 bpm trance",
+      "saw lead trance",
+      "trance lead",
+      "138 bpm trance"
+    ],
+    "context": "ignite",
+    "source": "preset"
+  },
+  {
+    "id": "preset_03_dnb",
+    "concept": "preset",
+    "variant": "03-dnb-break",
+    "label": "DNB Break",
+    "action": "load_preset",
+    "presetId": "03-dnb-break",
+    "phrases": [
+      "dnb",
+      "drum and bass",
+      "drum & bass",
+      "neurofunk",
+      "jungle",
+      "breakbeat",
+      "170 bpm dnb",
+      "172 bpm neuro",
+      "wobble bass dnb",
+      "amen break"
+    ],
+    "context": "ignite",
+    "source": "preset"
+  },
+  {
+    "id": "preset_10_deep_techno",
+    "concept": "preset",
+    "variant": "10-deep-techno",
+    "label": "Deep Hypnotic Techno",
+    "action": "load_preset",
+    "presetId": "10-deep-techno",
+    "phrases": [
+      "deep techno",
+      "hypnotic techno",
+      "peak time techno",
+      "industrial techno",
+      "berlin techno",
+      "club techno",
+      "128 bpm techno",
+      "dark techno",
+      "hypnotic deep techno",
+      "minimal berlin techno",
+      "peak-time techno"
+    ],
+    "context": "ignite",
+    "source": "preset"
+  },
+  {
+    "id": "preset_11_schranz",
+    "concept": "preset",
+    "variant": "11-schranz",
+    "label": "Industrial Schranz",
+    "action": "load_preset",
+    "presetId": "11-schranz",
+    "phrases": [
+      "schranz",
+      "industrial schranz",
+      "hard industrial",
+      "150 bpm schranz",
+      "distorted kicks schranz",
+      "metallic percussion",
+      "flackerndes stroboskop",
+      "aggressiv industrial",
+      "hard schranz"
+    ],
+    "context": "ignite",
+    "source": "preset"
+  },
+  {
+    "id": "preset_12_liquid_dnb",
+    "concept": "preset",
+    "variant": "12-liquid-dnb",
+    "label": "Liquid DNB",
+    "action": "load_preset",
+    "presetId": "12-liquid-dnb",
+    "phrases": [
+      "liquid dnb",
+      "liquid drum and bass",
+      "liquid drum & bass",
+      "warm pads dnb",
+      "rolling break liquid",
+      "174 bpm liquid",
+      "cyan dnb",
+      "smooth dnb"
+    ],
+    "context": "ignite",
+    "source": "preset"
+  },
+  {
+    "id": "preset_13_acid_techno",
+    "concept": "preset",
+    "variant": "13-acid-techno",
+    "label": "Acid Techno",
+    "action": "load_preset",
+    "presetId": "13-acid-techno",
+    "phrases": [
+      "acid techno",
+      "acid trance",
+      "303 acid",
+      "squelchy acid",
+      "acid line techno",
+      "tb-303",
+      "green acid",
+      "138 bpm acid"
+    ],
+    "context": "ignite",
+    "source": "preset"
+  },
+  {
+    "id": "preset_14_ambient",
+    "concept": "preset",
+    "variant": "14-ambient-drone",
+    "label": "Ambient Drone",
+    "action": "load_preset",
+    "presetId": "14-ambient-drone",
+    "phrases": [
+      "ambient drone",
+      "ambient downtempo",
+      "drone ambient",
+      "80 bpm ambient",
+      "evolving pads",
+      "no kick ambient",
+      "weiche ambient",
+      "entspannt ambient",
+      "downtempo ambient",
+      "95 bpm chill"
+    ],
+    "context": "ignite",
+    "source": "preset"
+  },
+  {
+    "id": "preset_15_stems",
+    "concept": "preset",
+    "variant": "15-stem-reactive",
+    "label": "Stem Reactive",
+    "action": "load_preset",
+    "presetId": "15-stem-reactive",
+    "phrases": [
+      "stem reactive",
+      "stem-reactive",
+      "fft reactive",
+      "reactive stems",
+      "dj stems"
+    ],
+    "context": "ignite",
+    "source": "preset"
+  },
+  {
+    "id": "refine_acid",
+    "concept": "acid",
+    "variant": "line",
+    "label": "Acid",
+    "phrases": [
+      "acid",
+      "303",
+      "acid line",
+      "squelch"
+    ],
+    "source": "refine"
+  },
+  {
+    "id": "refine_arp",
+    "concept": "lead",
+    "variant": "arp",
+    "label": "Arp",
+    "phrases": [
+      "arp",
+      "arpeggio",
+      "arpeggiator"
+    ],
+    "source": "refine"
+  },
+  {
+    "id": "refine_breakdown",
+    "concept": "pad",
+    "variant": "warm",
+    "label": "Breakdown",
+    "phrases": [
+      "breakdown",
+      "aufbau",
+      "build up",
+      "drop preparation",
+      "spannung"
+    ],
+    "source": "refine"
+  },
+  {
+    "id": "refine_drums_only",
+    "concept": "drums",
+    "variant": "kick",
+    "label": "Nur Drums",
+    "phrases": [
+      "nur drums",
+      "only drums",
+      "drums only",
+      "kein lead",
+      "no melody",
+      "no lead"
+    ],
+    "source": "refine"
+  },
+  {
+    "id": "refine_harder",
+    "concept": "texture",
+    "variant": "crush",
+    "label": "Härter",
+    "phrases": [
+      "härter",
+      "harder",
+      "aggressiver",
+      "more aggressive",
+      "mehr distortion",
+      "more distortion",
+      "verzerrung"
+    ],
+    "excludeIf": [
+      "schranz",
+      "industrial schranz"
+    ],
+    "source": "refine"
+  },
+  {
+    "id": "refine_more_hats",
+    "concept": "drums",
+    "variant": "hats",
+    "label": "Mehr Hats",
+    "phrases": [
+      "mehr hi-hats",
+      "more hi-hats",
+      "mehr hh",
+      "16th hats"
+    ],
+    "source": "refine"
+  },
+  {
+    "id": "refine_reverb",
+    "concept": "pad",
+    "variant": "warm",
+    "label": "Mehr Reverb",
+    "phrases": [
+      "mehr reverb",
+      "more reverb",
+      "mehr raum",
+      "more room",
+      "spacious",
+      "weiter raum"
+    ],
+    "source": "refine"
+  },
+  {
+    "id": "refine_slower_sweep",
+    "concept": "fx",
+    "variant": "sweep",
+    "label": "Langsamer Sweep",
+    "phrases": [
+      "langsamer filter",
+      "slower filter",
+      "slow filter sweep",
+      "weniger hi-hats",
+      "fewer hats",
+      "less hats"
+    ],
+    "source": "refine"
+  },
+  {
+    "id": "refine_stab",
+    "concept": "stab",
+    "variant": "chord",
+    "label": "Stabs",
+    "phrases": [
+      "stab",
+      "stabs",
+      "chord stab",
+      "house stab"
+    ],
+    "source": "refine"
+  },
+  {
+    "id": "refine_sub_bass",
+    "concept": "bass",
+    "variant": "sub",
+    "label": "Sub-Bass",
+    "phrases": [
+      "mehr bass",
+      "more bass",
+      "tiefer bass",
+      "sub bass",
+      "low end",
+      "bassline"
+    ],
+    "excludeIf": [
+      "bass drum",
+      "drum and bass",
+      "dnb"
+    ],
+    "source": "refine"
+  },
+  {
+    "id": "remove_bass",
+    "action": "remove",
+    "concept": "bass",
+    "variant": "sub",
+    "label": "Bass entfernen",
+    "phrases": [
+      "weniger bass",
+      "less bass",
+      "remove bass",
+      "kein bass",
+      "no bass",
+      "bass weg",
+      "ohne bass",
+      "without bass",
+      "bass raus"
+    ],
+    "excludeIf": [
+      "mehr bass",
+      "more bass",
+      "tiefer bass",
+      "sub bass"
+    ]
+  },
+  {
+    "id": "remove_clap",
+    "action": "remove",
+    "concept": "drums",
+    "variant": "clap",
+    "label": "Clap entfernen",
+    "phrases": [
+      "weniger clap",
+      "remove clap",
+      "kein clap",
+      "clap weg",
+      "ohne clap"
+    ]
+  },
+  {
+    "id": "remove_hats",
+    "action": "remove",
+    "concept": "drums",
+    "variant": "hats",
+    "label": "Hats reduzieren",
+    "phrases": [
+      "weniger hats",
+      "less hats",
+      "fewer hats",
+      "remove hats",
+      "keine hats",
+      "hats weg",
+      "hats raus",
+      "ohne hats",
+      "without hats",
+      "weniger hi-hats",
+      "less hi-hats",
+      "ruhigere hats",
+      "quieter hats"
+    ]
+  },
+  {
+    "id": "remove_kick",
+    "action": "remove",
+    "concept": "drums",
+    "variant": "kick",
+    "label": "Kick entfernen",
+    "phrases": [
+      "weniger kick",
+      "less kick",
+      "remove kick",
+      "kein kick",
+      "no kick",
+      "kick weg",
+      "ohne kick",
+      "without kick"
+    ]
+  },
+  {
+    "id": "remove_lead",
+    "action": "remove",
+    "concept": "lead",
+    "variant": "saw",
+    "label": "Lead entfernen",
+    "phrases": [
+      "kein lead",
+      "no lead",
+      "remove lead",
+      "lead weg",
+      "ohne lead",
+      "nur drums",
+      "only drums",
+      "drums only"
+    ]
+  },
+  {
+    "id": "remove_pad",
+    "action": "remove",
+    "concept": "pad",
+    "variant": "warm",
+    "label": "Pad/Reverb reduzieren",
+    "phrases": [
+      "weniger reverb",
+      "less reverb",
+      "remove pad",
+      "kein pad",
+      "pad weg",
+      "weniger raum",
+      "less room",
+      "dryer",
+      "trockener"
+    ]
+  },
+  {
+    "id": "remove_snare",
+    "action": "remove",
+    "concept": "drums",
+    "variant": "snare",
+    "label": "Snare entfernen",
+    "phrases": [
+      "weniger snare",
+      "less snare",
+      "remove snare",
+      "kein snare",
+      "no snare",
+      "snare weg",
+      "snare raus",
+      "ohne snare",
+      "without snare",
+      "entferne snare"
+    ]
+  },
+  {
+    "id": "stab_chord",
+    "concept": "stab",
+    "variant": "chord",
+    "label": "Chord Stab",
+    "phrases": [
+      "stab",
+      "stabs",
+      "chord stab",
+      "chord hit",
+      "house stab",
+      "piano stab",
+      "chord punch",
+      "offbeat stab",
+      "akkord"
+    ]
+  },
+  {
+    "id": "tempo_faster",
+    "concept": "tempo",
+    "variant": "up",
+    "label": "Faster",
+    "phrases": [
+      "faster",
+      "schneller",
+      "speed up",
+      "tempo up",
+      "higher bpm",
+      "mehr tempo",
+      "more tempo",
+      "accelerate",
+      "128 bpm",
+      "130 bpm",
+      "140 bpm"
+    ]
+  },
+  {
+    "id": "tempo_slower",
+    "concept": "tempo",
+    "variant": "down",
+    "label": "Slower",
+    "phrases": [
+      "slower",
+      "langsamer",
+      "slow down",
+      "tempo down",
+      "lower bpm",
+      "weniger tempo"
+    ]
+  },
+  {
+    "id": "texture_crush",
+    "concept": "texture",
+    "variant": "crush",
+    "label": "Distortion/Crush",
+    "phrases": [
+      "distort",
+      "distortion",
+      "crush",
+      "bitcrush",
+      "dirty",
+      "dirt",
+      "gritty",
+      "härter",
+      "aggressiv",
+      "aggressive",
+      "saturation",
+      "drive",
+      "raw",
+      "harder sound",
+      "verzerrung",
+      "mehr distortion"
+    ],
+    "excludeIf": [
+      "mehr bass",
+      "bassline",
+      "kick harder",
+      "schranz",
+      "industrial schranz"
+    ]
+  },
+  {
+    "id": "texture_noise",
+    "concept": "texture",
+    "variant": "noise",
+    "label": "Noise",
+    "phrases": [
+      "noise",
+      "rauschen",
+      "hiss",
+      "white noise",
+      "noise layer",
+      "texture noise",
+      "atmospheric noise",
+      "noise sweep"
+    ]
+  }
+]

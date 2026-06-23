@@ -1,0 +1,537 @@
+{
+  "source": "https://strudel.cc/learn — curated for strudel-live RAG",
+  "version": 1,
+  "functions": {
+    "setcpm": {
+      "id": "setcpm",
+      "category": "tempo",
+      "signature": "setcpm(cyclesPerMinute)",
+      "description": "Tempo in cycles per minute. setcpm(32) ≈ 128 BPM in 4/4.",
+      "example": "setcpm(32)",
+      "keywords": ["tempo", "bpm", "speed", "cpm"],
+      "docUrl": "https://strudel.cc/learn/getting-started/"
+    },
+    "stack": {
+      "id": "stack",
+      "category": "structure",
+      "signature": "stack(a, b, c, ...)",
+      "description": "Play layers in parallel — main way to build a full beat.",
+      "example": "stack(s(\"bd*4\"), s(\"hh*8\"))",
+      "keywords": ["layer", "parallel", "mix", "arrangement"],
+      "docUrl": "https://strudel.cc/learn/getting-started/"
+    },
+    "s": {
+      "id": "s",
+      "category": "drums",
+      "signature": "s(\"mini-notation\")",
+      "description": "Sample playback via mini-notation. Drums: bd, sd, hh, cp, oh, rim, cr, rd, sh, perc.",
+      "example": "s(\"bd*4, ~ sd\")",
+      "keywords": ["drums", "kick", "snare", "hat", "clap", "sample", "percussion", "break"],
+      "docUrl": "https://strudel.cc/learn/samples/"
+    },
+    "bank": {
+      "id": "bank",
+      "category": "drums",
+      "signature": ".bank(\"RolandTR808\")",
+      "description": "Select drum machine sample bank.",
+      "example": "s(\"bd sd,hh*16\").bank(\"RolandTR909\")",
+      "keywords": ["drum machine", "808", "909", "tr", "samples"],
+      "docUrl": "https://strudel.cc/learn/samples/"
+    },
+    "samples": {
+      "id": "samples",
+      "category": "drums",
+      "signature": "samples(map, baseUrl)",
+      "description": "Load custom sample map from URL or github:repo.",
+      "example": "samples('github:tidalcycles/dirt-samples')",
+      "keywords": ["load samples", "custom samples", "github"],
+      "docUrl": "https://strudel.cc/learn/samples/"
+    },
+    "note": {
+      "id": "note",
+      "category": "melody",
+      "signature": "note(\"pitch\")",
+      "description": "Pitched notes by name (c2), MIDI number, or pattern.",
+      "example": "note(\"c2*4\").s(\"sawtooth\").lpf(120)",
+      "keywords": ["bass", "note", "pitch", "melody", "tone"],
+      "docUrl": "https://strudel.cc/learn/notes/"
+    },
+    "n": {
+      "id": "n",
+      "category": "melody",
+      "signature": "n(\"degrees\")",
+      "description": "Scale degrees — use with .scale() and .note().",
+      "example": "n(\"0 2 4 7\").scale(\"A:minor\").note()",
+      "keywords": ["chord", "lead", "scale", "degrees", "melody"],
+      "docUrl": "https://strudel.cc/learn/notes/"
+    },
+    "freq": {
+      "id": "freq",
+      "category": "melody",
+      "signature": "freq(\"hz\")",
+      "description": "Direct frequency in Hz — microtonal capable.",
+      "example": "freq(\"220 275 330 440\")",
+      "keywords": ["frequency", "hz", "microtonal"],
+      "docUrl": "https://strudel.cc/learn/notes/"
+    },
+    "scale": {
+      "id": "scale",
+      "category": "melody",
+      "signature": ".scale(\"NOTE:mode\")",
+      "description": "Constrain pitches to a scale e.g. A:minor, C:major.",
+      "example": ".scale(\"A:minor\")",
+      "keywords": ["scale", "key", "mode", "tonal", "minor", "major"],
+      "docUrl": "https://strudel.cc/learn/notes/"
+    },
+    "chord": {
+      "id": "chord",
+      "category": "melody",
+      "signature": "chord(\"C^7\").voicing()",
+      "description": "Chord symbols with automatic voicing.",
+      "example": "chord(\"<Am7 Em7>\").voicing().note()",
+      "keywords": ["chord", "harmony", "voicing", "stab", "house"],
+      "docUrl": "https://strudel.cc/learn/notes/"
+    },
+    "gain": {
+      "id": "gain",
+      "category": "effect",
+      "signature": ".gain(0.0-1.0)",
+      "description": "Main volume ADSR stage.",
+      "example": ".gain(0.85)",
+      "keywords": ["volume", "loud", "quiet", "level"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "postgain": {
+      "id": "postgain",
+      "category": "effect",
+      "signature": ".postgain(factor)",
+      "description": "Gain after effects chain.",
+      "example": ".postgain(0.95)",
+      "keywords": ["output", "level", "mix"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "velocity": {
+      "id": "velocity",
+      "category": "effect",
+      "signature": ".velocity(0-1)",
+      "description": "MIDI-style velocity scaling.",
+      "example": ".velocity(0.8)",
+      "keywords": ["dynamics", "accent", "velocity"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "lpf": {
+      "id": "lpf",
+      "category": "filter",
+      "signature": ".lpf(hz)",
+      "description": "Low-pass filter cutoff in Hz.",
+      "example": ".lpf(sine.range(200, 4000).slow(8))",
+      "keywords": ["filter", "dark", "muffled", "lowpass", "cutoff"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "cutoff": {
+      "id": "cutoff",
+      "category": "filter",
+      "signature": ".cutoff(hz)",
+      "description": "Alias for low-pass cutoff on synths.",
+      "example": ".cutoff(sine.slow(7).range(300, 5000))",
+      "keywords": ["filter", "sweep", "cutoff", "lpf"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "lpq": {
+      "id": "lpq",
+      "category": "filter",
+      "signature": ".lpq(q)",
+      "description": "Low-pass filter resonance Q (0-50).",
+      "example": ".lpf(2000).lpq(\"<0 10 20 30>\")",
+      "keywords": ["resonance", "filter", "q"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "hpf": {
+      "id": "hpf",
+      "category": "filter",
+      "signature": ".hpf(hz)",
+      "description": "High-pass filter — removes low frequencies.",
+      "example": ".hpf(400)",
+      "keywords": ["highpass", "thin", "bright"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "bpf": {
+      "id": "bpf",
+      "category": "filter",
+      "signature": ".bpf(hz)",
+      "description": "Band-pass filter center frequency.",
+      "example": ".bpf(\"<1000 2000 4000>\")",
+      "keywords": ["bandpass", "filter", "telephone"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "room": {
+      "id": "room",
+      "category": "effect",
+      "signature": ".room(0.0-1.0)",
+      "description": "Reverb send amount.",
+      "example": ".room(0.5)",
+      "keywords": ["reverb", "room", "space", "ambient", "raum"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "roomsize": {
+      "id": "roomsize",
+      "category": "effect",
+      "signature": ".roomsize(n)",
+      "description": "Reverb room size parameter.",
+      "example": ".room(1).roomsize(10)",
+      "keywords": ["reverb", "hall", "large space"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "delay": {
+      "id": "delay",
+      "category": "effect",
+      "signature": ".delay(0.0-1.0)",
+      "description": "Delay send amount.",
+      "example": ".delay(0.25)",
+      "keywords": ["delay", "echo", "dub"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "delaytime": {
+      "id": "delaytime",
+      "category": "effect",
+      "signature": ".delaytime(sec)",
+      "description": "Delay time in seconds.",
+      "example": ".delay(0.4).delaytime(0.375)",
+      "keywords": ["delay time", "echo time"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "delayfeedback": {
+      "id": "delayfeedback",
+      "category": "effect",
+      "signature": ".delayfeedback(0-1)",
+      "description": "Delay feedback amount.",
+      "example": ".delay(0.5).delayfeedback(0.6)",
+      "keywords": ["feedback", "echo repeats"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "distort": {
+      "id": "distort",
+      "category": "effect",
+      "signature": ".distort(amount)",
+      "description": "Distortion saturation.",
+      "example": ".distort(0.3)",
+      "keywords": ["distort", "dirty", "aggressive", "drive"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "crush": {
+      "id": "crush",
+      "category": "effect",
+      "signature": ".crush(bits)",
+      "description": "Bit-crush for lo-fi / industrial sound.",
+      "example": ".crush(8)",
+      "keywords": ["crush", "lofi", "industrial", "bitcrush"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "pan": {
+      "id": "pan",
+      "category": "effect",
+      "signature": ".pan(-1 to 1)",
+      "description": "Stereo pan position.",
+      "example": ".pan(sine.range(-0.5, 0.5).fast(2))",
+      "keywords": ["stereo", "width", "panning"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "speed": {
+      "id": "speed",
+      "category": "sampler",
+      "signature": ".speed(factor)",
+      "description": "Sample playback speed — also changes pitch.",
+      "example": ".speed(perlin.range(0.9, 1.1))",
+      "keywords": ["groove", "shuffle", "tape"],
+      "docUrl": "https://strudel.cc/learn/samples/"
+    },
+    "clip": {
+      "id": "clip",
+      "category": "sampler",
+      "signature": ".clip(factor)",
+      "description": "Legato — multiply note duration.",
+      "example": ".clip(\"<.5 1 2>\")",
+      "keywords": ["legato", "duration", "length"],
+      "docUrl": "https://strudel.cc/learn/samples/"
+    },
+    "cut": {
+      "id": "cut",
+      "category": "sampler",
+      "signature": ".cut(group)",
+      "description": "Choke groups — e.g. open hat cuts closed hat.",
+      "example": "s(\"[oh hh]*4\").cut(1)",
+      "keywords": ["choke", "mute", "hi-hat"],
+      "docUrl": "https://strudel.cc/learn/samples/"
+    },
+    "chop": {
+      "id": "chop",
+      "category": "sampler",
+      "signature": ".chop(n)",
+      "description": "Granular — cut sample into n slices.",
+      "example": "s(\"rhodes\").chop(4).rev()",
+      "keywords": ["granular", "slice", "glitch"],
+      "docUrl": "https://strudel.cc/learn/samples/"
+    },
+    "slice": {
+      "id": "slice",
+      "category": "sampler",
+      "signature": ".slice(n, pattern)",
+      "description": "Slice breakbeats by number or positions.",
+      "example": "s(\"breaks165\").slice(8, \"0 1 2 3 4 5 6 7\")",
+      "keywords": ["breakbeat", "jungle", "dnb", "amen"],
+      "docUrl": "https://strudel.cc/learn/samples/"
+    },
+    "loopAt": {
+      "id": "loopAt",
+      "category": "sampler",
+      "signature": ".loopAt(cycles)",
+      "description": "Fit sample loop to N cycles.",
+      "example": "s(\"rhodes\").loopAt(2)",
+      "keywords": ["loop", "stretch", "fit"],
+      "docUrl": "https://strudel.cc/learn/samples/"
+    },
+    "fit": {
+      "id": "fit",
+      "category": "sampler",
+      "signature": ".fit()",
+      "description": "Fit sample to event duration — good for breaks.",
+      "example": "s(\"amen/4\").fit()",
+      "keywords": ["break", "fit", "loop"],
+      "docUrl": "https://strudel.cc/learn/samples/"
+    },
+    "attack": {
+      "id": "attack",
+      "category": "envelope",
+      "signature": ".attack(sec)",
+      "description": "ADSR attack time.",
+      "example": ".attack(0.4)",
+      "keywords": ["envelope", "fade in", "soft"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "decay": {
+      "id": "decay",
+      "category": "envelope",
+      "signature": ".decay(sec)",
+      "description": "ADSR decay time.",
+      "example": ".decay(0.15)",
+      "keywords": ["envelope", "pluck"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "sustain": {
+      "id": "sustain",
+      "category": "envelope",
+      "signature": ".sustain(level)",
+      "description": "ADSR sustain level.",
+      "example": ".sustain(0)",
+      "keywords": ["envelope", "hold"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "release": {
+      "id": "release",
+      "category": "envelope",
+      "signature": ".release(sec)",
+      "description": "ADSR release time.",
+      "example": ".release(2)",
+      "keywords": ["envelope", "fade out", "tail"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "adsr": {
+      "id": "adsr",
+      "category": "envelope",
+      "signature": ".adsr(a,d,s,r)",
+      "description": "Set full ADSR envelope at once.",
+      "example": ".adsr(\"0.01 0.2 0.5 0.8\")",
+      "keywords": ["envelope", "adsr"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "vowel": {
+      "id": "vowel",
+      "category": "effect",
+      "signature": ".vowel(\"a\")",
+      "description": "Vowel formant filter.",
+      "example": ".vowel(\"<a e i o>\")",
+      "keywords": ["vocal", "formant", "talk"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "phaser": {
+      "id": "phaser",
+      "category": "effect",
+      "signature": ".phaser(amount)",
+      "description": "Phaser modulation effect.",
+      "example": ".phaser(0.5)",
+      "keywords": ["phaser", "sweep", "modulation"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "orbit": {
+      "id": "orbit",
+      "category": "routing",
+      "signature": ".orbit(n)",
+      "description": "Output bus — separate delay/reverb per orbit.",
+      "example": ".orbit(2)",
+      "keywords": ["bus", "routing", "multichannel"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "jux": {
+      "id": "jux",
+      "category": "transform",
+      "signature": ".jux(fn)",
+      "description": "Apply function to right channel only.",
+      "example": ".jux(rev)",
+      "keywords": ["stereo", "reverse", "width"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "fast": {
+      "id": "fast",
+      "category": "transform",
+      "signature": ".fast(n)",
+      "description": "Speed up pattern by factor n.",
+      "example": ".fast(2)",
+      "keywords": ["double", "speed", "faster"],
+      "docUrl": "https://strudel.cc/learn/mini-notation/"
+    },
+    "slow": {
+      "id": "slow",
+      "category": "transform",
+      "signature": ".slow(n)",
+      "description": "Slow down pattern by factor n.",
+      "example": ".slow(2)",
+      "keywords": ["half", "slower"],
+      "docUrl": "https://strudel.cc/learn/mini-notation/"
+    },
+    "sometimes": {
+      "id": "sometimes",
+      "category": "transform",
+      "signature": ".sometimes(fn)",
+      "description": "50% chance to apply transformation.",
+      "example": ".sometimes(x => x.fast(2))",
+      "keywords": ["variation", "random", "humanize"],
+      "docUrl": "https://strudel.cc/learn/mini-notation/"
+    },
+    "often": {
+      "id": "often",
+      "category": "transform",
+      "signature": ".often(fn)",
+      "description": "75% chance to apply transformation.",
+      "example": ".often(x => x.rev())",
+      "keywords": ["variation", "random"],
+      "docUrl": "https://strudel.cc/learn/mini-notation/"
+    },
+    "rarely": {
+      "id": "rarely",
+      "category": "transform",
+      "signature": ".rarely(fn)",
+      "description": "25% chance to apply transformation.",
+      "example": ".rarely(x => x.fast(4))",
+      "keywords": ["variation", "random"],
+      "docUrl": "https://strudel.cc/learn/mini-notation/"
+    },
+    "struct": {
+      "id": "struct",
+      "category": "structure",
+      "signature": ".struct(\"pattern\")",
+      "description": "Gate pattern with mini-notation mask.",
+      "example": ".struct(\"x ~ x ~\")",
+      "keywords": ["rhythm", "structure", "gate"],
+      "docUrl": "https://strudel.cc/learn/mini-notation/"
+    },
+    "mask": {
+      "id": "mask",
+      "category": "structure",
+      "signature": ".mask(\"binary\")",
+      "description": "Binary mask steps in a cycle.",
+      "example": ".mask(\"1 0 1 0\")",
+      "keywords": ["mute", "pattern", "gate"],
+      "docUrl": "https://strudel.cc/learn/mini-notation/"
+    },
+    "rev": {
+      "id": "rev",
+      "category": "transform",
+      "signature": ".rev()",
+      "description": "Reverse pattern.",
+      "example": "s(\"bd cp sd cp\").rev()",
+      "keywords": ["reverse", "backwards"],
+      "docUrl": "https://strudel.cc/learn/mini-notation/"
+    },
+    "palindrome": {
+      "id": "palindrome",
+      "category": "transform",
+      "signature": ".palindrome()",
+      "description": "Play pattern forwards then backwards.",
+      "example": "n(\"0 2 4\").palindrome()",
+      "keywords": ["mirror", "symmetry"],
+      "docUrl": "https://strudel.cc/learn/mini-notation/"
+    },
+    "superimpose": {
+      "id": "superimpose",
+      "category": "transform",
+      "signature": ".superimpose(fn)",
+      "description": "Layer transformed copy on top.",
+      "example": ".superimpose(x => x.add(12))",
+      "keywords": ["layer", "detune", "thicken"],
+      "docUrl": "https://strudel.cc/learn/getting-started/"
+    },
+    "off": {
+      "id": "off",
+      "category": "transform",
+      "signature": ".off(time, fn)",
+      "description": "Delayed copy of pattern.",
+      "example": ".off(1/8, x => x.add(12))",
+      "keywords": ["delay", "echo", "canon"],
+      "docUrl": "https://strudel.cc/learn/getting-started/"
+    },
+    "perlin": {
+      "id": "perlin",
+      "category": "modulator",
+      "signature": "perlin.range(min, max)",
+      "description": "Smooth random modulation (Perlin noise).",
+      "example": "speed(perlin.range(0.9, 1.1))",
+      "keywords": ["movement", "humanize", "random"],
+      "docUrl": "https://strudel.cc/learn/getting-started/"
+    },
+    "sine": {
+      "id": "sine",
+      "category": "modulator",
+      "signature": "sine.range(min, max).slow(n)",
+      "description": "Sine LFO for sweeps and movement.",
+      "example": "lpf(sine.range(200, 4000).slow(8))",
+      "keywords": ["lfo", "sweep", "modulation"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "tri": {
+      "id": "tri",
+      "category": "modulator",
+      "signature": "tri.range(min, max)",
+      "description": "Triangle LFO.",
+      "example": "lpf(tri.range(100, 5000).slow(2))",
+      "keywords": ["lfo", "triangle", "sweep"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "irand": {
+      "id": "irand",
+      "category": "modulator",
+      "signature": "irand(n)",
+      "description": "Random integer 0..n-1 each cycle.",
+      "example": ".n(irand(12))",
+      "keywords": ["random", "variation"],
+      "docUrl": "https://strudel.cc/learn/effects/"
+    },
+    "degradeBy": {
+      "id": "degradeBy",
+      "category": "transform",
+      "signature": ".degradeBy(prob)",
+      "description": "Randomly drop events by probability.",
+      "example": ".degradeBy(0.5)",
+      "keywords": ["random", "sparse", "glitch"],
+      "docUrl": "https://strudel.cc/learn/mini-notation/"
+    },
+    "euclid": {
+      "id": "euclid",
+      "category": "mini-notation",
+      "signature": "s(\"bd(beats,segments,offset)\")",
+      "description": "Euclidean rhythms in mini-notation.",
+      "example": "s(\"bd(3,8,0)\")",
+      "keywords": ["euclidean", "clave", "polyrhythm", "syncopation"],
+      "docUrl": "https://strudel.cc/learn/mini-notation/"
+    }
+  }
+}

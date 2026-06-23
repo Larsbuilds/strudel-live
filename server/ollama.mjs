@@ -7,6 +7,7 @@
  *   OLLAMA_MODEL=strudel-live
  */
 import { SYSTEM_PROMPT } from './system-prompt.mjs';
+import { TOOL_SCHEMA } from './tool-schema.mjs';
 
 const DEFAULT_BASE = 'http://localhost:11434';
 
@@ -83,7 +84,12 @@ export async function ollamaChat(messages, env = process.env, { json = false, ma
 /** Strudel-coder style system prompt (amhinson/strudel-coder-0.5B). */
 export const STRUDEL_CODER_SYSTEM = `${SYSTEM_PROMPT}
 
-You output only valid Strudel JavaScript for @strudel/repl. Use setcpm() for tempo, s() for drums, stack() to layer. No markdown unless asked.`;
+${TOOL_SCHEMA}
+
+Prefer JSON tools for modifications:
+{"tools":[{"name":"remove_layer","args":{"concept":"drums","variant":"hats"}}]}
+{"tools":[{"name":"append_layer","args":{"concept":"bass","variant":"sub"}}]}
+Or output Strudel JS for new patterns. Never swap bass (note/lpf) for drums (s/bd).`;
 
 export function buildOllamaMessages(system, user) {
   return [

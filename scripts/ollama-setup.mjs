@@ -50,6 +50,7 @@ if (useStrudelCoder) {
     console.log('  AI_PROVIDER=ollama');
     console.log('  USE_OLLAMA=true');
     console.log('  OLLAMA_MODEL=strudel-live\n');
+    console.log('Semantic search (optional): ollama pull nomic-embed-text && npm run semantic:index\n');
     console.log('Besseres Modell: npm run ollama:setup -- --strudel-coder\n');
     console.log('Dann: npm run dev:full\n');
   } else {

@@ -12,7 +12,7 @@ export function initPromptBook({ promptInput, chipsEl, refineCheck, igniteCheck,
     const data = await res.json();
     const code = data.patterns?.[patternId];
     if (!code) return;
-    await hub.applyPattern(code, { source: 'preset', name: patternId });
+    await hub.applyPattern(code, { source: 'preset', name: patternId, prompt: patternId });
     const status = document.getElementById('ai-status');
     if (status) {
       status.dataset.state = 'ok';
@@ -45,18 +45,17 @@ export function initPromptBook({ promptInput, chipsEl, refineCheck, igniteCheck,
         target.value = p.text;
         target.focus();
 
-        if (p.refine && refineCheck) {
-          refineCheck.checked = true;
-          if (igniteCheck) igniteCheck.checked = false;
+        if (p.refine) {
+          const status = document.getElementById('ai-status');
+          if (status) {
+            status.textContent = 'Läuft ein Beat? → „KI hinzufügen“ klicken';
+            status.dataset.state = 'ok';
+          }
         } else if (p.conductor) {
-          if (refineCheck) refineCheck.checked = false;
           conductorPromptEl?.focus({ preventScroll: true });
         } else {
-          if (refineCheck) refineCheck.checked = false;
           if (igniteCheck) igniteCheck.checked = true;
         }
-
-        refineCheck?.dispatchEvent(new Event('change'));
       });
       chipsEl.append(chip);
     }

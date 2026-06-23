@@ -33,23 +33,40 @@
       <div id="ai-setup" class="setup-banner" hidden>
         <strong>Setup:</strong> Cloud: <code>OPENAI_API_KEY</code> in <code>.env</code> · Lokal: <code>npm run ollama:setup</code> + <code>AI_PROVIDER=ollama</code> · <code>docs/LOCAL-AI.md</code>
       </div>
+    </header>
 
+    <div class="workspace">
+      <aside class="workspace__controls">
       <section class="ai-panel ai-panel--ignite">
         <form id="ai-form">
           <label for="ai-prompt">Was soll passieren?</label>
           <div class="ai-row">
-            <textarea
-              id="ai-prompt"
-              rows="3"
-              placeholder="z.B. Hypnotic Deep Techno, dunkelrote Visuals, harte Kicks — ich will live mitsingen"
-            ></textarea>
+            <div class="prompt-compose">
+              <textarea
+                id="ai-prompt"
+                rows="4"
+                placeholder="Beschreibe den Sound — oder sprich per 🎤. Läuft schon ein Beat? „Hinzufügen“ ankreuzen und z.B. „füge acid bass und mehr hats hinzu“."
+              ></textarea>
+              <div id="prompt-voice-indicator" class="prompt-voice-indicator" hidden aria-live="polite">
+                <span class="prompt-voice-indicator__dot" aria-hidden="true"></span>
+                <span id="prompt-voice-label"></span>
+              </div>
+              <div id="prompt-audio-level" class="prompt-audio-level" hidden aria-hidden="true">
+                <div class="prompt-audio-level__fill"></div>
+              </div>
+            </div>
             <div class="ai-actions">
-              <button type="button" id="voice-btn" class="voice-btn" title="Browser-Sprache">🎤 Sprechen</button>
-              <button type="button" id="whisper-btn" class="voice-btn" title="Whisper STT">🎙 Whisper</button>
-              <button type="submit" id="ai-submit">Ignite &amp; Start</button>
-              <button type="button" id="save-pattern-btn" class="secondary-btn" disabled>Speichern</button>
+              <div class="ai-actions__voice">
+                <button type="button" id="voice-btn" class="voice-btn" title="Browser-Sprache">🎤</button>
+                <button type="button" id="whisper-btn" class="voice-btn" title="Whisper STT">🎙</button>
+              </div>
+              <button type="submit" id="ai-ignite" class="btn-ignite" value="ignite">Ignite &amp; Start</button>
+              <button type="submit" id="ai-refine" class="btn-refine" value="refine">KI hinzufügen</button>
+              <button type="button" id="stop-btn" class="btn-stop" title="Musik stoppen">⏹ Stop</button>
+              <button type="button" id="save-pattern-btn" class="btn-save secondary-btn" disabled>Speichern</button>
             </div>
           </div>
+          <p class="mode-hint"><strong>Ignite</strong> = neu starten · <strong>KI hinzufügen</strong> = läuft schon → Layer im Editor erweitern</p>
           <label class="refine-toggle ignite-toggle">
             <input type="checkbox" id="ignite-mode" checked />
             Ein Prompt startet alles (Module automatisch)
@@ -61,26 +78,92 @@
           <details class="ai-advanced">
             <summary>Erweitert</summary>
             <label class="refine-toggle">
-              <input type="checkbox" id="refine-mode" />
-              Aktuelles Pattern verfeinern (nur Strudel)
-            </label>
-            <label class="refine-toggle">
               <input type="checkbox" id="dj-context-mode" />
               DJ-Track-Kontext (BPM/Stems aus Manifest)
             </label>
           </details>
         </form>
-        <p id="voice-status" class="voice-status" role="status"></p>
         <div id="ai-chips" class="chips"></div>
         <p id="ai-status" class="ai-status" role="status"></p>
-        <p class="dj-hint">Club-Prompts: Chips unten · Shift+Klick = Preset ohne KI · <code>docs/PROMPT-BOOK.md</code></p>
+
+        <section class="session-log" aria-label="Session-Verlauf">
+          <div class="session-log__head">
+            <h3>Verlauf</h3>
+            <button type="button" id="session-log-clear" class="secondary-btn small">Leeren</button>
+          </div>
+          <p id="session-log-empty" class="session-log__empty">Noch keine Schritte — Ignite oder KI hinzufügen</p>
+          <ul id="session-log-list" class="session-log__list"></ul>
+        </section>
+
+        <p class="dj-hint">× = Schritt zurück · ✎ = Prompt erneut bearbeiten</p>
       </section>
 
-      <label class="pattern-picker">
-        Pattern:
-        <select id="pattern-picker"></select>
-      </label>
+      <div id="now-playing" class="now-playing" hidden>
+        <span id="now-playing-badge" class="now-playing__badge">Basis-Beat</span>
+        <span id="now-playing-label" class="now-playing__label">—</span>
+        <button type="button" id="now-playing-stop" class="secondary-btn small">Aus</button>
+      </div>
 
+      <div class="pattern-section">
+        <label class="pattern-picker">
+          Basis-Beat (fest, kein KI):
+          <select id="pattern-picker">
+            <option value="">— wählen —</option>
+          </select>
+        </label>
+        <button type="button" id="pattern-play-btn" class="secondary-btn small">Basis abspielen</button>
+        <p class="pattern-hint">Demos 01–05 nur Tutorial · ★ Club-Presets 10–15</p>
+      </div>
+      </aside>
+
+      <section class="workspace__editor-pane">
+        <div class="editor-pane__head">
+          <h2>Strudel Editor</h2>
+          <p class="editor-pane__sub">Prompt links · Code rechts — direkt editierbar</p>
+          <details class="editor-help">
+            <summary>Editor-Funktionen</summary>
+            <ul>
+              <li><code>// Kommentar</code> — Zeilen mit // werden ignoriert</li>
+              <li><code>stack(a, b, c)</code> — Schichten parallel (Kick, Bass, Hats …)</li>
+              <li><code>setcpm(32)</code> — Tempo (32 ≈ 128 BPM bei 4/4)</li>
+              <li><code>s("bd*4")</code> — Drums · <code>note("c2")</code> — Töne</li>
+              <li><code>.gain()</code> · <code>.lpf()</code> · <code>.room()</code> · <code>.delay()</code> — Effekte</li>
+              <li>Play-Button im Editor oder <kbd>Ctrl</kbd>+<kbd>Enter</kbd></li>
+              <li><a href="https://strudel.cc/learn" target="_blank" rel="noopener">strudel.cc/learn</a></li>
+            </ul>
+          </details>
+          <details class="editor-help editor-help--ai">
+            <summary>Wie KI mit dem Editor verbunden ist</summary>
+            <ol>
+              <li><strong>Semantic</strong> — „mehr Bass“ → Intent-DB (Bedeutung, kein Strudel)</li>
+              <li><strong>Catalog</strong> — Intent → Konzept → Strudel-Funktionen (<code>s()</code>, <code>note()</code>…)</li>
+              <li><strong>Agent-Tools</strong> — <code>append_layer</code> führt den Catalog aus; kleine KI orchestriert JSON-Tools</li>
+              <li><strong>RAG</strong> — relevante Strudel-Snippets im Prompt · Debug: <code>/api/catalog</code>, <code>/api/agent/plan</code></li>
+              <li>Presets für ganze Songs · KI für kreative Sprache · Verlauf (× rückgängig)</li>
+            </ol>
+          </details>
+        </div>
+
+        <section class="visual-panel" aria-label="Visuals">
+          <div class="visual-panel__toolbar">
+            <span class="visual-panel__title">Visuals</span>
+            <div id="visual-preset-chips" class="visual-preset-chips"></div>
+            <select id="visual-preset-select" class="visual-preset-select" title="Visual wählen">
+              <option value="">— Stil —</option>
+            </select>
+            <button type="button" id="visual-fullscreen-btn" class="secondary-btn small">⊞ Vollbild</button>
+            <span id="visual-status" class="visual-status"></span>
+          </div>
+          <div id="visual-stage" class="visual-stage">
+            <p id="visual-stage-placeholder" class="visual-stage__placeholder">Stil wählen oder „Visuals mitstarten“ bei Ignite</p>
+          </div>
+        </section>
+
+        <strudel-editor id="repl"></strudel-editor>
+      </section>
+    </div>
+
+    <footer class="workspace-footer">
       <details class="dj-panel">
         <summary>🎧 DJ-Modus</summary>
         <p class="dj-hint">
@@ -119,7 +202,6 @@
             <button type="submit" class="secondary-btn">Conductor ausführen</button>
           </form>
           <p id="conductor-status" class="mic-status"></p>
-          <p class="dj-hint">Ein Prompt → Strudel + WAM + Hydra · Wechsel auf nächste Eins quantisiert</p>
         </div>
 
         <div class="advanced-block">
@@ -127,74 +209,76 @@
           <button type="button" id="dj-ctrl-connect" class="secondary-btn small">MIDI Input verbinden</button>
           <p id="dj-ctrl-status" class="mic-status"></p>
           <div id="dj-ctrl-meters" class="dj-meters" hidden></div>
-          <p class="dj-hint">CC8 Crossfader · CC1/CC2 Filter · Pattern <code>08-dj-controller</code></p>
+          <div class="dj-mixer dj-mixer--panel" aria-label="On-screen Mixer">
+            <div class="fader fader--horizontal">
+              <label for="fader-master">Master</label>
+              <input type="range" id="fader-master" min="0" max="1" step="0.01" value="0.85" />
+            </div>
+            <div class="fader fader--horizontal">
+              <label for="fader-filter">Filter</label>
+              <input type="range" id="fader-filter" min="0" max="1" step="0.01" value="0.65" />
+            </div>
+            <div class="fader fader--horizontal">
+              <label for="fader-cross">Cross</label>
+              <input type="range" id="fader-cross" min="0" max="1" step="0.01" value="0.5" />
+            </div>
+          </div>
         </div>
       </details>
 
       <details class="sv-panel">
-        <summary>🎨 Sound &amp; Vision (v0.5)</summary>
-
+        <summary>🎨 Sound &amp; Vision</summary>
         <div class="advanced-block">
-          <strong>Phase 11 — WAM Synthesizer</strong>
+          <strong>WAM Synthesizer</strong>
           <select id="wam-plugin-select"></select>
           <button type="button" id="wam-load-btn" class="secondary-btn small">WAM laden</button>
           <div id="wam-gui-container" class="wam-gui"></div>
           <p id="wam-status" class="mic-status"></p>
         </div>
-
         <div class="advanced-block advanced-block--experimental">
-          <strong>Phase 11b — Faust DSP <span class="badge-experimental">experimental</span></strong>
-          <p class="hint-text">Cloud-Compiler oft offline — Passthrough-Worklet, kein Club-Set.</p>
+          <strong>Faust DSP <span class="badge-experimental">experimental</span></strong>
           <form id="faust-form">
-            <textarea id="faust-code" class="code-preview" rows="3" placeholder="process = _;">process = _;</textarea>
-            <button type="submit" class="secondary-btn small">Kompilieren &amp; laden</button>
+            <textarea id="faust-code" class="code-preview" rows="3">process = _;</textarea>
+            <button type="submit" class="secondary-btn small">Kompilieren</button>
             <button type="button" id="faust-unload" class="secondary-btn small">Entladen</button>
           </form>
           <p id="faust-status" class="mic-status"></p>
         </div>
-
         <div class="advanced-block">
-          <strong>Phase 13 — RAVE Bridge</strong>
-          <label>
-            PCM-Frame:
-            <select id="rave-frame-size">
-              <option value="512" selected>512 (reaktiv)</option>
-              <option value="1024">1024 (stabiler)</option>
-            </select>
-          </label>
+          <strong>RAVE Bridge</strong>
+          <select id="rave-frame-size">
+            <option value="512" selected>512</option>
+            <option value="1024">1024</option>
+          </select>
           <button type="button" id="rave-start" class="secondary-btn small">RAVE starten</button>
           <button type="button" id="rave-stop" class="secondary-btn small">Stop</button>
           <p id="rave-status" class="mic-status"></p>
-          <p class="dj-hint"><code>npm run rave:server</code> in separatem Terminal</p>
         </div>
-
         <div class="advanced-block">
-          <strong>Phase 12 — SuperCollider SynthDef</strong>
+          <strong>SuperCollider SynthDef</strong>
           <form id="synthdef-form">
-            <input id="synthdef-prompt" type="text" placeholder="z.B. dreckiger morphing cyberpunk bass" />
-            <button type="submit" class="secondary-btn small">SynthDef generieren</button>
+            <input id="synthdef-prompt" type="text" placeholder="cyberpunk bass" />
+            <button type="submit" class="secondary-btn small">Generieren</button>
           </form>
-          <textarea id="synthdef-code" class="code-preview" rows="6" placeholder="SuperCollider Code…"></textarea>
+          <textarea id="synthdef-code" class="code-preview" rows="4"></textarea>
           <button type="button" id="synthdef-send" class="secondary-btn small" disabled>An SC senden</button>
           <p id="synthdef-status" class="mic-status"></p>
         </div>
-
         <div class="advanced-block">
-          <strong>Phase 14 — Hydra Visuals</strong>
+          <strong>Hydra Visuals</strong>
+          <button type="button" id="hydra-expand-btn" class="secondary-btn small">⊞ Hydra groß</button>
           <button type="button" id="hydra-start" class="secondary-btn small">Hydra starten</button>
-          <input id="hydra-prompt" type="text" placeholder="z.B. pulsierende techno visuals, rot/schwarz" />
+          <input id="hydra-prompt" type="text" placeholder="techno visuals rot/schwarz" />
           <button type="button" id="hydra-generate" class="secondary-btn small">KI-Visuals</button>
-          <textarea id="hydra-code" class="code-preview" rows="3">osc(10,0.1).color(1,0.2,0.5).out()</textarea>
-          <button type="button" id="hydra-run" class="secondary-btn small">Visuals ausführen</button>
+          <textarea id="hydra-code" class="code-preview" rows="2">osc(10,0.1).color(1,0.2,0.5).out()</textarea>
+          <button type="button" id="hydra-run" class="secondary-btn small">Ausführen</button>
           <label class="refine-toggle">
             <input type="checkbox" id="hydra-auto" />
-            Visual-Prompt bei neuem Pattern vorschlagen
+            Visual-Prompt bei neuem Pattern
           </label>
           <p id="hydra-status" class="mic-status"></p>
-          <div id="hydra-canvas-wrap" class="hydra-wrap" hidden>Hydra läuft — Canvas oben im Draw-Layer</div>
+          <div id="hydra-canvas-wrap" class="hydra-wrap" hidden>Hydra läuft</div>
         </div>
-
-        <p class="dj-hint">Stem-FFT: geglättet (α=0.2) · Conductor: quantisiert auf Eins · <code>docs/SOUND-VISION.md</code></p>
       </details>
 
       <details class="advanced-panel">
@@ -220,15 +304,9 @@
           <p id="mic-key-label" class="mic-key-label"></p>
           <p id="mic-status" class="mic-status" role="status"></p>
         </div>
-        <ul class="advanced-list">
-          <li><code>npm run dev:full</code> · <code>npm run dj:deps</code></li>
-          <li><code>docs/DJ-ROADMAP.md</code></li>
-        </ul>
       </details>
-    </header>
-    <main>
-      <strudel-editor id="repl"></strudel-editor>
-    </main>
+    </footer>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

@@ -1,11 +1,11 @@
 /**
- * Browser-Spracheingabe (kein API-Key nötig) — füllt das KI-Prompt-Feld.
- * Chrome/Edge auf Mac; Safari eingeschränkt.
+ * Browser speech → prompt field. Live text in textarea; indicator only when words arrive.
  */
+import { getPromptVoiceUi } from './prompt-voice-ui.js';
 
 export function initVoiceInput({ promptInput, onTranscript }) {
   const btn = document.getElementById('voice-btn');
-  const status = document.getElementById('voice-status');
+  const ui = getPromptVoiceUi();
   if (!btn) return;
 
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -17,51 +17,81 @@ export function initVoiceInput({ promptInput, onTranscript }) {
 
   const recognition = new SpeechRecognition();
   recognition.lang = 'de-DE';
-  recognition.interimResults = false;
+  recognition.interimResults = true;
+  recognition.continuous = true;
   recognition.maxAlternatives = 1;
 
   let listening = false;
+  let baseText = '';
+  let finalText = '';
 
   btn.addEventListener('click', () => {
     if (listening) {
       recognition.stop();
       return;
     }
+    window.dispatchEvent(new CustomEvent('strudel-live:voice-start'));
+    baseText = '';
+    finalText = '';
+    if (promptInput) promptInput.value = '';
+    ui.clear();
     recognition.start();
+  });
+
+  window.addEventListener('strudel-live:stop', () => {
+    if (listening) recognition.stop();
+    ui.clear();
   });
 
   recognition.onstart = () => {
     listening = true;
     btn.textContent = '⏹ Stop';
     btn.classList.add('listening');
-    if (status) status.textContent = 'Höre zu…';
+    ui.setListening(true);
   };
 
   recognition.onend = () => {
     listening = false;
     btn.textContent = '🎤 Sprechen';
     btn.classList.remove('listening');
-    if (status && !status.dataset.filled) status.textContent = '';
+    ui.setListening(false);
+    ui.setInterim('');
+
+    const combined = [baseText, finalText].filter(Boolean).join(' ').trim();
+    if (combined && promptInput) promptInput.value = combined;
   };
 
   recognition.onresult = (event) => {
-    const text = event.results[0][0].transcript.trim();
-    if (!text) return;
-    promptInput.value = text;
-    if (status) {
-      status.textContent = `Erkannt: „${text}"`;
-      status.dataset.filled = '1';
+    let interim = '';
+    let latestFinal = finalText;
+
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const chunk = event.results[i][0].transcript;
+      if (event.results[i].isFinal) {
+        latestFinal = latestFinal ? `${latestFinal} ${chunk}` : chunk;
+      } else {
+        interim += chunk;
+      }
     }
-    onTranscript?.(text);
+
+    finalText = latestFinal.trim();
+    const live = [baseText, finalText, interim.trim()].filter(Boolean).join(' ').trim();
+
+    if (promptInput) promptInput.value = live;
+
+    // Indicator = faint preview of what is still being recognized (not duplicate of full text)
+    ui.setInterim(interim.trim() ? `…${interim.trim()}` : '');
+
+    if (finalText && !interim.trim()) {
+      onTranscript?.(live);
+    }
   };
 
   recognition.onerror = (event) => {
-    if (status) {
-      status.textContent =
-        event.error === 'not-allowed'
-          ? 'Mikrofon-Berechtigung verweigert.'
-          : `Sprachfehler: ${event.error}`;
-      status.dataset.state = 'error';
+    if (event.error === 'no-speech' && listening) return;
+    ui.clear();
+    if (event.error === 'not-allowed') {
+      promptInput?.setAttribute('placeholder', 'Mikrofon-Berechtigung verweigert.');
     }
   };
 }

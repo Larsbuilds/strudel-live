@@ -1,0 +1,301 @@
+[
+  {
+    "id": "bass_sub",
+    "concept": "bass",
+    "variant": "sub",
+    "label": "Sub-Bass",
+    "phrases": [
+      "mehr bass", "more bass", "bassline", "sub bass", "tiefer bass", "deeper bass",
+      "low end", "low-end", "subwoofer", "sub line", "bass stärker", "bass lauter",
+      "add bass", "bass hinzufügen", "heavy bass", "rumbling bass", "808 bass",
+      "bass boost", "mehr tiefe", "more low end", "fetter bass", "thicker bass"
+    ],
+    "excludeIf": ["bass drum", "kick drum", "drum and bass", "dnb", "reese", "bassdrum"]
+  },
+  {
+    "id": "bass_reese",
+    "concept": "bass",
+    "variant": "reese",
+    "label": "Reese Bass",
+    "phrases": [
+      "reese", "reese bass", "wobble bass", "neurofunk bass", "moving bass",
+      "detuned bass", "uk garage bass"
+    ],
+    "excludeIf": ["liquid", "liquid dnb", "warm pads"]
+  },
+  {
+    "id": "drums_kick",
+    "concept": "drums",
+    "variant": "kick",
+    "label": "Kick",
+    "phrases": [
+      "kick", "kicks", "mehr kick", "more kick", "harder kick", "härtere kicks",
+      "punchy kick", "four on the floor", "bd", "bass drum", "tribal kick",
+      "techno kick", "stärkerer kick", "kick drum", "add kick", "kick lauter"
+    ],
+    "excludeIf": ["bassline", "sub bass", "mehr bass", "more bass", "low end", "drum and bass", "dnb", "liquid"]
+  },
+  {
+    "id": "drums_snare",
+    "concept": "drums",
+    "variant": "snare",
+    "label": "Snare",
+    "phrases": [
+      "snare", "mehr snare", "more snare", "backbeat", "clap snare", "rimshot",
+      "snare drum", "sd", "snare lauter", "add snare", "snare punch"
+    ],
+    "excludeIf": ["bass", "sub"]
+  },
+  {
+    "id": "drums_hats",
+    "concept": "drums",
+    "variant": "hats",
+    "label": "Hi-Hats",
+    "phrases": [
+      "hats", "hat", "hi-hat", "hi hat", "hihat", "hh", "mehr hats", "more hats",
+      "closed hat", "hat pattern", "16th hats", "shuffled hats", "offbeat hats",
+      "hats lauter", "add hats", "hi hats"
+    ]
+  },
+  {
+    "id": "drums_clap",
+    "concept": "drums",
+    "variant": "clap",
+    "label": "Clap",
+    "phrases": [
+      "clap", "mehr clap", "more clap", "hand clap", "cp", "clap layer",
+      "clap auf zwei und vier", "add clap", "clap snare"
+    ],
+    "excludeIf": ["snare only"]
+  },
+  {
+    "id": "remove_snare",
+    "action": "remove",
+    "concept": "drums",
+    "variant": "snare",
+    "label": "Snare entfernen",
+    "phrases": [
+      "weniger snare", "less snare", "remove snare", "kein snare", "no snare",
+      "snare weg", "snare raus", "ohne snare", "without snare", "entferne snare"
+    ]
+  },
+  {
+    "id": "remove_hats",
+    "action": "remove",
+    "concept": "drums",
+    "variant": "hats",
+    "label": "Hats reduzieren",
+    "phrases": [
+      "weniger hats", "less hats", "fewer hats", "remove hats", "keine hats",
+      "hats weg", "hats raus", "ohne hats", "without hats", "weniger hi-hats",
+      "less hi-hats", "ruhigere hats", "quieter hats"
+    ]
+  },
+  {
+    "id": "remove_kick",
+    "action": "remove",
+    "concept": "drums",
+    "variant": "kick",
+    "label": "Kick entfernen",
+    "phrases": [
+      "weniger kick", "less kick", "remove kick", "kein kick", "no kick",
+      "kick weg", "ohne kick", "without kick"
+    ]
+  },
+  {
+    "id": "remove_clap",
+    "action": "remove",
+    "concept": "drums",
+    "variant": "clap",
+    "label": "Clap entfernen",
+    "phrases": [
+      "weniger clap", "remove clap", "kein clap", "clap weg", "ohne clap"
+    ]
+  },
+  {
+    "id": "remove_bass",
+    "action": "remove",
+    "concept": "bass",
+    "variant": "sub",
+    "label": "Bass entfernen",
+    "phrases": [
+      "weniger bass", "less bass", "remove bass", "kein bass", "no bass",
+      "bass weg", "ohne bass", "without bass", "bass raus"
+    ],
+    "excludeIf": ["mehr bass", "more bass", "tiefer bass", "sub bass"]
+  },
+  {
+    "id": "remove_pad",
+    "action": "remove",
+    "concept": "pad",
+    "variant": "warm",
+    "label": "Pad/Reverb reduzieren",
+    "phrases": [
+      "weniger reverb", "less reverb", "remove pad", "kein pad", "pad weg",
+      "weniger raum", "less room", "dryer", "trockener"
+    ]
+  },
+  {
+    "id": "remove_lead",
+    "action": "remove",
+    "concept": "lead",
+    "variant": "saw",
+    "label": "Lead entfernen",
+    "phrases": [
+      "kein lead", "no lead", "remove lead", "lead weg", "ohne lead",
+      "nur drums", "only drums", "drums only"
+    ]
+  },
+  {
+    "id": "drums_openhat",
+    "concept": "drums",
+    "variant": "openhat",
+    "label": "Open Hat",
+    "phrases": [
+      "open hat", "openhat", "oh", "offbeat open hat", "open hi hat"
+    ]
+  },
+  {
+    "id": "drums_roll",
+    "concept": "drums",
+    "variant": "roll",
+    "label": "Roll/Fill",
+    "phrases": [
+      "roll", "fill", "drum fill", "hat roll", "snare roll", "build up drums",
+      "tension fill", "transition fill", "aufbau", "fill einbauen"
+    ]
+  },
+  {
+    "id": "drums_perc",
+    "concept": "drums",
+    "variant": "perc",
+    "label": "Percussion",
+    "phrases": [
+      "percussion", "perc", "mehr percussion", "more percussion", "shaker",
+      "conga", "bongo", "tribal percussion", "groove percussion", "drums mehr"
+    ],
+    "excludeIf": ["mehr bass", "bassline", "sub"]
+  },
+  {
+    "id": "acid_line",
+    "concept": "acid",
+    "variant": "line",
+    "label": "Acid 303",
+    "phrases": [
+      "acid", "303", "tb-303", "squelch", "acid line", "acid bass", "acid techno",
+      "filter acid", "acid synth", "acid pattern", "squelchy"
+    ]
+  },
+  {
+    "id": "pad_warm",
+    "concept": "pad",
+    "variant": "warm",
+    "label": "Warm Pad",
+    "phrases": [
+      "pad", "pads", "warm pad", "ambient pad", "atmosphere", "atmosphäre",
+      "reverb", "raum", "room", "spacious", "lush pad", "background pad",
+      "textural pad", "pad layer", "ambient layer"
+    ]
+  },
+  {
+    "id": "lead_saw",
+    "concept": "lead",
+    "variant": "saw",
+    "label": "Saw Lead",
+    "phrases": [
+      "lead", "melody", "melodic", "hook", "lead synth", "saw lead",
+      "top line", "melodie", "lead line", "add lead", "lead einbauen"
+    ]
+  },
+  {
+    "id": "lead_arp",
+    "concept": "lead",
+    "variant": "arp",
+    "label": "Arpeggio",
+    "phrases": [
+      "arp", "arpeggio", "arpeggiator", "arp line", "running notes",
+      "sequenced melody", "arp pattern"
+    ]
+  },
+  {
+    "id": "texture_crush",
+    "concept": "texture",
+    "variant": "crush",
+    "label": "Distortion/Crush",
+    "phrases": [
+      "distort", "distortion", "crush", "bitcrush", "dirty", "dirt", "gritty",
+      "härter", "aggressiv", "aggressive", "saturation", "drive",
+      "raw", "harder sound", "verzerrung", "mehr distortion"
+    ],
+    "excludeIf": ["mehr bass", "bassline", "kick harder", "schranz", "industrial schranz"]
+  },
+  {
+    "id": "texture_noise",
+    "concept": "texture",
+    "variant": "noise",
+    "label": "Noise",
+    "phrases": [
+      "noise", "rauschen", "hiss", "white noise", "noise layer", "texture noise",
+      "atmospheric noise", "noise sweep"
+    ]
+  },
+  {
+    "id": "fx_filter",
+    "concept": "fx",
+    "variant": "sweep",
+    "label": "Filter Sweep",
+    "phrases": [
+      "filter sweep", "filter", "lpf sweep", "cutoff sweep", "sweep",
+      "filter automation", "filter öffnen", "open filter", "resonance sweep"
+    ]
+  },
+  {
+    "id": "fx_delay",
+    "concept": "fx",
+    "variant": "echo",
+    "label": "Delay/Echo",
+    "phrases": [
+      "delay", "echo", "mehr delay", "more delay", "dub delay", "feedback delay",
+      "echo effect", "delayed"
+    ]
+  },
+  {
+    "id": "stab_chord",
+    "concept": "stab",
+    "variant": "chord",
+    "label": "Chord Stab",
+    "phrases": [
+      "stab", "stabs", "chord stab", "chord hit", "house stab", "piano stab",
+      "chord punch", "offbeat stab", "akkord"
+    ]
+  },
+  {
+    "id": "groove_shuffle",
+    "concept": "groove",
+    "variant": "shuffle",
+    "label": "Shuffle Groove",
+    "phrases": [
+      "shuffle", "swing", "groove", "humanize", "loose groove", "swing feel",
+      "shuffle hats", "groovy", "mehr groove"
+    ]
+  },
+  {
+    "id": "tempo_faster",
+    "concept": "tempo",
+    "variant": "up",
+    "label": "Faster",
+    "phrases": [
+      "faster", "schneller", "speed up", "tempo up", "higher bpm", "mehr tempo",
+      "more tempo", "accelerate", "128 bpm", "130 bpm", "140 bpm"
+    ]
+  },
+  {
+    "id": "tempo_slower",
+    "concept": "tempo",
+    "variant": "down",
+    "label": "Slower",
+    "phrases": [
+      "slower", "langsamer", "slow down", "tempo down", "lower bpm", "weniger tempo"
+    ]
+  }
+]

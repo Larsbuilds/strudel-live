@@ -15,14 +15,8 @@ async function enableMic(mode) {
 }
 
 async function bootHydra(hydraCode) {
-  const wrap = document.getElementById('hydra-canvas-wrap');
-  if (wrap?.hidden) {
-    document.getElementById('hydra-start')?.click();
-    await new Promise((r) => setTimeout(r, 500));
-  }
-  const codeEl = document.getElementById('hydra-code');
-  if (codeEl && hydraCode) codeEl.value = hydraCode;
-  document.getElementById('hydra-run')?.click();
+  const { runHydraFromIgnite } = await import('./visuals-panel.js');
+  await runHydraFromIgnite(hydraCode);
 }
 
 export async function executeIgniteManifest(manifest, { hub, editor, hydraEnabled = false }) {
@@ -78,6 +72,8 @@ export async function executeIgniteManifest(manifest, { hub, editor, hydraEnable
     prompt: summary,
     scale: manifest.scale,
     source: 'ignite',
+    name: manifest.presetId,
+    fixes: manifest.constraints?.fixes,
     quantize: false,
   });
 

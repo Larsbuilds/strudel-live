@@ -16,6 +16,12 @@ import { getHealth } from './health.mjs';
 import { triggerPanic, getLastPanicAt } from './panic-bus.mjs';
 import { bootServerServices } from './boot.mjs';
 import { ensureLinkClock, getLinkState, setLinkBpm, linkCpm } from './link-clock.mjs';
+import { resolveIntents, intentSummary, resolveIntentsSemantic, intentDbStats } from './intent-db.mjs';
+import { listConcepts, listFunctions } from './strudel-catalog.mjs';
+import { planAgentActions } from './strudel-agent.mjs';
+import { checkEmbeddings } from './embeddings.mjs';
+import { loadIntentExamples } from './semantic-retrieval.mjs';
+import { catalogStats } from './catalog-loader.mjs';
 
 let bootPromise = null;
 function ensureBoot(env) {
@@ -32,6 +38,66 @@ export async function handleApiRequest(req, res, env) {
 
   if (url === '/api/health' && req.method === 'GET') {
     sendJson(res, 200, getHealth(env));
+    return true;
+  }
+
+  if (url?.startsWith('/api/agent/plan') && req.method === 'GET') {
+    const params = new URL(req.url, 'http://localhost').searchParams;
+    const q = params.get('prompt') || '';
+    const previousCode = params.get('previousCode') || '';
+    const plan = planAgentActions(q, { previousCode });
+    sendJson(res, 200, { ok: true, prompt: q, ...plan });
+    return true;
+  }
+
+  if (url === '/api/catalog' && req.method === 'GET') {
+    sendJson(res, 200, { ok: true, concepts: listConcepts(), functions: listFunctions() });
+    return true;
+  }
+
+  if (url === '/api/semantic/status' && req.method === 'GET') {
+    const embed = await checkEmbeddings(env);
+    sendJson(res, 200, {
+      ok: true,
+      intentExamples: loadIntentExamples().length,
+      retrieval: intentDbStats(),
+      catalog: catalogStats(),
+      embeddings: embed,
+    });
+    return true;
+  }
+
+  if (url?.startsWith('/api/intent') && req.method === 'GET') {
+    const params = new URL(req.url, 'http://localhost').searchParams;
+    const q = params.get('prompt') || '';
+    const semantic = params.get('semantic') === 'true';
+    if (semantic) {
+      const result = await resolveIntentsSemantic(q, env);
+      sendJson(res, 200, {
+        ok: true,
+        prompt: q,
+        method: result.method,
+        embedAvailable: result.embedAvailable,
+        intents: result.intents.map((i) => ({
+          id: i.id,
+          label: i.label,
+          concept: i.concept,
+          variant: i.variant,
+          confidence: i.confidence,
+          method: i.method,
+          layer: i.layer,
+        })),
+        labels: result.intents.map((i) => i.label),
+      });
+      return true;
+    }
+    const intents = resolveIntents(q);
+    sendJson(res, 200, {
+      ok: true,
+      prompt: q,
+      intents: intents.map((i) => ({ id: i.id, label: i.label, layer: i.layer })),
+      labels: intentSummary(q),
+    });
     return true;
   }
 
