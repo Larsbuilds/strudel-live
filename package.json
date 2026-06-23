@@ -1,6 +1,6 @@
 {
   "name": "strudel-live",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "private": true,
   "description": "Collaborative AI-driven Strudel live-coding — text, voice, MIDI, autotune",
   "type": "module",

@@ -18,16 +18,39 @@ Beim Start von `npm run dev` oder `npm run start` wird Link automatisch initiali
 
 ```bash
 curl http://localhost:5173/api/link
-# { ok, available, enabled, bpm, beat, phase, cpm, at }
+# { ok, available, enabled, bpm, beat, phase, peers, cpm, at }
 
 curl -X POST http://localhost:5173/api/link \
   -H 'Content-Type: application/json' \
   -d '{"bpm":130}'
 ```
 
-## Browser
+## WebSocket (v0.6.1)
 
-Im Header: **Link-Sync** aktivieren → `setcpm(bpm/4)` folgt dem Link-Grid.
+`ws://localhost:5173/api/link/ws` — ~60 Hz Clock-Updates:
+
+```json
+{
+  "type": "LINK_CLOCK_UPDATE",
+  "payload": {
+    "bpm": 128,
+    "beat": 42.5,
+    "phase": 0.5,
+    "peers": 2,
+    "cpm": 32,
+    "serverTime": 1782213708337
+  }
+}
+```
+
+## Browser (PI-Sync)
+
+Im Header: **Link-Sync (PI)** aktivieren — der Strudel-Scheduler folgt dem Link-Grid über einen **PI-Regler** (`setCps`), ohne Code im Editor umzuschreiben.
+
+- Latenz-Kompensation über `serverTime` + RTT-Schätzung
+- Anti-Windup auf dem Integrator (verhindert Tempo-Sprünge nach Reconnect)
+
+Pattern-Code behält `setcpm()` für initiales Tempo; PI trimmt die laufende Clock.
 
 ## CLI
 
@@ -40,9 +63,9 @@ npm run link:status
 1. Alle Geräte im gleichen WLAN (oder Kabel + gleicher Switch).
 2. Link in der DJ-Software aktivieren.
 3. strudel-live starten — BPM übernimmt das Netzwerk-Grid.
-4. **Link-Sync** im Browser einschalten.
+4. Pattern starten, dann **Link-Sync (PI)** einschalten.
 
 ## Hinweise
 
 - Native Addon: auf manchen Systemen kann der Prozess beim Beenden mit Abort enden — im laufenden Server unkritisch.
-- Strudel `setcpm(N)` = Zyklen pro Minute; bei 4/4 gilt `N = BPM / 4`.
+- Strudel `setcpm(N)` = Zyklen pro Minute; bei 4/4 gilt `N = BPM / 4`. PI arbeitet intern mit CPS (`bpm / 240`).

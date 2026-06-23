@@ -9,9 +9,27 @@ let state = {
   bpm: 120,
   beat: 0,
   phase: 0,
+  peers: 0,
   at: 0,
   error: null,
 };
+
+const tickListeners = new Set();
+
+export function onLinkTick(fn) {
+  tickListeners.add(fn);
+  return () => tickListeners.delete(fn);
+}
+
+function emitTick() {
+  for (const fn of tickListeners) {
+    try {
+      fn(state);
+    } catch {
+      /* ignore listener errors */
+    }
+  }
+}
 
 export function initLinkClock(env = process.env) {
   if (env.LINK_ENABLED === 'false' || env.LINK_ENABLED === '0') {
@@ -35,9 +53,11 @@ export function initLinkClock(env = process.env) {
         beat,
         phase,
         bpm,
+        peers: link.numPeers ?? 0,
         at: Date.now(),
         error: null,
       };
+      emitTick();
     });
     state = { ...state, available: true, enabled: true, bpm: startBpm, error: null };
     console.log(`[link] Ableton Link aktiv — Start ${startBpm} BPM`);

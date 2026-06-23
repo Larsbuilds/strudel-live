@@ -1,9 +1,11 @@
 import express from 'express';
+import { createServer } from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { config } from 'dotenv';
 import { handleApiRequest, getEnv } from './api.mjs';
 import { bootServerServices } from './boot.mjs';
+import { attachLinkWebSocket } from './link-ws.mjs';
 
 config();
 await bootServerServices(process.env);
@@ -30,6 +32,9 @@ app.get('*', (_req, res) => {
   res.sendFile(join(dist, 'index.html'));
 });
 
-app.listen(port, () => {
+const server = createServer(app);
+attachLinkWebSocket(server);
+
+server.listen(port, () => {
   console.log(`strudel-live → http://localhost:${port}`);
 });

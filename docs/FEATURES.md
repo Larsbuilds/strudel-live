@@ -1,4 +1,4 @@
-# Feature-Übersicht — strudel-live v0.6.0
+# Feature-Übersicht — strudel-live v0.6.1
 
 **Master-Liste** alles, was gebaut ist. Stand: ein Repo, ~2 Wochen Entwicklung.
 
@@ -77,7 +77,7 @@
 
 | Feature | UI / CLI | API | Datei |
 |---------|----------|-----|-------|
-| **Ableton Link** | Link-Sync Toggle | `GET/POST /api/link` | `server/link-clock.mjs`, `src/link-sync.js` |
+| **Ableton Link** | Link-Sync (PI) Toggle | `GET/POST /api/link`, `WS /api/link/ws` | `server/link-clock.mjs`, `src/link-pi-sync.js` |
 | **Link Status** | Header-Anzeige | — | `npm run link:status` |
 | **RAVE ONNX** | Passthrough oder Modell | WebSocket :8765 | `server/rave-onnx.mjs`, `RAVE_MODEL_PATH` |
 
@@ -103,6 +103,7 @@
 | POST | `/api/faust` | Faust → WASM |
 | GET/POST | `/api/panic` | NOT-AUS Signal |
 | GET/POST | `/api/link` | Ableton Link BPM/Beat |
+| WS | `/api/link/ws` | Link Clock-Stream (~60 Hz) |
 
 ---
 

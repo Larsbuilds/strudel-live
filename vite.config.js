@@ -1,10 +1,14 @@
 import { defineConfig } from 'vite';
 import { createApiMiddleware } from './server/api.mjs';
+import { bootServerServices } from './server/boot.mjs';
+import { attachLinkWebSocket } from './server/link-ws.mjs';
 
 function apiPlugin() {
   return {
     name: 'strudel-api',
     configureServer(server) {
+      bootServerServices();
+      attachLinkWebSocket(server.httpServer);
       server.middlewares.use(createApiMiddleware('development'));
     },
   };

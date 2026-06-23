@@ -7,6 +7,7 @@ import { config } from 'dotenv';
 import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
+import WebSocket from 'ws';
 
 config();
 
@@ -70,6 +71,7 @@ const FRONTEND_MODULES = [
   'src/faust-host.js',
   'src/rave-client.js',
   'src/link-sync.js',
+  'src/link-pi-sync.js',
   'src/wam-host.js',
   'src/hydra-panel.js',
 ];
@@ -89,6 +91,7 @@ const SERVER_MODULES = [
   'server/rave-server.mjs',
   'server/rave-onnx.mjs',
   'server/link-clock.mjs',
+  'server/link-ws.mjs',
   'server/boot.mjs',
 ];
 
@@ -163,6 +166,28 @@ if (serverUp) {
     const { status, data } = await fetchJson(path, opts);
     const ok = check({ ...data, status });
     ok ? pass(`${method} ${path}`) : fail(`${method} ${path} → ${status}`);
+  }
+
+  try {
+    await new Promise((resolve, reject) => {
+      const ws = new WebSocket(`ws://localhost:${PORT}/api/link/ws`);
+      const timer = setTimeout(() => {
+        ws.close();
+        reject(new Error('timeout'));
+      }, 5000);
+      ws.on('message', (raw) => {
+        const msg = JSON.parse(String(raw));
+        if (msg.type === 'LINK_CLOCK_UPDATE' && msg.payload?.bpm) {
+          clearTimeout(timer);
+          ws.close();
+          resolve();
+        }
+      });
+      ws.on('error', reject);
+    });
+    pass('WS /api/link/ws');
+  } catch (e) {
+    fail(`WS /api/link/ws — ${e.message}`);
   }
 }
 

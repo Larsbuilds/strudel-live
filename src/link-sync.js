@@ -1,35 +1,13 @@
-import { waitForRepl } from './ai-panel.js';
+/**
+ * Ableton Link UI — WebSocket clock + optional PI scheduler sync.
+ */
+import { LinkPiSync } from './link-pi-sync.js';
 
-const POLL_MS = 150;
-const BPM_EPS = 0.25;
+const WS_PATH = '/api/link/ws';
 
-let timer = null;
-let lastAppliedCpm = null;
-let editorRef = null;
-
-function patchSetcpm(code, cpm) {
-  const rounded = Math.round(cpm * 100) / 100;
-  if (/setcpm\s*\(/i.test(code)) {
-    return code.replace(/setcpm\s*\(\s*[\d.]+\s*\)/i, `setcpm(${rounded})`);
-  }
-  return `setcpm(${rounded})\n${code}`;
-}
-
-async function applyLinkCpm(bpm, editor) {
-  if (!editor?.editor || !Number.isFinite(bpm)) return;
-  const cpm = bpm / 4;
-  if (lastAppliedCpm !== null && Math.abs(lastAppliedCpm - cpm) < BPM_EPS / 4) return;
-
-  const code = editor.editor.code || '';
-  if (!code.trim()) return;
-
-  const next = patchSetcpm(code, cpm);
-  if (next === code) return;
-
-  editor.editor.setCode(next);
-  const mirror = await waitForRepl(editor);
-  await mirror.evaluate();
-  lastAppliedCpm = cpm;
+function wsUrl() {
+  const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  return `${proto}//${location.host}${WS_PATH}`;
 }
 
 function formatBeat(beat) {
@@ -39,58 +17,78 @@ function formatBeat(beat) {
 }
 
 export function initLinkSync(editor) {
-  editorRef = editor;
   const toggle = document.getElementById('link-sync-toggle');
   const status = document.getElementById('link-status');
-
   if (!toggle || !status) return;
 
-  async function poll() {
-    try {
-      const res = await fetch('/api/link');
-      const data = await res.json();
-      if (!data.ok) {
-        status.textContent = 'Link: —';
-        return;
-      }
+  const pi = new LinkPiSync(editor);
+  let ws = null;
+  let reconnectTimer = null;
+  let latestPayload = null;
 
-      const { available, enabled, bpm, beat, error } = data;
-      if (!available) {
-        status.textContent = error ? `Link: ${error}` : 'Link: nicht verfügbar';
-        status.classList.remove('link-status--live');
-        return;
-      }
-
-      status.classList.add('link-status--live');
-      status.textContent = enabled
-        ? `Link ${Math.round(bpm)} BPM · Takt ${formatBeat(beat)}`
-        : `Link bereit · ${Math.round(bpm)} BPM`;
-
-      if (toggle.checked && enabled) {
-        await applyLinkCpm(bpm, editorRef);
-      }
-    } catch {
-      status.textContent = 'Link: offline';
+  function setStatusLine(payload) {
+    if (!payload?.available) {
+      status.textContent = payload?.error ? `Link: ${payload.error}` : 'Link: nicht verfügbar';
       status.classList.remove('link-status--live');
+      return;
+    }
+    status.classList.add('link-status--live');
+    const peers = payload.peers > 0 ? ` · ${payload.peers} Peer(s)` : '';
+    status.textContent = payload.enabled
+      ? `Link ${Math.round(payload.bpm)} BPM · Takt ${formatBeat(payload.beat)}${peers}`
+      : `Link bereit · ${Math.round(payload.bpm)} BPM`;
+  }
+
+  async function onClockMessage(payload) {
+    latestPayload = payload;
+    setStatusLine(payload);
+    if (toggle.checked && payload.enabled) {
+      await pi.processClockUpdate(payload);
     }
   }
 
-  function start() {
-    if (timer) return;
-    poll();
-    timer = setInterval(poll, POLL_MS);
+  function connect() {
+    if (ws?.readyState === WebSocket.OPEN) return;
+
+    ws = new WebSocket(wsUrl());
+
+    ws.onmessage = (ev) => {
+      try {
+        const data = JSON.parse(ev.data);
+        if (data.type === 'LINK_CLOCK_UPDATE') {
+          onClockMessage(data.payload);
+        }
+      } catch {
+        /* ignore */
+      }
+    };
+
+    ws.onclose = () => {
+      status.textContent = 'Link: Verbindung getrennt — reconnect…';
+      status.classList.remove('link-status--live');
+      pi.reset();
+      reconnectTimer = setTimeout(connect, 2000);
+    };
+
+    ws.onerror = () => ws.close();
   }
 
-  function stop() {
-    if (timer) clearInterval(timer);
-    timer = null;
+  function disconnect() {
+    clearTimeout(reconnectTimer);
+    reconnectTimer = null;
+    ws?.close();
+    ws = null;
+    pi.reset();
   }
 
   toggle.addEventListener('change', () => {
-    lastAppliedCpm = null;
-    if (toggle.checked) start();
-    else stop();
+    pi.reset();
+    if (toggle.checked && latestPayload?.enabled) {
+      pi.processClockUpdate(latestPayload);
+    }
   });
 
-  start();
+  connect();
+
+  return { disconnect, getLatest: () => latestPayload };
 }
