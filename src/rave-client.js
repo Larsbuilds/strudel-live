@@ -1,6 +1,4 @@
-/**
- * RAVE browser client — mic PCM over WebSocket with 512/1024 sample frames.
- */
+import { connectToMaster } from './audio-bus.js';
 const RAVE_WS = `ws://${location.hostname}:8765`;
 const CAPTURE_WORKLET = `
 class RaveCaptureProcessor extends AudioWorkletProcessor {
@@ -102,7 +100,7 @@ export async function startRaveClient(frameSize = 512) {
     processorOptions: { frameSize },
   });
   playbackNode = new AudioWorkletNode(raveCtx, 'rave-playback');
-  playbackNode.connect(raveCtx.destination);
+  connectToMaster(playbackNode, raveCtx);
 
   source.connect(captureNode);
 

@@ -1,0 +1,14 @@
+// Acid Techno ~138 BPM — squelchy 303-style line
+setcpm(34.5)
+
+stack(
+  s("bd*4").gain(0.9),
+  s("~ ~ cp ~").gain(0.5),
+  s("hh*8").gain(0.24),
+  n("0 3 7 10 12").scale("A:minor").s("sawtooth")
+    .gain(0.38)
+    .lpf(sine.range(200, 3200).slow(4))
+    .resonance(12)
+    .decay(0.15)
+    .delay(0.2)
+)

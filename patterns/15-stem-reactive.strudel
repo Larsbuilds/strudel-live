@@ -1,0 +1,15 @@
+// Stem-reactive club groove — npm run dev:full + dj:stems + Stem-FFT starten
+// dj_stems.*() liefert 0–1 wenn Stem-Analyse läuft, sonst Fallback
+
+setcpm(32)
+
+stack(
+  s("bd*4").gain(() => 0.88 + (globalThis.dj_stems?.drums?.() ?? 0) * 0.1),
+  s("hh*8").gain(() => 0.24 + (globalThis.dj_stems?.drums?.() ?? 0) * 0.2),
+  s("~ cp ~").gain(0.55),
+  note("c2(5,8)").s("sine").gain(() => 0.4 + (globalThis.dj_stems?.bass?.() ?? 0) * 0.25).lpf(200),
+  n("<0 3 7>*2").scale("A:minor").s("triangle")
+    .gain(() => 0.12 + (globalThis.dj_stems?.vocals?.() ?? 0) * 0.2)
+    .delay(0.3)
+    .room(0.45)
+)

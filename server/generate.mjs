@@ -6,6 +6,7 @@ import { applyMusicConstraints } from './music-constraints.mjs';
 import { guardStrudelCode } from './code-validate.mjs';
 import { ollamaChat, STRUDEL_CODER_SYSTEM, buildOllamaMessages } from './ollama.mjs';
 import { isWeakStrudel, resolvePresetForPrompt } from './pattern-presets.mjs';
+import { repairStrudelCode } from './llm-repair.mjs';
 
 const SAFE_FALLBACK_PATTERN = 'setcpm(30)\nstack(s("bd*4"), s("~ sd"))';
 
@@ -113,9 +114,19 @@ export async function generateStrudel(prompt, env, { previousCode, trackContext 
       constraint.fixes = [...(constraint.fixes || []), `preset:${preset.id}`];
     }
   }
-  const guarded = guardStrudelCode(code, {
+  let guarded = guardStrudelCode(code, {
     fallback: previousCode?.trim() || SAFE_FALLBACK_PATTERN,
   });
+
+  if (guarded.usedFallback && provider === 'ollama') {
+    try {
+      const repaired = await repairStrudelCode(result.code, env, { error: guarded.rejectedError });
+      const retry = guardStrudelCode(repaired.code, { fallback: SAFE_FALLBACK_PATTERN });
+      if (!retry.usedFallback) guarded = retry;
+    } catch {
+      /* keep fallback */
+    }
+  }
 
   const scale = parseScaleFromCode(guarded.code);
   return {

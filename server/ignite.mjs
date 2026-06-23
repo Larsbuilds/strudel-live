@@ -6,6 +6,7 @@ import { stripCodeFences } from './llm-utils.mjs';
 import { getLlmProvider, callLLM } from './llm-call.mjs';
 import { generateStrudel } from './generate.mjs';
 import { isWeakStrudel, resolvePresetForPrompt } from './pattern-presets.mjs';
+import { generateIgniteOllama } from './ignite-ollama.mjs';
 
 function parseJson(text) {
   const cleaned = text.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/i, '').trim();
@@ -140,6 +141,10 @@ export async function generateIgnite({ prompt, trackContext }, env) {
   const provider = getLlmProvider(env);
   if (!provider) throw Object.assign(new Error('No AI provider configured'), { status: 503 });
   if (!prompt?.trim()) throw Object.assign(new Error('Prompt is empty'), { status: 400 });
+
+  if (provider === 'ollama') {
+    return generateIgniteOllama({ prompt, trackContext }, env);
+  }
 
   const userMessage = buildIgniteUserMessage({ prompt, trackContext });
   const { text: raw, model } = await callLLM(IGNITE_PROMPT, userMessage, env, {

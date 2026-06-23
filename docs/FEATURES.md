@@ -21,7 +21,7 @@
 | Mikrofon Monitor | Advanced | — | `src/mic-panel.js` |
 | Autotune | Mic-Modus | — | Tone.js + pitchy |
 | Key-Sync | Mic-Modus | — | `session.js` + `.scale()` |
-| Sample-Server | — | — | `npm run dev:full` → :5432 |
+| Sample-Server | — | — | `npm run dev:full` → :5433 |
 | Setup-Check | — | — | `npm run check` |
 | Production | — | Express | `npm run build && npm start` |
 
@@ -69,7 +69,10 @@
 | **NOT-AUS** | Roter Button, Cmd+Esc | `npm run panic`, `src/panic.js` |
 | **Takt-Cue** | Rand-Puls + Countdown | `src/quantize-cue.js` |
 | **Quantisierung** | Conductor auf Eins | `src/strudel-quantize.js` |
-| **Workflow-Hub** | zentrale Pattern-Anwendung | `src/workflow-hub.js` |
+| **Preset-Bibliothek** | Shift+Klick Chips, Genre-Match | `patterns/10-15`, `server/pattern-presets.mjs` |
+| **Ollama Ignite (ohne JSON)** | Preset-first + Repair | `server/ignite-ollama.mjs` |
+| **Syntax-Repair** | 2. LLM-Pass bei Fehler | `server/llm-repair.mjs` |
+| **Master Audio Bus** | WAM + Mic + RAVE gemischt | `src/audio-bus.js` |
 
 ---
 
@@ -185,7 +188,8 @@ npm run superdirt:help   # SC Install-Hilfe
 
 ```bash
 npm run check           # Tools + .env
-npm run workflow:check  # APIs + Imports (Dev-Server nötig)
+npm run verify           # E2E APIs + Browser
+npm run workflow:check   # APIs + Imports (Dev-Server nötig)
 npm run audit           # Doku + Module + APIs + Build
 npm run stress:smoke    # Link + RAVE Kurz-Härtetest
 npm run stress:club     # Gig-Vorbereitung (Link + 2h RAVE)

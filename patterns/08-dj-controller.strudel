@@ -2,7 +2,7 @@
 // Gerät im DJ-Panel verbinden. CC8=Crossfader, CC1=LPF A, CC2=LPF B
 // Dann dieses Pattern ausführen (async top-level ok in Strudel)
 
-samples("http://localhost:5432")
+samples("http://localhost:5433")
 
 const cc = await midin()  // erstes MIDI-Input-Gerät
 const xf = cc(8).range(0, 1)       // crossfader

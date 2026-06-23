@@ -1,5 +1,6 @@
 import { WAM_PLUGINS } from './wam-registry.js';
 import { registerWamInstance } from './wam-automation.js';
+import { connectToMaster } from './audio-bus.js';
 
 let audioContext = null;
 let currentWam = null;
@@ -43,7 +44,7 @@ export function initWamHost() {
       currentWam = await WAM.createInstance(audioContext, {});
       registerWamInstance(currentWam);
       const node = currentWam.audioNode;
-      if (node) node.connect(audioContext.destination);
+      if (node) connectToMaster(node, audioContext);
 
       if (currentWam.createGui && container) {
         currentGui = await currentWam.createGui();

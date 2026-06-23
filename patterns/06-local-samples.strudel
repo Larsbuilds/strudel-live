@@ -1,9 +1,9 @@
-// Eigene Samples vom lokalen Server (npm run samples → Port 5432)
+// Eigene Samples vom lokalen Server (npm run dev:full → Port 5433)
 // Lege WAV/MP3 in samples/ ab, starte den Server, dann dieses Pattern.
 
 setcpm(130)
 
-samples("http://localhost:5432")
+samples("http://localhost:5433")
 
 stack(
   s("bd sd").gain(0.9),

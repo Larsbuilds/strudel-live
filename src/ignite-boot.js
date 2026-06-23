@@ -47,12 +47,12 @@ export async function executeIgniteManifest(manifest, { hub, editor, hydraEnable
     steps.push('hydra');
   }
 
-  if (mods.mic) {
+  if (mods.mic && !setup?.routing?.mic_to_rave) {
     await enableMic(mods.micMode);
     steps.push(`mic:${mods.micMode}`);
   }
 
-  if (mods.rave) {
+  if (mods.rave || setup?.routing?.mic_to_rave) {
     try {
       await startRaveClient(512);
       steps.push('rave');

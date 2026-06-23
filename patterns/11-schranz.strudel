@@ -1,0 +1,10 @@
+// Industrial Schranz ~150 BPM — distorted kick, metallic hats
+setcpm(37.5)
+
+stack(
+  s("bd*4").gain(0.95).crush(8),
+  s("hh*16").gain(0.32).speed(perlin.range(0.85, 1.15)),
+  s("~ cp ~ cp").gain(0.55).pan(sine.range(-0.4, 0.4).fast(2)),
+  s("oh*8").gain(0.18).speed(1.2),
+  note("c1*4").s("sawtooth").gain(0.35).lpf(180).distort(0.4)
+)

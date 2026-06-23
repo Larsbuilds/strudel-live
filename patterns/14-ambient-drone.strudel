@@ -1,0 +1,9 @@
+// Ambient Drone ~80 BPM — evolving pads, no kick
+setcpm(20)
+
+stack(
+  n("0 3 7 10").scale("A:minor").s("sine").gain(0.22).attack(2).release(8).room(0.85),
+  n("<0 5 7 12>*2").scale("A:minor").s("triangle").gain(0.14).lpf(sine.range(400, 2000).slow(16)).delay(0.5),
+  s("~ ~ ~ oh").gain(0.08).speed(0.75).room(0.9),
+  note("c2").s("sine").gain(0.18).lpf(90).room(0.6)
+)

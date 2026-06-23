@@ -1,0 +1,10 @@
+// Liquid DNB ~174 BPM — warm pads, rolling break
+setcpm(43.5)
+
+stack(
+  s("bd(3,8,2)").gain(0.88),
+  s("~ cp sd cp").gain(0.72),
+  s("hh*16").gain(0.22).speed(perlin.range(0.92, 1.08)),
+  n("0 3 7 10").scale("D:minor").s("sawtooth").gain(0.28).lpf(1400).room(0.55).delay(0.35),
+  n("<0 5 7>*4").scale("D:minor").s("triangle").gain(0.12).attack(0.4).release(2).room(0.7)
+)

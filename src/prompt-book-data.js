@@ -16,6 +16,7 @@ export const PROMPT_CATEGORIES = [
       {
         label: 'Acid Trance',
         text: 'Acid Trance 138 BPM, squelchy 303 Bassline, harte Kick, grüne pulsierende Hydra-Visuals, minimal Vocals',
+        pattern: '13-acid-techno',
         expect: { bpm: 138, hydra: true },
       },
     ],
@@ -39,6 +40,7 @@ export const PROMPT_CATEGORIES = [
       {
         label: 'Peak-Time',
         text: 'Peak-Time Techno 132 BPM, aggressiver Drive, industrial Hi-Hats, rote stroboskopartige Hydra-Visuals',
+        pattern: '10-deep-techno',
         expect: { bpm: 132, hydra: true },
       },
     ],
@@ -50,6 +52,7 @@ export const PROMPT_CATEGORIES = [
       {
         label: 'Schranz',
         text: 'Industrial Schranz 150 BPM, verzerrte Kicks, metallische Percussion, flackerndes rot-schwarzes Stroboskop in Hydra, düster und aggressiv',
+        pattern: '11-schranz',
         expect: { bpm: 150, hydra: true },
       },
       {
@@ -66,12 +69,13 @@ export const PROMPT_CATEGORIES = [
       {
         label: 'Liquid DNB',
         text: 'Liquid Drum and Bass 174 BPM, warme Pads, synkopierter Break, cyan-blaue fließende Hydra-Visuals, sanft',
-        pattern: '03-dnb-break',
+        pattern: '12-liquid-dnb',
         expect: { bpm: 174, hydra: true },
       },
       {
         label: 'Neurofunk',
         text: 'Neurofunk DNB 172 BPM, wobble bass, scharfe Drums, dunkle violette glitch Visuals',
+        pattern: '03-dnb-break',
         expect: { bpm: 172, hydra: true },
       },
     ],
@@ -83,6 +87,7 @@ export const PROMPT_CATEGORIES = [
       {
         label: 'Ambient Drone',
         text: 'Ambient Drone 80 BPM, langsame Evolving Pads, kein Kick, weiche lila Visuals, viel Reverb, entspannt',
+        pattern: '14-ambient-drone',
         expect: { bpm: 80, hydra: true, mic: false },
       },
       {

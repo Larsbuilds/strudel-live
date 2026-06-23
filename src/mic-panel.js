@@ -2,6 +2,7 @@ import { UserMedia, PitchShift, getDestination, getContext } from 'tone';
 import { PitchDetector } from 'pitchy';
 import { session } from './session.js';
 import { snapMidiToScale, freqToMidi } from './scale-utils.js';
+import { connectToMaster } from './audio-bus.js';
 
 let micStream = null;
 let micContext = null;
@@ -73,7 +74,8 @@ async function startMic(selectedMode, status, keyLabel) {
     sourceNode = micContext.createMediaStreamSource(micStream);
     monitorGain = micContext.createGain();
     monitorGain.gain.value = 0.7;
-    sourceNode.connect(monitorGain).connect(micContext.destination);
+    sourceNode.connect(monitorGain);
+    connectToMaster(monitorGain, micContext);
     if (micContext.state === 'suspended') await micContext.resume();
     status.textContent = 'Monitor aktiv.';
     status.dataset.state = 'ok';

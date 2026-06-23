@@ -2,73 +2,75 @@
 
 strudel-live kann **ohne Cloud-API** Strudel-Code generieren — über [Ollama](https://ollama.com) auf deinem Mac.
 
-## Das Modell, das du meintest
+## Modelle
 
-| Modell | Was | Größe |
-|--------|-----|-------|
-| **[amhinson/strudel-coder-0.5B](https://huggingface.co/amhinson/strudel-coder-0.5B)** | Auf **2000 Strudel-Beispielen** fine-tuned (Qwen2.5-Coder) | ~0.5B |
-| [strudel-coder-0.5B-ONNX](https://huggingface.co/amhinson/strudel-coder-0.5B-ONNX) | Gleiches Modell für Browser/transformers.js | — |
-| [hidude562/strudel-fim-5m](https://huggingface.co/hidude562/strudel-fim-5m) | Fill-in-the-middle, 5M Params | tiny |
+| Modell | Was | Empfehlung |
+|--------|-----|------------|
+| **strudel-live** (Default) | Qwen2.5-Coder 0.5B + Strudel-Modelfile (temp 0.3) | Schnell, Preset-Fallback |
+| **[amhinson/strudel-coder-0.5B](https://huggingface.co/amhinson/strudel-coder-0.5B)** | Auf 2000 Strudel-Beispielen fine-tuned | **Beste lokale Qualität** |
+| GPT-4o-mini (Cloud) | OpenAI API | Ignite JSON, komplexere Patterns |
 
-**strudel-coder** ist das spezialisierte Strudel-Modell. Für Ollama nutzen wir zuerst **Qwen2.5-Coder 0.5B** + Strudel-System-Prompt; optional importierst du strudel-coder als GGUF.
-
-## Schnellstart (5 Minuten)
+## Schnellstart
 
 ```bash
-# 1. Ollama installieren: https://ollama.com/download
-
-# 2. Modell + strudel-live Alias anlegen
+# Standard (strudel-live alias)
 npm run ollama:setup
 
-# 3. .env
+# Besser: fine-tuned Strudel-Coder
+npm run ollama:setup -- --strudel-coder
+```
+
+`.env`:
+```bash
 AI_PROVIDER=ollama
 USE_OLLAMA=true
 OLLAMA_MODEL=strudel-live
+# oder: OLLAMA_MODEL=hf.co/amhinson/strudel-coder-0.5B:Q4_K_M
+```
 
-# 4. App starten
+```bash
 npm run dev:full
+npm run verify    # E2E-Check
 ```
 
-→ Browser http://localhost:5173 → Prompt-Chip oder Text → **Ignite & Start**
+## Ollama Ignite-Pfad (v0.6.3+)
 
-Whisper/Spracheingabe braucht weiterhin OpenAI — ohne Key nur **Text-Prompts** und **Pattern-Picker**.
+Bei `AI_PROVIDER=ollama` **kein fragiles JSON** mehr:
 
-## .env
+1. Genre → **Preset** (`patterns/10-deep-techno`, `11-schranz`, …)
+2. Optional LLM-Verfeinerung + **Syntax-Repair**
+3. Module nur bei Keywords (visuals → Hydra, sing → Mic, rave → RAVE)
 
-```bash
-AI_PROVIDER=ollama
-USE_OLLAMA=true
-OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=strudel-live
-```
+**Shift+Klick** auf Prompt-Chips = Preset **ohne KI** (schnellster Club-Sound).
 
-## Echtes strudel-coder GGUF (optional)
+## Preset-Bibliothek
 
-Wenn auf Hugging Face ein Ollama-fähiges GGUF von `amhinson/strudel-coder-0.5B` verfügbar ist:
-
-```bash
-ollama pull hf.co/amhinson/strudel-coder-0.5B:Q4_K_M
-# in .env:
-OLLAMA_MODEL=strudel-coder-0.5b
-```
+| Pattern | Genre |
+|---------|-------|
+| `10-deep-techno` | Hypnotic / Peak Techno |
+| `11-schranz` | Industrial Schranz |
+| `12-liquid-dnb` | Liquid DNB |
+| `13-acid-techno` | Acid 303 |
+| `14-ambient-drone` | Ambient / Downtempo |
+| `15-stem-reactive` | Stem-FFT moduliert (dj:stems) |
 
 ## Qualität vs. Cloud
 
-| | Ollama (0.5B) | GPT-4o-mini |
-|--|---------------|-------------|
-| Latenz | lokal, ~2–10s | Cloud |
-| Strudel-Syntax | gut mit Acorn-Guard | besser |
-| Ignite JSON | kann scheitern | stabiler |
+| | Ollama + Presets | GPT-4o-mini |
+|--|------------------|-------------|
+| Latenz | 2–10s lokal | Cloud |
+| Komplexität | Preset-gestützt (6+ Layer) | LLM-native |
+| Ignite | Deterministisch (kein JSON) | JSON-Manifest |
+| Hydra/Transition | ✅ über llm-call | ✅ |
 | Kosten | 0 | API |
-
-**Acorn Syntax-Guard** und **music-constraints** fangen viele Halluzinationen ab — auch bei kleinen Modellen.
 
 ## Troubleshooting
 
 ```bash
 ollama list
 curl http://localhost:11434/api/tags
-npm run check
+npm run verify
+npm run ollama:setup -- --strudel-coder
 ```
 
-Modell fehlt → `npm run ollama:setup` erneut.
+Nach Modelfile-Änderung: `npm run ollama:setup` erneut (recreate `strudel-live`).
