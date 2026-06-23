@@ -3,6 +3,8 @@ import { readJsonBody, sendJson } from './http-utils.mjs';
 import { generateStrudel } from './generate.mjs';
 import { transcribeAudio } from './transcribe.mjs';
 import { savePattern } from './save-pattern.mjs';
+import { loadManifest } from './manifest.mjs';
+import { generateTransition } from './transition.mjs';
 
 function getEnv(mode = 'development') {
   return loadEnv(mode, process.cwd(), '');
@@ -52,6 +54,22 @@ export async function handleApiRequest(req, res, env) {
       if (!code?.trim()) throw Object.assign(new Error('No code to save'), { status: 400 });
       const saved = savePattern({ code, name });
       sendJson(res, 200, { ok: true, ...saved });
+    } catch (err) {
+      sendJson(res, err.status || 500, { ok: false, error: err.message });
+    }
+    return true;
+  }
+
+  if (url === '/api/dj/manifest' && req.method === 'GET') {
+    sendJson(res, 200, { ok: true, manifest: loadManifest() });
+    return true;
+  }
+
+  if (url === '/api/transition' && req.method === 'POST') {
+    try {
+      const { fromTrack, toPrompt, bars } = await readJsonBody(req);
+      const result = await generateTransition({ fromTrack, toPrompt, bars }, env);
+      sendJson(res, 200, { ok: true, ...result });
     } catch (err) {
       sendJson(res, err.status || 500, { ok: false, error: err.message });
     }

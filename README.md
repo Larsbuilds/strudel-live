@@ -30,6 +30,20 @@ npm run dev            # http://localhost:5173
 | **Eigene Samples** | `npm run dev:full` |
 | **CLI** | `npm run voice -- --prompt "techno beat"` |
 
+## DJ-Modus (Phasen 7–10)
+
+```bash
+npm run dj:deps
+npm run sc:fetch -- --url "https://soundcloud.com/artist/track"
+npm run dj:analyze -- --track samples/soundcloud/track.wav
+npm run dj:stems -- --track samples/soundcloud/track.wav   # optional, Demucs
+npm run dev:full
+```
+
+Im Browser: **DJ-Modus** → Track wählen → **Übergang generieren**
+
+Details: [docs/DJ-ROADMAP.md](docs/DJ-ROADMAP.md)
+
 ## NPM-Skripte
 
 ```bash
@@ -39,6 +53,10 @@ npm run build        # Production-Build
 npm start            # Production (API + Static)
 npm run check        # Setup validieren
 npm run voice        # CLI: Text/Audio → Pattern
+npm run sc:fetch     # SoundCloud/URL → samples/
+npm run dj:analyze   # BPM-Analyse
+npm run dj:stems     # Demucs Stem-Separation
+npm run dj:deps      # DJ-Dependencies prüfen
 npm run osc:check    # SuperDirt OSC prüfen
 npm run superdirt:help
 ```

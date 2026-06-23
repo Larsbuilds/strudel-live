@@ -227,6 +227,70 @@ header p {
   color: #f08080;
 }
 
+.dj-panel {
+  margin-top: 0.75rem;
+  padding: 0.85rem;
+  background: #14101c;
+  border: 1px solid #3a2848;
+  border-radius: 10px;
+}
+
+.dj-panel summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #d8b8f0;
+}
+
+.dj-hint {
+  margin: 0.5rem 0;
+  font-size: 0.85rem;
+  color: #9090a8;
+}
+
+.dj-track-select {
+  display: block;
+  width: 100%;
+  max-width: 28rem;
+  margin-top: 0.4rem;
+}
+
+.dj-track-meta {
+  margin: 0.5rem 0 0;
+  padding: 0.5rem;
+  background: #0f0f12;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  max-height: 8rem;
+  overflow: auto;
+  color: #a8a8b8;
+}
+
+.dj-transition-form textarea {
+  width: 100%;
+  margin: 0.35rem 0 0.5rem;
+  background: #0f0f12;
+  color: inherit;
+  border: 1px solid #3a3a48;
+  border-radius: 8px;
+  padding: 0.55rem;
+  font: inherit;
+  resize: vertical;
+}
+
+.dj-meters {
+  margin-top: 0.5rem;
+}
+
+.dj-meter {
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+}
+
+.dj-meter meter {
+  width: 8rem;
+  margin: 0 0.35rem;
+}
+
 #ai-prompt {
   flex: 1;
   resize: vertical;

@@ -7,9 +7,11 @@ dist/
 .env.*.local
 !.env.example
 
-# sample audio files — keep README
+# sample audio — keep manifest + READMEs
 samples/**
+!samples/manifest.json
 !samples/README.md
+!samples/soundcloud/README.md
 
 # AI-generated patterns (keep folder README)
 patterns/generated/**

@@ -1,0 +1,20 @@
+// DJ-Controller — MIDI Crossfader + Filter (Phase 10)
+// Gerät im DJ-Panel verbinden. CC8=Crossfader, CC1=LPF A, CC2=LPF B
+// Dann dieses Pattern ausführen (async top-level ok in Strudel)
+
+samples("http://localhost:5432")
+
+const cc = await midin()  // erstes MIDI-Input-Gerät
+const xf = cc(8).range(0, 1)       // crossfader
+const lpfA = cc(1).range(200, 8000)
+const lpfB = cc(2).range(200, 8000)
+
+setcpm(128)
+
+stack(
+  s("bd*4, ~ sd").gain(xf.range(0.8, 0)).lpf(lpfA),
+  n("0 2 4 7").scale("A2 minor").s("sawtooth")
+    .gain(xf.range(0, 0.5))
+    .lpf(lpfB)
+    .room(0.4)
+)

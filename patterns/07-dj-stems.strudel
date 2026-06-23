@@ -1,0 +1,16 @@
+// DJ-Stems — TRACK_ID aus samples/manifest.json anpassen
+// Voraussetzung: npm run dev:full + npm run dj:stems
+
+const TRACK = "mein-track"  // manifest id
+
+samples("http://localhost:5432")
+
+let bpm = 124
+setcpm(bpm)
+
+stack(
+  s(`soundcloud/${TRACK}-drums`).gain(0.9),
+  s(`soundcloud/${TRACK}-bass`).gain(0.75),
+  s(`soundcloud/${TRACK}-vocals`).gain(0.6).room(0.3),
+  s(`soundcloud/${TRACK}-other`).gain(0.4)
+)

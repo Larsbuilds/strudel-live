@@ -23,7 +23,22 @@ Kurzfassung der zweiten Chat-Runde, gefiltert für **strudel-live**.
 | Pseudocode-Autotune mit `createAutotuneEffect` | Kein Standard in Strudel — braucht eigene Web-Audio-/DSP-Lib |
 | PitchToggle-Link über Google-Search | Nutzlose URL — echte Projekte: Tone.js, AudioWorklet, [cwilso/PitchToggle](https://github.com/cwilso/PitchToggle) |
 
-## Unser Fahrplan (aus beiden Chats zusammengeführt)
+## Phase 7–10 — DJ-Modus (neu)
+
+| Gemini-Idee | Umsetzung |
+|-------------|-----------|
+| SoundCloud-Ingestion | `npm run sc:fetch` via **yt-dlp** (nicht kaputte SC-API) |
+| Stem-Separation | `npm run dj:stems` via **Demucs** (Python, optional) |
+| BPM/Key-Analyse | `npm run dj:analyze` (music-tempo + ffmpeg) |
+| KI-Übergänge | `/api/transition` + DJ-Panel |
+| DJ-Controller | Web MIDI CC-Mapping |
+| Ableton Link | **Noch nicht** — `setcpm()` aus Manifest-BPM als Bridge |
+
+Falsch/übertrieben: „fertige Songs streamen“ als Produkt — wir cachen lokal für Jams. Essentia Cue-Points noch offen.
+
+Details: `docs/DJ-ROADMAP.md`
+
+## Unser Fahrplan (Phasen 1–10)
 
 ```
 Phase 1  Lernen          Workshop + Mini-Notation

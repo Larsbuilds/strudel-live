@@ -2,9 +2,11 @@ import '@strudel/repl';
 import { patterns } from './patterns.js';
 import { initAiPanel, applyCodeToRepl } from './ai-panel.js';
 import { initMicPanel } from './mic-panel.js';
+import { initMidiPanel } from './midi-panel.js';
 import { initVoiceInput } from './voice-input.js';
 import { initWhisperRecorder } from './whisper-recorder.js';
-import { initMidiPanel } from './midi-panel.js';
+import { initDjPanel } from './dj-panel.js';
+import { initDjController } from './dj-controller.js';
 import { setLastPattern } from './session.js';
 import { parseScaleFromCode } from './scale-utils.js';
 
@@ -58,5 +60,7 @@ initWhisperRecorder({
 
 initMicPanel();
 initMidiPanel();
+initDjPanel({ editor });
+initDjController();
 
 loadPattern(Object.keys(patterns)[0] || '');

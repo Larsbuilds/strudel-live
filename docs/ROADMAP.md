@@ -38,14 +38,22 @@
 - [x] `npm run voice -- --prompt "..."` CLI
 - [x] `npm run voice -- --audio file.webm`
 
-## Phase 6 — Gesang & Autotune ✅ Basis
+## Phase 6 — Gesang & Autotune ✅
 
-- [x] Mikrofon-Monitor
-- [x] Pitch-Correction (Tone.js + pitchy)
-- [x] Key-Sync aus KI-Pattern `.scale()` / `chord()`
-- [ ] Studio-Qualität Autotune (feinere DSP)
+- [x] Mikrofon-Monitor / Autotune / Key-Sync
 
-## Production
+## Phase 7–10 — DJ-Modus ✅ Basis
+
+- [x] `npm run sc:fetch` — SoundCloud/URL → WAV (`yt-dlp`)
+- [x] `samples/manifest.json` Track-Registry
+- [x] `npm run dj:analyze` — BPM + Metadaten
+- [x] `npm run dj:stems` — Demucs 4-Stem (optional)
+- [x] KI-Übergangs-Engine (`/api/transition`, DJ-Panel)
+- [x] DJ-Controller Web MIDI (CC8/1/2)
+- [ ] Ableton Link Clock-Sync (extern)
+- [ ] Essentia Cue-Points (erweiterbar)
+
+Siehe `docs/DJ-ROADMAP.md`
 
 - [x] `npm run build && npm start` — Express + API + Static
 
