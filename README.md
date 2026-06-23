@@ -4,6 +4,17 @@ Collaborative live-coding jams with [Strudel](https://strudel.cc) — the JavaSc
 
 This repo is a small local workspace: edit patterns in `patterns/`, run a browser REPL, and jam together. AGPL-3.0 applies to Strudel itself; see [Strudel license notes](https://strudel.cc/technical-manual/project-start/#respect-the-license).
 
+## Repository
+
+**https://github.com/Larsbuilds/strudel-live**
+
+Clone for friends:
+
+```bash
+git clone https://github.com/Larsbuilds/strudel-live.git
+cd strudel-live && npm install && npm run dev
+```
+
 ## Quick start
 
 ```bash
@@ -50,7 +61,7 @@ cd strudel && pnpm i && pnpm dev
 
 1. Clone this repo
 2. `npm install && npm run dev`
-3. Add patterns under `patterns/` and register them in `src/patterns.js`
+3. Add patterns under `patterns/` — they appear automatically in the dropdown
 4. Share screen or stream audio while live-coding
 
 ## Learn Strudel

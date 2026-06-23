@@ -1,9 +1,14 @@
-import kickSnare from '../patterns/01-kick-snare.strudel?raw';
-import tranceLead from '../patterns/02-trance-lead.strudel?raw';
-import dnbBreak from '../patterns/03-dnb-break.strudel?raw';
+const modules = import.meta.glob('../patterns/*.strudel', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+});
 
-export const patterns = {
-  '01-kick-snare': kickSnare,
-  '02-trance-lead': tranceLead,
-  '03-dnb-break': dnbBreak,
-};
+export const patterns = Object.fromEntries(
+  Object.entries(modules)
+    .map(([path, code]) => {
+      const name = path.slice('../patterns/'.length, -'.strudel'.length);
+      return [name, code];
+    })
+    .sort(([a], [b]) => a.localeCompare(b)),
+);

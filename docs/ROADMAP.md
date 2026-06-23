@@ -23,7 +23,7 @@ setcpm(140)          // tempo (cycles per minute)
 ## Phase 2 — Better local workflow
 
 - [ ] Pin `@strudel/repl` version in `package.json` so jams don't break on updates
-- [ ] Auto-load all `patterns/*.strudel` files (no manual `patterns.js` edits)
+- [x] Auto-load all `patterns/*.strudel` files (no manual `patterns.js` edits)
 - [ ] Optional: clone [uzu/strudel](https://codeberg.org/uzu/strudel) for the full REPL + sample library
 - [ ] MIDI out to hardware / DAW (Strudel supports MIDI — see technical manual)
 
