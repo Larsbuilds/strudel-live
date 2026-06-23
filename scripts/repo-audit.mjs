@@ -52,6 +52,7 @@ const REQUIRED_DOCS = [
   'docs/FEATURES.md',
   'docs/V0.6-ROADMAP.md',
   'docs/ABLETON-LINK.md',
+  'docs/RAVE.md',
 ];
 
 for (const doc of REQUIRED_DOCS) {
@@ -121,6 +122,12 @@ try {
   const { initRaveOnnx, getRaveOnnxStatus } = await import('../server/rave-onnx.mjs');
   await initRaveOnnx(process.env);
   getRaveOnnxStatus().mode === 'passthrough' ? pass('rave-onnx (passthrough)') : pass('rave-onnx (model)');
+  const st = getRaveOnnxStatus();
+  st.tensorPool === false && st.mode === 'passthrough'
+    ? pass('rave-onnx tensor-pool (idle)')
+    : st.tensorPool
+      ? pass('rave-onnx tensor-pool')
+      : fail('rave-onnx pool missing');
 } catch (e) {
   fail(`rave-onnx: ${e.message}`);
 }

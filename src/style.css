@@ -165,6 +165,28 @@ header p {
   border-top: 1px solid #2a2a32;
 }
 
+.advanced-block--experimental {
+  opacity: 0.92;
+}
+
+.badge-experimental {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  background: #3a2a10;
+  color: #f0a030;
+  vertical-align: middle;
+}
+
+.hint-text {
+  margin: 0.25rem 0 0.5rem;
+  font-size: 0.82rem;
+  color: #888;
+}
+
 .mic-controls {
   display: flex;
   gap: 0.75rem;

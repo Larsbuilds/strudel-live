@@ -21,7 +21,7 @@ function clockPayload() {
 }
 
 function broadcast() {
-  if (!wss) return;
+  if (!wss || wss.clients.size === 0) return;
   const raw = JSON.stringify(clockPayload());
   for (const client of wss.clients) {
     if (client.readyState === 1) client.send(raw);

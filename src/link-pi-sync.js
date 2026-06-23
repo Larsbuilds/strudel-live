@@ -1,13 +1,14 @@
 /**
  * PI phase-lock: Strudel scheduler CPS follows Ableton Link grid.
+ * v0.6.2: dt-based integrator, tighter anti-windup (research-tuned).
  */
 import { waitForRepl } from './ai-panel.js';
 import { getReplScheduler } from './strudel-quantize.js';
 
 const QUANTUM = 4;
-const DEFAULT_KP = 0.15;
-const DEFAULT_KI = 0.02;
-const INTEGRAL_MAX = 8;
+const DEFAULT_KP = 0.12;
+const DEFAULT_KI = 0.015;
+const MAX_INTEGRAL = 0.05;
 const MIN_CPS = 0.05;
 
 export class LinkPiSync {
@@ -16,12 +17,14 @@ export class LinkPiSync {
     this.kp = options.kp ?? DEFAULT_KP;
     this.ki = options.ki ?? DEFAULT_KI;
     this.integralError = 0;
+    this.lastTime = performance.now();
     this.mirror = null;
     this.lastPayload = null;
   }
 
   reset() {
     this.integralError = 0;
+    this.lastTime = performance.now();
   }
 
   async ensureMirror() {
@@ -44,6 +47,10 @@ export class LinkPiSync {
     const setCps = mirror.repl?.setCps;
     if (typeof setCps !== 'function') return null;
 
+    const now = performance.now();
+    const dt = Math.min(0.1, Math.max(0.001, (now - this.lastTime) / 1000));
+    this.lastTime = now;
+
     const rttMs = Math.max(0, Date.now() - (payload.serverTime ?? payload.at ?? Date.now()));
     const latencySec = rttMs / 1000;
     const beatsPerSec = payload.bpm / 60;
@@ -57,15 +64,15 @@ export class LinkPiSync {
     if (phaseError > QUANTUM / 2) phaseError -= QUANTUM;
     if (phaseError < -QUANTUM / 2) phaseError += QUANTUM;
 
-    this.integralError += phaseError;
-    this.integralError = Math.max(-INTEGRAL_MAX, Math.min(INTEGRAL_MAX, this.integralError));
+    this.integralError += phaseError * dt;
+    this.integralError = Math.max(-MAX_INTEGRAL, Math.min(MAX_INTEGRAL, this.integralError));
 
     const correction = this.kp * phaseError + this.ki * this.integralError;
     const baseCps = payload.bpm / 240;
     const adjustedCps = Math.max(MIN_CPS, baseCps + correction);
 
     setCps.call(mirror.repl, adjustedCps);
-    this.lastPayload = { ...payload, adjustedCps, phaseError, rttMs };
+    this.lastPayload = { ...payload, adjustedCps, phaseError, rttMs, dt };
     return this.lastPayload;
   }
 }

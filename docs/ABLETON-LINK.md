@@ -69,3 +69,12 @@ npm run link:status
 
 - Native Addon: auf manchen Systemen kann der Prozess beim Beenden mit Abort enden — im laufenden Server unkritisch.
 - Strudel `setcpm(N)` = Zyklen pro Minute; bei 4/4 gilt `N = BPM / 4`. PI arbeitet intern mit CPS (`bpm / 240`).
+
+## PI-Tuning (v0.6.2)
+
+| Parameter | Wert |
+|-----------|------|
+| Kp | 0.12 |
+| Ki | 0.015 |
+| Integrator-Clamp | ±0.05 (mit `dt`) |
+| Latenz | `serverTime` + RTT-Schätzung |

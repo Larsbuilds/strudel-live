@@ -93,14 +93,14 @@ POST /api/conduct
 
 Im UI: DJ-Modus → **Conductor ausführen** (Strudel-Wechsel quantisiert auf nächste Eins).
 
-## Phase 11b — Faust Cloud Compiler ✅
+## Phase 11b — Faust Cloud Compiler ⚠️ experimental
 
 ```
 POST /api/faust
 { "code": "process = _;", "name": "myDsp" }
 ```
 
-Kompiliert via [faustservice.grame.fr](https://faustservice.grame.fr/) → WASM + Worklet.
+Kompiliert via [faustservice.grame.fr](https://faustservice.grame.fr/) — **Service oft offline**. UI-Worklet ist Passthrough; nicht für Club-Sets.
 
 **Im UI:** Sound & Vision → Faust-Code → **Kompilieren & laden** (AudioWorkletNode).
 

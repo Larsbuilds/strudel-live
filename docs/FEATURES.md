@@ -1,4 +1,4 @@
-# Feature-Übersicht — strudel-live v0.6.1
+# Feature-Übersicht — strudel-live v0.6.2
 
 **Master-Liste** alles, was gebaut ist. Stand: ein Repo, ~2 Wochen Entwicklung.
 
@@ -79,7 +79,18 @@
 |---------|----------|-----|-------|
 | **Ableton Link** | Link-Sync (PI) Toggle | `GET/POST /api/link`, `WS /api/link/ws` | `server/link-clock.mjs`, `src/link-pi-sync.js` |
 | **Link Status** | Header-Anzeige | — | `npm run link:status` |
-| **RAVE ONNX** | Passthrough oder Modell | WebSocket :8765 | `server/rave-onnx.mjs`, `RAVE_MODEL_PATH` |
+| **RAVE ONNX** | Passthrough oder Modell | WebSocket :8765 | `server/rave-onnx.mjs`, `RAVE_MODEL_PATH`, Tensor-Pool |
+
+---
+
+## v0.6.2 Feintuning
+
+| Feature | Änderung | Datei |
+|---------|----------|-------|
+| **PI-Regler** | dt-Integrator, Kp/Ki research-tuned, Anti-Windup 0.05 | `src/link-pi-sync.js` |
+| **WAM-Rampen** | `linearRamp` / `exponentialRamp` auf AudioParams | `src/wam-automation.js` |
+| **RAVE Tensor-Pool** | Vorallokierte `[1,1,L]`-Buffer, `RAVE_EXECUTION_PROVIDER` | `server/rave-onnx.mjs` |
+| **Faust** | UI als **experimental** markiert | `index.html` |
 
 ---
 
@@ -151,7 +162,8 @@ npm run superdirt:help   # SC Install-Hilfe
 | [SUPERCOLLIDER.md](SUPERCOLLIDER.md) | SuperDirt |
 | [MINI-NOTATION.md](MINI-NOTATION.md) | Strudel-Syntax |
 | [V0.6-ROADMAP.md](V0.6-ROADMAP.md) | Szenen-Vergleich, v0.6 Plan |
-| [ABLETON-LINK.md](ABLETON-LINK.md) | Link-Setup, API |
+| [ABLETON-LINK.md](ABLETON-LINK.md) | Link-Setup, API, PI-Tuning |
+| [RAVE.md](RAVE.md) | ONNX Bridge, Tensor-Pool |
 
 ---
 
@@ -160,7 +172,7 @@ npm run superdirt:help   # SC Install-Hilfe
 | Item | Status |
 |------|--------|
 | OPENAI_API_KEY gültig | manuell prüfen (401 möglich) |
-| Faust Cloud Service | oft langsam/offline |
+| Faust Cloud Service | **experimental** — Passthrough-Worklet, Service oft offline |
 | RAVE GPU-Inferenz | ONNX wenn `RAVE_MODEL_PATH` gesetzt, sonst Passthrough |
 | Ableton Link | `abletonlink` im Server + Link-Sync UI |
 | Essentia Cue-Points | nicht implementiert |
