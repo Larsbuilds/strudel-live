@@ -159,19 +159,24 @@ Bei `AI_PROVIDER=ollama` **kein fragiles JSON** mehr:
 
 | | Ollama + Presets | GPT-4o-mini |
 |--|------------------|-------------|
-| Latenz | 2–10s lokal | Cloud |
+| Latenz | 15–90s (dual-LLM), erste Anfrage länger | 3–15s Cloud |
 | Komplexität | Preset-gestützt (6+ Layer) | LLM-native |
 | Ignite | Deterministisch (kein JSON) | JSON-Manifest |
 | Hydra/Transition | ✅ über llm-call | ✅ |
 | Kosten | 0 | API |
 
-## Troubleshooting
+**Cloud-Umschaltung:** `AI_PROVIDER=openai` + `OPENAI_API_KEY` — gleiche Intent-/Tool-Architektur. Siehe [STATUS.md](./STATUS.md).
+
+## Status & Troubleshooting
+
+Vollständiges Test-Log, Latenz, Hänger nach „erweitere Pattern“: **[STATUS.md](./STATUS.md)**
 
 ```bash
 ollama list
 curl http://localhost:11434/api/tags
 npm run verify
 npm run ollama:setup -- --strudel-coder
+brew services restart ollama   # wenn Ollama hängt
 ```
 
 Nach Modelfile-Änderung: `npm run ollama:setup` erneut (recreate `strudel-live`).

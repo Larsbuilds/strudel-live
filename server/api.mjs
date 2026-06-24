@@ -22,6 +22,7 @@ import { planAgentActions } from './strudel-agent.mjs';
 import { checkEmbeddings } from './embeddings.mjs';
 import { loadIntentExamples } from './semantic-retrieval.mjs';
 import { catalogStats } from './catalog-loader.mjs';
+import { checkOllama, getOllamaModel, getSyntaxModel, isDualLlmEnabled } from './ollama.mjs';
 
 let bootPromise = null;
 function ensureBoot(env) {
@@ -108,15 +109,26 @@ export async function handleApiRequest(req, res, env) {
 
   if (url === '/api/status' && req.method === 'GET') {
     const ollamaOn = env.AI_PROVIDER === 'ollama' || env.USE_OLLAMA === 'true';
+    const ollama =
+      ollamaOn
+        ? {
+            model: getOllamaModel(env),
+            syntaxModel: getSyntaxModel(env),
+            dualLlm: isDualLlmEnabled(env),
+            ...(await checkOllama(env)),
+          }
+        : null;
     sendJson(res, 200, {
       ok: true,
       configured: Boolean(env.OPENAI_API_KEY || env.ANTHROPIC_API_KEY || ollamaOn),
       whisper: Boolean(env.OPENAI_API_KEY),
+      activeProvider: env.AI_PROVIDER || (env.OPENAI_API_KEY ? 'openai' : ollamaOn ? 'ollama' : null),
       providers: {
         openai: Boolean(env.OPENAI_API_KEY),
         anthropic: Boolean(env.ANTHROPIC_API_KEY),
         ollama: ollamaOn,
       },
+      ollama,
     });
     return true;
   }

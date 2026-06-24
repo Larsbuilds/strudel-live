@@ -2,7 +2,44 @@ import { session } from './session.js';
 import { runIgnite } from './ignite-boot.js';
 import { initPromptBook } from './prompt-book.js';
 
-const GENERATE_TIMEOUT_MS = 120_000;
+const GENERATE_TIMEOUT_MS = 180_000; // match server ollamaChat timeout
+
+function startLoadingTicker(statusEl, baseText) {
+  const start = Date.now();
+  const tick = () => {
+    const s = Math.floor((Date.now() - start) / 1000);
+    const hint =
+      s < 20
+        ? 'Ollama antwortet…'
+        : s < 60
+          ? 'Modell lädt — kann 60–90s dauern'
+          : 'Noch aktiv — bei >2min Ollama neu starten';
+    statusEl.textContent = `${baseText} (${s}s · ${hint})`;
+  };
+  tick();
+  const id = setInterval(tick, 2000);
+  return () => clearInterval(id);
+}
+
+async function postGenerate(statusEl, body, loadingText) {
+  const stopTick = startLoadingTicker(statusEl, loadingText);
+  const ac = new AbortController();
+  const timer = setTimeout(() => ac.abort(), GENERATE_TIMEOUT_MS);
+  try {
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: ac.signal,
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'Generation failed');
+    return data;
+  } finally {
+    clearTimeout(timer);
+    stopTick();
+  }
+}
 
 export function initAiPanel({ editor, hub }) {
   const form = document.getElementById('ai-form');
@@ -36,6 +73,7 @@ export function initAiPanel({ editor, hub }) {
       const status = await statusRes.json().catch(() => ({}));
 
       const ollama = status.providers?.ollama;
+      const ollamaDetail = status.ollama;
       setupEl.hidden = data.ai;
 
       const whisperBtn = document.getElementById('whisper-btn');
@@ -45,7 +83,9 @@ export function initAiPanel({ editor, hub }) {
         statusEl.textContent = 'KI fehlt — npm run ollama:setup oder API-Key';
         statusEl.dataset.state = 'warn';
       } else if (ollama) {
-        statusEl.textContent = `Lokales Modell (Ollama · ${data.ollama?.model || 'strudel-live'})`;
+        const dual = ollamaDetail?.dualLlm ? ' · dual-LLM' : '';
+        const syntax = ollamaDetail?.syntaxModel ? ` + ${ollamaDetail.syntaxModel}` : '';
+        statusEl.textContent = `Lokales Modell (Ollama · ${ollamaDetail?.model || data.ollama?.model || 'strudel-live'}${syntax}${dual})`;
         statusEl.dataset.state = 'ok';
       } else if (data.ai) {
         statusEl.textContent = 'Cloud-KI aktiv';
@@ -85,32 +125,15 @@ export function initAiPanel({ editor, hub }) {
       throw new Error('Kein laufendes Pattern — zuerst Ignite oder „Basis abspielen“.');
     }
 
-    const labels = await previewIntents(prompt);
-    statusEl.textContent = labels.length
-      ? `Erkannt: ${labels.join(', ')} — erweitere Pattern…`
-      : 'KI erweitert das Pattern im Editor…';
+    const loadingBase = labels.length
+      ? `Erkannt: ${labels.join(', ')} — erweitere Pattern`
+      : 'KI erweitert das Pattern im Editor';
     statusEl.dataset.state = 'loading';
 
     const trackContext =
       djContextCheck?.checked && session.selectedTrack ? session.selectedTrack : undefined;
 
-    const ac = new AbortController();
-    const timer = setTimeout(() => ac.abort(), GENERATE_TIMEOUT_MS);
-
-    let res;
-    try {
-      res = await fetch('/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt, previousCode, trackContext }),
-        signal: ac.signal,
-      });
-    } finally {
-      clearTimeout(timer);
-    }
-
-    const data = await res.json();
-    if (!data.ok) throw new Error(data.error || 'Generation failed');
+    const data = await postGenerate(statusEl, { prompt, previousCode, trackContext }, loadingBase);
 
     const unchanged = data.code?.trim() === previousCode.trim();
     const fixNote = data.constraints?.fixes?.includes('refine:unchanged')
@@ -139,8 +162,8 @@ export function initAiPanel({ editor, hub }) {
 
     statusEl.dataset.state = unchanged ? 'warn' : 'ok';
     statusEl.textContent = unchanged
-      ? `Keine Änderung${intentNote} — Formulierung anpassen oder lauter sagen`
-      : `Erweitert — ${data.provider}/${data.model}${fixNote}${intentNote}${agentNote}`;
+      ? `Keine Änderung${intentNote} — Formulierung anpassen oder Cloud-KI (siehe docs/STATUS.md)`
+      : `Erweitert — ${data.provider}/${data.model}${data.agent?.pipeline ? ` · ${data.agent.pipeline}` : ''}${fixNote}${intentNote}${agentNote}`;
 
     clearPrompt();
     if (saveBtn) saveBtn.disabled = false;
@@ -171,13 +194,7 @@ export function initAiPanel({ editor, hub }) {
       }
 
       statusEl.textContent = 'KI schreibt Strudel-Code…';
-      const res = await fetch('/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt }),
-      });
-      const data = await res.json();
-      if (!data.ok) throw new Error(data.error || 'Generation failed');
+      const data = await postGenerate(statusEl, { prompt }, 'KI schreibt Strudel-Code');
 
       await hub.applyPattern(data.code, { prompt, scale: data.scale, source: 'ai', fixes: data.constraints?.fixes });
       statusEl.dataset.state = 'ok';
@@ -188,7 +205,7 @@ export function initAiPanel({ editor, hub }) {
       statusEl.dataset.state = 'error';
       statusEl.textContent =
         err.name === 'AbortError'
-          ? 'Zeitüberschreitung — Ollama hängt? Server neu starten.'
+          ? 'Zeitüberschreitung (3min) — Ollama hängt? brew services restart ollama'
           : err.message;
       if (err.message?.includes('API key')) setupEl.hidden = false;
     } finally {

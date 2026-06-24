@@ -106,6 +106,7 @@ Siehe [docs/FEATURES.md](docs/FEATURES.md#alle-api-endpunkte)
 | [WORKFLOW.md](docs/WORKFLOW.md) | End-to-End |
 | [CLUB-HARDENING.md](CLUB-HARDENING.md) | Gig-Stresstests |
 | [LOCAL-AI.md](docs/LOCAL-AI.md) | Ollama / strudel-coder ohne API-Key |
+| [STATUS.md](docs/STATUS.md) | Test-Status, Latenz, Cloud-Umschaltung |
 | [MUSIC-LOGIC.md](docs/MUSIC-LOGIC.md) | Constraints, kein Isabelle |
 | [ARCHITECTURE.md](docs/ARCHITECTURE.md) | System |
 | [MIDI-MAC.md](docs/MIDI-MAC.md) | Ableton-Routing |

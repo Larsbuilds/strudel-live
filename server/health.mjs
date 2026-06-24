@@ -6,7 +6,7 @@ import { listPatternNames } from './patterns-list.mjs';
 import { checkSuperCollider } from './sc-send.mjs';
 import { getLinkState } from './link-clock.mjs';
 import { getRaveOnnxStatus } from './rave-onnx.mjs';
-import { checkOllama, getOllamaModel } from './ollama.mjs';
+import { checkOllama, getOllamaModel, getSyntaxModel, isDualLlmEnabled } from './ollama.mjs';
 
 function portOpen(port) {
   const r = spawnSync('lsof', [`-i:${port}`, '-sTCP:LISTEN', '-t'], { encoding: 'utf8' });
@@ -63,6 +63,8 @@ export function getHealth(env) {
     ollama: {
       configured: env.AI_PROVIDER === 'ollama' || env.USE_OLLAMA === 'true',
       model: getOllamaModel(env),
+      syntaxModel: getSyntaxModel(env),
+      dualLlm: isDualLlmEnabled(env),
       baseUrl: env.OLLAMA_BASE_URL || 'http://localhost:11434',
     },
   };
